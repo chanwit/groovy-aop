@@ -11,3 +11,4 @@ testplan.txt
 .classpath
 .project
 *.class
+*.tokens

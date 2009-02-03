@@ -27,7 +27,7 @@ import org.codehaus.groovy.aop.pattern.impl.GaptParser;
 import org.codehaus.groovy.aop.pattern.impl.GaptLexer;
 
 public class Parser {
-    
+
     private String input;
 
     public Parser(String input) {
