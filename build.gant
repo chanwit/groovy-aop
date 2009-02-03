@@ -3,18 +3,18 @@ ant.property(file:'build.properties')
 version = ant.project.properties.version
 testcase = ant.project.properties.test
 
-groovyHome = System.getenv ( ).'GROOVY_HOME'
+groovyHome = System.getenv().'GROOVY_HOME'
 antlibXMLns = 'antlib:org.apache.maven.artifact.ant'
 
 sourceDir='src/'
 testSourceDir='test/'
 
-outDir = 'target/'
-binDir=        outDir + 'classes/'
-testBinDir=    outDir + 'test-classes/'
-testReportsDir=outDir + 'test-reports/'
-coberturaBinDir=outDir+ 'cobertura-classes/'
-coberturaReportDir=outDir+ 'cobertura-reports/'
+outDir				='target/'
+binDir				=outDir + 'classes/'
+testBinDir			=outDir + 'test-classes/'
+testReportsDir		=outDir + 'test-reports/'
+coberturaBinDir		=outDir+ 'cobertura-classes/'
+coberturaReportDir	=outDir+ 'cobertura-reports/'
 
 distDir='dist/'
 
@@ -46,12 +46,14 @@ doCompile = { classpathRef, srcDir, destDir ->
       pathelement ( location : testBinDir )
       path ( refid : classpathRef )
     }                
+    
     javac(source : '1.5' , target : '1.5' , debug : 'on')
+    
   } 	
 }
 
 doTesting = { classpathRef ->
-  if ( usingCobertura ) {
+  if (usingCobertura) {
     ant.mkdir ( dir : coberturaBinDir )
     ant.mkdir ( dir : coberturaReportDir )
     ant."${antlibXMLns}:dependencies" ( pathId :  'coberturaPathId' ) {
@@ -63,6 +65,7 @@ doTesting = { classpathRef ->
     	fileset ( dir : binDir ) 
     }
   }
+  
   ant.junit ( printsummary : 'yes' , failureproperty : 'testsFailed' , fork : 'true' ) {
     formatter ( type : 'plain' )
     batchtest ( todir : testReportsDir ) {
@@ -83,6 +86,7 @@ doTesting = { classpathRef ->
       path ( refid : classpathRef )
     }
   }
+  
   if ( usingCobertura ) { 
   	ant.'cobertura-report' ( srcdir : sourceDir , destdir : coberturaReportDir ) 
   }
