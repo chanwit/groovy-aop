@@ -1,4 +1,4 @@
-// $ANTLR 3.1.1 C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g 2009-02-04 00:04:00
+// $ANTLR 3.1.1 C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g 2009-02-04 01:49:46
 
 package org.codehaus.groovy.aop.pattern.impl;
 
@@ -445,11 +445,11 @@ public class GaptLexer extends Lexer {
         try {
             int _type = Identifier;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:137:2: ( Letter ( Letter | JavaIDDigit )* )
-            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:137:4: Letter ( Letter | JavaIDDigit )*
+            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:137:5: ( Letter ( Letter | JavaIDDigit )* )
+            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:137:7: Letter ( Letter | JavaIDDigit )*
             {
             mLetter(); 
-            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:137:11: ( Letter | JavaIDDigit )*
+            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:137:14: ( Letter | JavaIDDigit )*
             loop1:
             do {
                 int alt1=2;

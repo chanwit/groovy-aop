@@ -1,4 +1,4 @@
-// $ANTLR 3.1.1 C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g 2009-02-04 00:04:00
+// $ANTLR 3.1.1 C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g 2009-02-04 01:49:46
 
 package org.codehaus.groovy.aop.pattern.impl;
 
@@ -48,16 +48,16 @@ public class GaptParser extends DebugParser {
     // delegators
 
     public static final String[] ruleNames = new String[] {
-        "invalidRule", "synpred4_Gapt", "synpred26_Gapt", "methodPattern", 
-        "synpred7_Gapt", "synpred12_Gapt", "synpred27_Gapt", "qualifiedName", 
-        "className", "synpred6_Gapt", "synpred8_Gapt", "synpred3_Gapt", 
-        "synpred10_Gapt", "synpred13_Gapt", "synpred14_Gapt", "synpred20_Gapt", 
-        "synpred1_Gapt", "primitive", "synpred24_Gapt", "synpred17_Gapt", 
-        "synpred23_Gapt", "pattern", "modifiers", "synpred2_Gapt", "synpred25_Gapt", 
-        "synpred28_Gapt", "synpred19_Gapt", "modifier", "returnTypePattern", 
-        "synpred16_Gapt", "synpred15_Gapt", "synpred9_Gapt", "argTypes", 
-        "synpred11_Gapt", "synpred18_Gapt", "classPattern", "synpred21_Gapt", 
-        "synpred22_Gapt", "synpred5_Gapt"
+        "invalidRule", "synpred22_Gapt", "pattern", "synpred12_Gapt", "synpred5_Gapt", 
+        "synpred9_Gapt", "synpred24_Gapt", "synpred14_Gapt", "synpred23_Gapt", 
+        "synpred7_Gapt", "synpred10_Gapt", "modifier", "synpred26_Gapt", 
+        "synpred6_Gapt", "synpred8_Gapt", "modifiers", "synpred11_Gapt", 
+        "synpred16_Gapt", "synpred2_Gapt", "primitive", "synpred25_Gapt", 
+        "synpred19_Gapt", "synpred28_Gapt", "synpred1_Gapt", "synpred27_Gapt", 
+        "synpred20_Gapt", "methodPattern", "synpred18_Gapt", "synpred3_Gapt", 
+        "synpred17_Gapt", "returnTypePattern", "synpred21_Gapt", "synpred13_Gapt", 
+        "argTypes", "synpred4_Gapt", "qualifiedName", "classPattern", "className", 
+        "synpred15_Gapt"
     };
      
         public int ruleLevel = 0;
@@ -115,7 +115,7 @@ public class GaptParser extends DebugParser {
         dbg.location(17, 1);
 
         try {
-            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:21:2: ( (mep= methodPattern ) | (rtp= returnTypePattern ) (mep= methodPattern ) | (mod= modifiers ) (rtp= returnTypePattern ) (mep= methodPattern ) )
+            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:21:5: ( (mep= methodPattern ) | (rtp= returnTypePattern ) (mep= methodPattern ) | (mod= modifiers ) (rtp= returnTypePattern ) (mep= methodPattern ) )
             int alt1=3;
             try { dbg.enterDecision(1);
 
@@ -133,21 +133,21 @@ public class GaptParser extends DebugParser {
                 case 1 :
                     dbg.enterAlt(1);
 
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:22:3: (mep= methodPattern )
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:22:9: (mep= methodPattern )
                     {
-                    dbg.location(22,3);
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:22:3: (mep= methodPattern )
+                    dbg.location(22,9);
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:22:9: (mep= methodPattern )
                     dbg.enterAlt(1);
 
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:22:4: mep= methodPattern
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:22:10: mep= methodPattern
                     {
-                    dbg.location(22,7);
-                    pushFollow(FOLLOW_methodPattern_in_pattern56);
+                    dbg.location(22,13);
+                    pushFollow(FOLLOW_methodPattern_in_pattern65);
                     mep=methodPattern();
 
                     state._fsp--;
                     if (state.failed) return pt;
-                    dbg.location(22,26);
+                    dbg.location(22,32);
                     if ( state.backtracking==0 ) {
                        pt.setMethodPattern(mep); 
                     }
@@ -160,40 +160,40 @@ public class GaptParser extends DebugParser {
                 case 2 :
                     dbg.enterAlt(2);
 
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:24:4: (rtp= returnTypePattern ) (mep= methodPattern )
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:24:7: (rtp= returnTypePattern ) (mep= methodPattern )
                     {
-                    dbg.location(24,4);
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:24:4: (rtp= returnTypePattern )
+                    dbg.location(24,7);
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:24:7: (rtp= returnTypePattern )
                     dbg.enterAlt(1);
 
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:24:5: rtp= returnTypePattern
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:24:8: rtp= returnTypePattern
                     {
-                    dbg.location(24,8);
-                    pushFollow(FOLLOW_returnTypePattern_in_pattern82);
+                    dbg.location(24,11);
+                    pushFollow(FOLLOW_returnTypePattern_in_pattern92);
                     rtp=returnTypePattern();
 
                     state._fsp--;
                     if (state.failed) return pt;
-                    dbg.location(24,27);
+                    dbg.location(24,30);
                     if ( state.backtracking==0 ) {
                        pt.setReturnTypePattern(rtp); 
                     }
 
                     }
 
-                    dbg.location(25,3);
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:25:3: (mep= methodPattern )
+                    dbg.location(25,9);
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:25:9: (mep= methodPattern )
                     dbg.enterAlt(1);
 
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:25:4: mep= methodPattern
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:25:10: mep= methodPattern
                     {
-                    dbg.location(25,7);
-                    pushFollow(FOLLOW_methodPattern_in_pattern92);
+                    dbg.location(25,13);
+                    pushFollow(FOLLOW_methodPattern_in_pattern108);
                     mep=methodPattern();
 
                     state._fsp--;
                     if (state.failed) return pt;
-                    dbg.location(25,26);
+                    dbg.location(25,32);
                     if ( state.backtracking==0 ) {
                        pt.setMethodPattern(mep); 
                     }
@@ -206,59 +206,59 @@ public class GaptParser extends DebugParser {
                 case 3 :
                     dbg.enterAlt(3);
 
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:27:4: (mod= modifiers ) (rtp= returnTypePattern ) (mep= methodPattern )
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:27:7: (mod= modifiers ) (rtp= returnTypePattern ) (mep= methodPattern )
                     {
-                    dbg.location(27,4);
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:27:4: (mod= modifiers )
+                    dbg.location(27,7);
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:27:7: (mod= modifiers )
                     dbg.enterAlt(1);
 
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:27:5: mod= modifiers
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:27:8: mod= modifiers
                     {
-                    dbg.location(27,8);
-                    pushFollow(FOLLOW_modifiers_in_pattern113);
+                    dbg.location(27,11);
+                    pushFollow(FOLLOW_modifiers_in_pattern128);
                     mod=modifiers();
 
                     state._fsp--;
                     if (state.failed) return pt;
-                    dbg.location(27,27);
+                    dbg.location(27,30);
                     if ( state.backtracking==0 ) {
                        pt.setModifiers(mod); 
                     }
 
                     }
 
-                    dbg.location(28,3);
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:28:3: (rtp= returnTypePattern )
+                    dbg.location(28,9);
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:28:9: (rtp= returnTypePattern )
                     dbg.enterAlt(1);
 
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:28:4: rtp= returnTypePattern
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:28:10: rtp= returnTypePattern
                     {
-                    dbg.location(28,7);
-                    pushFollow(FOLLOW_returnTypePattern_in_pattern132);
+                    dbg.location(28,13);
+                    pushFollow(FOLLOW_returnTypePattern_in_pattern153);
                     rtp=returnTypePattern();
 
                     state._fsp--;
                     if (state.failed) return pt;
-                    dbg.location(28,26);
+                    dbg.location(28,32);
                     if ( state.backtracking==0 ) {
                        pt.setReturnTypePattern(rtp); 
                     }
 
                     }
 
-                    dbg.location(29,3);
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:29:3: (mep= methodPattern )
+                    dbg.location(29,9);
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:29:9: (mep= methodPattern )
                     dbg.enterAlt(1);
 
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:29:4: mep= methodPattern
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:29:10: mep= methodPattern
                     {
-                    dbg.location(29,7);
-                    pushFollow(FOLLOW_methodPattern_in_pattern142);
+                    dbg.location(29,13);
+                    pushFollow(FOLLOW_methodPattern_in_pattern169);
                     mep=methodPattern();
 
                     state._fsp--;
                     if (state.failed) return pt;
-                    dbg.location(29,26);
+                    dbg.location(29,32);
                     if ( state.backtracking==0 ) {
                        pt.setMethodPattern(mep); 
                     }
@@ -277,7 +277,7 @@ public class GaptParser extends DebugParser {
         }
         finally {
         }
-        dbg.location(30, 2);
+        dbg.location(30, 5);
 
         }
         finally {
@@ -312,13 +312,13 @@ public class GaptParser extends DebugParser {
         dbg.location(33, 1);
 
         try {
-            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:40:2: ( ( (i= Identifier ) ( '.' i= Identifier )* ( '+' )? '.' (i= Identifier ) ( '(' (a= argTypes )? ')' )? | (i= Identifier ) ( '.' i= Identifier )* ( '(' (a= argTypes )? ')' )? ) )
+            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:40:5: ( ( (i= Identifier ) ( '.' i= Identifier )* ( '+' )? '.' (i= Identifier ) ( '(' (a= argTypes )? ')' )? | (i= Identifier ) ( '.' i= Identifier )* ( '(' (a= argTypes )? ')' )? ) )
             dbg.enterAlt(1);
 
-            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:41:2: ( (i= Identifier ) ( '.' i= Identifier )* ( '+' )? '.' (i= Identifier ) ( '(' (a= argTypes )? ')' )? | (i= Identifier ) ( '.' i= Identifier )* ( '(' (a= argTypes )? ')' )? )
+            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:41:5: ( (i= Identifier ) ( '.' i= Identifier )* ( '+' )? '.' (i= Identifier ) ( '(' (a= argTypes )? ')' )? | (i= Identifier ) ( '.' i= Identifier )* ( '(' (a= argTypes )? ')' )? )
             {
-            dbg.location(41,2);
-            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:41:2: ( (i= Identifier ) ( '.' i= Identifier )* ( '+' )? '.' (i= Identifier ) ( '(' (a= argTypes )? ')' )? | (i= Identifier ) ( '.' i= Identifier )* ( '(' (a= argTypes )? ')' )? )
+            dbg.location(41,5);
+            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:41:5: ( (i= Identifier ) ( '.' i= Identifier )* ( '+' )? '.' (i= Identifier ) ( '(' (a= argTypes )? ')' )? | (i= Identifier ) ( '.' i= Identifier )* ( '(' (a= argTypes )? ')' )? )
             int alt9=2;
             try { dbg.enterSubRule(9);
             try { dbg.enterDecision(9);
@@ -382,25 +382,25 @@ public class GaptParser extends DebugParser {
                 case 1 :
                     dbg.enterAlt(1);
 
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:42:3: (i= Identifier ) ( '.' i= Identifier )* ( '+' )? '.' (i= Identifier ) ( '(' (a= argTypes )? ')' )?
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:42:9: (i= Identifier ) ( '.' i= Identifier )* ( '+' )? '.' (i= Identifier ) ( '(' (a= argTypes )? ')' )?
                     {
-                    dbg.location(42,3);
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:42:3: (i= Identifier )
+                    dbg.location(42,9);
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:42:9: (i= Identifier )
                     dbg.enterAlt(1);
 
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:42:4: i= Identifier
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:42:10: i= Identifier
                     {
-                    dbg.location(42,5);
-                    i=(Token)match(input,Identifier,FOLLOW_Identifier_in_methodPattern186); if (state.failed) return mep;
-                    dbg.location(42,16);
+                    dbg.location(42,11);
+                    i=(Token)match(input,Identifier,FOLLOW_Identifier_in_methodPattern221); if (state.failed) return mep;
+                    dbg.location(42,22);
                     if ( state.backtracking==0 ) {
                       names.add((i!=null?i.getText():null));
                     }
 
                     }
 
-                    dbg.location(43,10);
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:43:10: ( '.' i= Identifier )*
+                    dbg.location(43,13);
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:43:13: ( '.' i= Identifier )*
                     try { dbg.enterSubRule(2);
 
                     loop2:
@@ -433,13 +433,13 @@ public class GaptParser extends DebugParser {
                     	case 1 :
                     	    dbg.enterAlt(1);
 
-                    	    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:43:11: '.' i= Identifier
+                    	    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:43:14: '.' i= Identifier
                     	    {
-                    	    dbg.location(43,11);
-                    	    match(input,8,FOLLOW_8_in_methodPattern200); if (state.failed) return mep;
-                    	    dbg.location(43,16);
-                    	    i=(Token)match(input,Identifier,FOLLOW_Identifier_in_methodPattern204); if (state.failed) return mep;
-                    	    dbg.location(43,27);
+                    	    dbg.location(43,14);
+                    	    match(input,8,FOLLOW_8_in_methodPattern238); if (state.failed) return mep;
+                    	    dbg.location(43,19);
+                    	    i=(Token)match(input,Identifier,FOLLOW_Identifier_in_methodPattern242); if (state.failed) return mep;
+                    	    dbg.location(43,30);
                     	    if ( state.backtracking==0 ) {
                     	      names.add((i!=null?i.getText():null));
                     	    }
@@ -453,8 +453,8 @@ public class GaptParser extends DebugParser {
                     } while (true);
                     } finally {dbg.exitSubRule(2);}
 
-                    dbg.location(44,10);
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:44:10: ( '+' )?
+                    dbg.location(44,13);
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:44:13: ( '+' )?
                     int alt3=2;
                     try { dbg.enterSubRule(3);
                     try { dbg.enterDecision(3);
@@ -470,11 +470,11 @@ public class GaptParser extends DebugParser {
                         case 1 :
                             dbg.enterAlt(1);
 
-                            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:44:11: '+'
+                            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:44:14: '+'
                             {
-                            dbg.location(44,11);
-                            match(input,9,FOLLOW_9_in_methodPattern220); if (state.failed) return mep;
-                            dbg.location(44,15);
+                            dbg.location(44,14);
+                            match(input,9,FOLLOW_9_in_methodPattern260); if (state.failed) return mep;
+                            dbg.location(44,18);
                             if ( state.backtracking==0 ) {
                                subClass = true; 
                             }
@@ -485,25 +485,25 @@ public class GaptParser extends DebugParser {
                     }
                     } finally {dbg.exitSubRule(3);}
 
-                    dbg.location(45,10);
-                    match(input,8,FOLLOW_8_in_methodPattern236); if (state.failed) return mep;
-                    dbg.location(46,10);
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:46:10: (i= Identifier )
+                    dbg.location(45,13);
+                    match(input,8,FOLLOW_8_in_methodPattern278); if (state.failed) return mep;
+                    dbg.location(46,13);
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:46:13: (i= Identifier )
                     dbg.enterAlt(1);
 
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:46:11: i= Identifier
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:46:14: i= Identifier
                     {
-                    dbg.location(46,12);
-                    i=(Token)match(input,Identifier,FOLLOW_Identifier_in_methodPattern251); if (state.failed) return mep;
-                    dbg.location(46,23);
+                    dbg.location(46,15);
+                    i=(Token)match(input,Identifier,FOLLOW_Identifier_in_methodPattern295); if (state.failed) return mep;
+                    dbg.location(46,26);
                     if ( state.backtracking==0 ) {
                       names.add((i!=null?i.getText():null));
                     }
 
                     }
 
-                    dbg.location(47,10);
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:47:10: ( '(' (a= argTypes )? ')' )?
+                    dbg.location(47,13);
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:47:13: ( '(' (a= argTypes )? ')' )?
                     int alt5=2;
                     try { dbg.enterSubRule(5);
                     try { dbg.enterDecision(5);
@@ -519,12 +519,12 @@ public class GaptParser extends DebugParser {
                         case 1 :
                             dbg.enterAlt(1);
 
-                            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:47:11: '(' (a= argTypes )? ')'
+                            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:47:14: '(' (a= argTypes )? ')'
                             {
-                            dbg.location(47,11);
-                            match(input,10,FOLLOW_10_in_methodPattern266); if (state.failed) return mep;
-                            dbg.location(47,15);
-                            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:47:15: (a= argTypes )?
+                            dbg.location(47,14);
+                            match(input,10,FOLLOW_10_in_methodPattern312); if (state.failed) return mep;
+                            dbg.location(47,18);
+                            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:47:18: (a= argTypes )?
                             int alt4=2;
                             try { dbg.enterSubRule(4);
                             try { dbg.enterDecision(4);
@@ -540,15 +540,15 @@ public class GaptParser extends DebugParser {
                                 case 1 :
                                     dbg.enterAlt(1);
 
-                                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:47:16: a= argTypes
+                                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:47:19: a= argTypes
                                     {
-                                    dbg.location(47,17);
-                                    pushFollow(FOLLOW_argTypes_in_methodPattern271);
+                                    dbg.location(47,20);
+                                    pushFollow(FOLLOW_argTypes_in_methodPattern317);
                                     a=argTypes();
 
                                     state._fsp--;
                                     if (state.failed) return mep;
-                                    dbg.location(47,27);
+                                    dbg.location(47,30);
                                     if ( state.backtracking==0 ) {
                                       mep.setArgTypePatterns(a);
                                     }
@@ -559,9 +559,9 @@ public class GaptParser extends DebugParser {
                             }
                             } finally {dbg.exitSubRule(4);}
 
-                            dbg.location(47,59);
-                            match(input,11,FOLLOW_11_in_methodPattern278); if (state.failed) return mep;
-                            dbg.location(47,63);
+                            dbg.location(47,62);
+                            match(input,11,FOLLOW_11_in_methodPattern324); if (state.failed) return mep;
+                            dbg.location(47,66);
                             if ( state.backtracking==0 ) {
                               mayBeProperty=false;
                             }
@@ -578,25 +578,25 @@ public class GaptParser extends DebugParser {
                 case 2 :
                     dbg.enterAlt(2);
 
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:49:3: (i= Identifier ) ( '.' i= Identifier )* ( '(' (a= argTypes )? ')' )?
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:49:9: (i= Identifier ) ( '.' i= Identifier )* ( '(' (a= argTypes )? ')' )?
                     {
-                    dbg.location(49,3);
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:49:3: (i= Identifier )
+                    dbg.location(49,9);
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:49:9: (i= Identifier )
                     dbg.enterAlt(1);
 
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:49:4: i= Identifier
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:49:10: i= Identifier
                     {
-                    dbg.location(49,5);
-                    i=(Token)match(input,Identifier,FOLLOW_Identifier_in_methodPattern292); if (state.failed) return mep;
-                    dbg.location(49,16);
+                    dbg.location(49,11);
+                    i=(Token)match(input,Identifier,FOLLOW_Identifier_in_methodPattern347); if (state.failed) return mep;
+                    dbg.location(49,22);
                     if ( state.backtracking==0 ) {
                       names.add((i!=null?i.getText():null));
                     }
 
                     }
 
-                    dbg.location(50,10);
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:50:10: ( '.' i= Identifier )*
+                    dbg.location(50,13);
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:50:13: ( '.' i= Identifier )*
                     try { dbg.enterSubRule(6);
 
                     loop6:
@@ -617,13 +617,13 @@ public class GaptParser extends DebugParser {
                     	case 1 :
                     	    dbg.enterAlt(1);
 
-                    	    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:50:11: '.' i= Identifier
+                    	    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:50:14: '.' i= Identifier
                     	    {
-                    	    dbg.location(50,11);
-                    	    match(input,8,FOLLOW_8_in_methodPattern306); if (state.failed) return mep;
-                    	    dbg.location(50,16);
-                    	    i=(Token)match(input,Identifier,FOLLOW_Identifier_in_methodPattern310); if (state.failed) return mep;
-                    	    dbg.location(50,27);
+                    	    dbg.location(50,14);
+                    	    match(input,8,FOLLOW_8_in_methodPattern364); if (state.failed) return mep;
+                    	    dbg.location(50,19);
+                    	    i=(Token)match(input,Identifier,FOLLOW_Identifier_in_methodPattern368); if (state.failed) return mep;
+                    	    dbg.location(50,30);
                     	    if ( state.backtracking==0 ) {
                     	      names.add((i!=null?i.getText():null));
                     	    }
@@ -637,8 +637,8 @@ public class GaptParser extends DebugParser {
                     } while (true);
                     } finally {dbg.exitSubRule(6);}
 
-                    dbg.location(51,10);
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:51:10: ( '(' (a= argTypes )? ')' )?
+                    dbg.location(51,13);
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:51:13: ( '(' (a= argTypes )? ')' )?
                     int alt8=2;
                     try { dbg.enterSubRule(8);
                     try { dbg.enterDecision(8);
@@ -654,12 +654,12 @@ public class GaptParser extends DebugParser {
                         case 1 :
                             dbg.enterAlt(1);
 
-                            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:51:11: '(' (a= argTypes )? ')'
+                            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:51:14: '(' (a= argTypes )? ')'
                             {
-                            dbg.location(51,11);
-                            match(input,10,FOLLOW_10_in_methodPattern326); if (state.failed) return mep;
-                            dbg.location(51,15);
-                            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:51:15: (a= argTypes )?
+                            dbg.location(51,14);
+                            match(input,10,FOLLOW_10_in_methodPattern386); if (state.failed) return mep;
+                            dbg.location(51,18);
+                            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:51:18: (a= argTypes )?
                             int alt7=2;
                             try { dbg.enterSubRule(7);
                             try { dbg.enterDecision(7);
@@ -675,15 +675,15 @@ public class GaptParser extends DebugParser {
                                 case 1 :
                                     dbg.enterAlt(1);
 
-                                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:51:16: a= argTypes
+                                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:51:19: a= argTypes
                                     {
-                                    dbg.location(51,17);
-                                    pushFollow(FOLLOW_argTypes_in_methodPattern331);
+                                    dbg.location(51,20);
+                                    pushFollow(FOLLOW_argTypes_in_methodPattern391);
                                     a=argTypes();
 
                                     state._fsp--;
                                     if (state.failed) return mep;
-                                    dbg.location(51,27);
+                                    dbg.location(51,30);
                                     if ( state.backtracking==0 ) {
                                       mep.setArgTypePatterns(a);
                                     }
@@ -694,9 +694,9 @@ public class GaptParser extends DebugParser {
                             }
                             } finally {dbg.exitSubRule(7);}
 
-                            dbg.location(51,59);
-                            match(input,11,FOLLOW_11_in_methodPattern338); if (state.failed) return mep;
-                            dbg.location(51,63);
+                            dbg.location(51,62);
+                            match(input,11,FOLLOW_11_in_methodPattern398); if (state.failed) return mep;
+                            dbg.location(51,66);
                             if ( state.backtracking==0 ) {
                               mayBeProperty=false;
                             }
@@ -718,9 +718,9 @@ public class GaptParser extends DebugParser {
             if ( state.backtracking==0 ) {
 
                 String s[] = names.toArray(new String[names.size()]);
-                TypePattern t = new TypePattern(s);  
+                TypePattern t = new TypePattern(s);
                 t.setSubClass(subClass);
-                mep.setTypePattern(t);  
+                mep.setTypePattern(t);
                 mep.setNamePattern(s[s.length-1]);
                 mep.setMayBeProperty(mayBeProperty);
 
@@ -735,7 +735,7 @@ public class GaptParser extends DebugParser {
         }
         finally {
         }
-        dbg.location(61, 2);
+        dbg.location(61, 5);
 
         }
         finally {
@@ -766,23 +766,23 @@ public class GaptParser extends DebugParser {
         dbg.location(63, 1);
 
         try {
-            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:67:2: (c= classPattern ( ',' c= classPattern )* )
+            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:67:5: (c= classPattern ( ',' c= classPattern )* )
             dbg.enterAlt(1);
 
-            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:67:9: c= classPattern ( ',' c= classPattern )*
+            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:67:12: c= classPattern ( ',' c= classPattern )*
             {
-            dbg.location(67,10);
-            pushFollow(FOLLOW_classPattern_in_argTypes400);
+            dbg.location(67,13);
+            pushFollow(FOLLOW_classPattern_in_argTypes442);
             c=classPattern();
 
             state._fsp--;
             if (state.failed) return pts;
-            dbg.location(67,25);
+            dbg.location(67,28);
             if ( state.backtracking==0 ) {
               pts.add(c); 
             }
-            dbg.location(68,10);
-            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:68:10: ( ',' c= classPattern )*
+            dbg.location(68,13);
+            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:68:13: ( ',' c= classPattern )*
             try { dbg.enterSubRule(10);
 
             loop10:
@@ -803,17 +803,17 @@ public class GaptParser extends DebugParser {
             	case 1 :
             	    dbg.enterAlt(1);
 
-            	    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:68:11: ',' c= classPattern
+            	    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:68:14: ',' c= classPattern
             	    {
-            	    dbg.location(68,11);
-            	    match(input,12,FOLLOW_12_in_argTypes416); if (state.failed) return pts;
-            	    dbg.location(68,16);
-            	    pushFollow(FOLLOW_classPattern_in_argTypes420);
+            	    dbg.location(68,14);
+            	    match(input,12,FOLLOW_12_in_argTypes460); if (state.failed) return pts;
+            	    dbg.location(68,19);
+            	    pushFollow(FOLLOW_classPattern_in_argTypes464);
             	    c=classPattern();
 
             	    state._fsp--;
             	    if (state.failed) return pts;
-            	    dbg.location(68,31);
+            	    dbg.location(68,34);
             	    if ( state.backtracking==0 ) {
             	      pts.add(c); 
             	    }
@@ -837,7 +837,7 @@ public class GaptParser extends DebugParser {
         }
         finally {
         }
-        dbg.location(69, 2);
+        dbg.location(69, 5);
 
         }
         finally {
@@ -865,13 +865,13 @@ public class GaptParser extends DebugParser {
         dbg.location(71, 1);
 
         try {
-            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:72:2: (c= classPattern )
+            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:72:5: (c= classPattern )
             dbg.enterAlt(1);
 
-            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:72:4: c= classPattern
+            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:72:7: c= classPattern
             {
-            dbg.location(72,5);
-            pushFollow(FOLLOW_classPattern_in_returnTypePattern444);
+            dbg.location(72,8);
+            pushFollow(FOLLOW_classPattern_in_returnTypePattern493);
             c=classPattern();
 
             state._fsp--;
@@ -892,7 +892,7 @@ public class GaptParser extends DebugParser {
         }
         finally {
         }
-        dbg.location(76, 2);
+        dbg.location(76, 5);
 
         }
         finally {
@@ -920,13 +920,13 @@ public class GaptParser extends DebugParser {
         dbg.location(78, 1);
 
         try {
-            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:79:2: ( (t= primitive | t= qualifiedName ( '+' )? ) )
+            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:79:5: ( (t= primitive | t= qualifiedName ( '+' )? ) )
             dbg.enterAlt(1);
 
-            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:80:2: (t= primitive | t= qualifiedName ( '+' )? )
+            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:80:5: (t= primitive | t= qualifiedName ( '+' )? )
             {
-            dbg.location(80,2);
-            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:80:2: (t= primitive | t= qualifiedName ( '+' )? )
+            dbg.location(80,5);
+            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:80:5: (t= primitive | t= qualifiedName ( '+' )? )
             int alt12=2;
             try { dbg.enterSubRule(12);
             try { dbg.enterDecision(12);
@@ -953,10 +953,10 @@ public class GaptParser extends DebugParser {
                 case 1 :
                     dbg.enterAlt(1);
 
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:80:4: t= primitive
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:80:7: t= primitive
                     {
-                    dbg.location(80,5);
-                    pushFollow(FOLLOW_primitive_in_classPattern468);
+                    dbg.location(80,8);
+                    pushFollow(FOLLOW_primitive_in_classPattern524);
                     t=primitive();
 
                     state._fsp--;
@@ -967,16 +967,16 @@ public class GaptParser extends DebugParser {
                 case 2 :
                     dbg.enterAlt(2);
 
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:81:4: t= qualifiedName ( '+' )?
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:81:7: t= qualifiedName ( '+' )?
                     {
-                    dbg.location(81,5);
-                    pushFollow(FOLLOW_qualifiedName_in_classPattern475);
+                    dbg.location(81,8);
+                    pushFollow(FOLLOW_qualifiedName_in_classPattern534);
                     t=qualifiedName();
 
                     state._fsp--;
                     if (state.failed) return tp;
-                    dbg.location(81,20);
-                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:81:20: ( '+' )?
+                    dbg.location(81,23);
+                    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:81:23: ( '+' )?
                     int alt11=2;
                     try { dbg.enterSubRule(11);
                     try { dbg.enterDecision(11);
@@ -992,11 +992,11 @@ public class GaptParser extends DebugParser {
                         case 1 :
                             dbg.enterAlt(1);
 
-                            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:81:21: '+'
+                            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:81:24: '+'
                             {
-                            dbg.location(81,21);
-                            match(input,9,FOLLOW_9_in_classPattern478); if (state.failed) return tp;
-                            dbg.location(81,25);
+                            dbg.location(81,24);
+                            match(input,9,FOLLOW_9_in_classPattern537); if (state.failed) return tp;
+                            dbg.location(81,28);
                             if ( state.backtracking==0 ) {
                                t.setSubClass(true); 
                             }
@@ -1030,7 +1030,7 @@ public class GaptParser extends DebugParser {
         }
         finally {
         }
-        dbg.location(86, 2);
+        dbg.location(86, 5);
 
         }
         finally {
@@ -1061,24 +1061,24 @@ public class GaptParser extends DebugParser {
         dbg.location(88, 1);
 
         try {
-            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:92:2: ( (c= className ) )
+            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:92:5: ( (c= className ) )
             dbg.enterAlt(1);
 
-            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:92:4: (c= className )
+            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:92:7: (c= className )
             {
-            dbg.location(92,4);
-            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:92:4: (c= className )
+            dbg.location(92,7);
+            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:92:7: (c= className )
             dbg.enterAlt(1);
 
-            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:92:5: c= className
+            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:92:8: c= className
             {
-            dbg.location(92,6);
-            pushFollow(FOLLOW_className_in_qualifiedName513);
+            dbg.location(92,9);
+            pushFollow(FOLLOW_className_in_qualifiedName578);
             c=className();
 
             state._fsp--;
             if (state.failed) return tp;
-            dbg.location(92,24);
+            dbg.location(92,27);
             if ( state.backtracking==0 ) {
                tp.setClassPattern((c!=null?input.toString(c.start,c.stop):null));   
             }
@@ -1095,7 +1095,7 @@ public class GaptParser extends DebugParser {
         }
         finally {
         }
-        dbg.location(93, 2);
+        dbg.location(93, 5);
 
         }
         finally {
@@ -1123,15 +1123,15 @@ public class GaptParser extends DebugParser {
         dbg.location(95, 1);
 
         try {
-            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:96:2: ( Identifier ( '.' Identifier )* )
+            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:96:5: ( Identifier ( '.' Identifier )* )
             dbg.enterAlt(1);
 
-            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:96:4: Identifier ( '.' Identifier )*
+            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:96:7: Identifier ( '.' Identifier )*
             {
-            dbg.location(96,4);
-            match(input,Identifier,FOLLOW_Identifier_in_className534); if (state.failed) return retval;
-            dbg.location(96,15);
-            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:96:15: ( '.' Identifier )*
+            dbg.location(96,7);
+            match(input,Identifier,FOLLOW_Identifier_in_className605); if (state.failed) return retval;
+            dbg.location(96,18);
+            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:96:18: ( '.' Identifier )*
             try { dbg.enterSubRule(13);
 
             loop13:
@@ -1152,12 +1152,12 @@ public class GaptParser extends DebugParser {
             	case 1 :
             	    dbg.enterAlt(1);
 
-            	    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:96:16: '.' Identifier
+            	    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:96:19: '.' Identifier
             	    {
-            	    dbg.location(96,16);
-            	    match(input,8,FOLLOW_8_in_className537); if (state.failed) return retval;
-            	    dbg.location(96,20);
-            	    match(input,Identifier,FOLLOW_Identifier_in_className539); if (state.failed) return retval;
+            	    dbg.location(96,19);
+            	    match(input,8,FOLLOW_8_in_className608); if (state.failed) return retval;
+            	    dbg.location(96,23);
+            	    match(input,Identifier,FOLLOW_Identifier_in_className610); if (state.failed) return retval;
 
             	    }
             	    break;
@@ -1180,7 +1180,7 @@ public class GaptParser extends DebugParser {
         }
         finally {
         }
-        dbg.location(97, 2);
+        dbg.location(97, 5);
 
         }
         finally {
@@ -1211,13 +1211,13 @@ public class GaptParser extends DebugParser {
         dbg.location(99, 1);
 
         try {
-            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:103:2: ( (m= modifier )* )
+            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:103:5: ( (m= modifier )* )
             dbg.enterAlt(1);
 
-            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:103:4: (m= modifier )*
+            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:103:7: (m= modifier )*
             {
-            dbg.location(103,4);
-            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:103:4: (m= modifier )*
+            dbg.location(103,7);
+            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:103:7: (m= modifier )*
             try { dbg.enterSubRule(14);
 
             loop14:
@@ -1256,15 +1256,15 @@ public class GaptParser extends DebugParser {
             	case 1 :
             	    dbg.enterAlt(1);
 
-            	    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:103:5: m= modifier
+            	    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:103:8: m= modifier
             	    {
-            	    dbg.location(103,6);
-            	    pushFollow(FOLLOW_modifier_in_modifiers563);
+            	    dbg.location(103,9);
+            	    pushFollow(FOLLOW_modifier_in_modifiers640);
             	    m=modifier();
 
             	    state._fsp--;
             	    if (state.failed) return ms;
-            	    dbg.location(103,16);
+            	    dbg.location(103,19);
             	    if ( state.backtracking==0 ) {
             	      ms.add((m!=null?input.toString(m.start,m.stop):null)); 
             	    }
@@ -1288,7 +1288,7 @@ public class GaptParser extends DebugParser {
         }
         finally {
         }
-        dbg.location(104, 2);
+        dbg.location(104, 5);
 
         }
         finally {
@@ -1316,12 +1316,12 @@ public class GaptParser extends DebugParser {
         dbg.location(106, 1);
 
         try {
-            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:107:2: ( '*' | 'public' | 'private' | 'protected' )
+            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:107:5: ( '*' | 'public' | 'private' | 'protected' )
             dbg.enterAlt(1);
 
             // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:
             {
-            dbg.location(107,2);
+            dbg.location(107,5);
             if ( (input.LA(1)>=13 && input.LA(1)<=16) ) {
                 input.consume();
                 state.errorRecovery=false;state.failed=false;
@@ -1345,7 +1345,7 @@ public class GaptParser extends DebugParser {
         }
         finally {
         }
-        dbg.location(112, 2);
+        dbg.location(112, 5);
 
         }
         finally {
@@ -1375,12 +1375,12 @@ public class GaptParser extends DebugParser {
         dbg.location(114, 1);
 
         try {
-            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:118:2: (t= ( '*' | 'boolean' | 'byte' | 'char' | 'double' | 'float' | 'int' | 'long' | 'short' | 'void' | '..' ) )
+            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:118:5: (t= ( '*' | 'boolean' | 'byte' | 'char' | 'double' | 'float' | 'int' | 'long' | 'short' | 'void' | '..' ) )
             dbg.enterAlt(1);
 
-            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:118:4: t= ( '*' | 'boolean' | 'byte' | 'char' | 'double' | 'float' | 'int' | 'long' | 'short' | 'void' | '..' )
+            // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:118:7: t= ( '*' | 'boolean' | 'byte' | 'char' | 'double' | 'float' | 'int' | 'long' | 'short' | 'void' | '..' )
             {
-            dbg.location(118,5);
+            dbg.location(118,8);
             t=(Token)input.LT(1);
             if ( input.LA(1)==13||(input.LA(1)>=17 && input.LA(1)<=26) ) {
                 input.consume();
@@ -1410,7 +1410,7 @@ public class GaptParser extends DebugParser {
         }
         finally {
         }
-        dbg.location(134, 2);
+        dbg.location(134, 5);
 
         }
         finally {
@@ -1428,19 +1428,19 @@ public class GaptParser extends DebugParser {
         MethodPattern mep = null;
 
 
-        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:22:3: ( (mep= methodPattern ) )
+        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:22:9: ( (mep= methodPattern ) )
         dbg.enterAlt(1);
 
-        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:22:3: (mep= methodPattern )
+        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:22:9: (mep= methodPattern )
         {
-        dbg.location(22,3);
-        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:22:3: (mep= methodPattern )
+        dbg.location(22,9);
+        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:22:9: (mep= methodPattern )
         dbg.enterAlt(1);
 
-        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:22:4: mep= methodPattern
+        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:22:10: mep= methodPattern
         {
-        dbg.location(22,7);
-        pushFollow(FOLLOW_methodPattern_in_synpred1_Gapt56);
+        dbg.location(22,13);
+        pushFollow(FOLLOW_methodPattern_in_synpred1_Gapt65);
         mep=methodPattern();
 
         state._fsp--;
@@ -1460,19 +1460,19 @@ public class GaptParser extends DebugParser {
         MethodPattern mep = null;
 
 
-        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:24:4: ( (rtp= returnTypePattern ) (mep= methodPattern ) )
+        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:24:7: ( (rtp= returnTypePattern ) (mep= methodPattern ) )
         dbg.enterAlt(1);
 
-        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:24:4: (rtp= returnTypePattern ) (mep= methodPattern )
+        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:24:7: (rtp= returnTypePattern ) (mep= methodPattern )
         {
-        dbg.location(24,4);
-        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:24:4: (rtp= returnTypePattern )
+        dbg.location(24,7);
+        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:24:7: (rtp= returnTypePattern )
         dbg.enterAlt(1);
 
-        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:24:5: rtp= returnTypePattern
+        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:24:8: rtp= returnTypePattern
         {
-        dbg.location(24,8);
-        pushFollow(FOLLOW_returnTypePattern_in_synpred2_Gapt82);
+        dbg.location(24,11);
+        pushFollow(FOLLOW_returnTypePattern_in_synpred2_Gapt92);
         rtp=returnTypePattern();
 
         state._fsp--;
@@ -1480,14 +1480,14 @@ public class GaptParser extends DebugParser {
 
         }
 
-        dbg.location(25,3);
-        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:25:3: (mep= methodPattern )
+        dbg.location(25,9);
+        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:25:9: (mep= methodPattern )
         dbg.enterAlt(1);
 
-        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:25:4: mep= methodPattern
+        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:25:10: mep= methodPattern
         {
-        dbg.location(25,7);
-        pushFollow(FOLLOW_methodPattern_in_synpred2_Gapt92);
+        dbg.location(25,13);
+        pushFollow(FOLLOW_methodPattern_in_synpred2_Gapt108);
         mep=methodPattern();
 
         state._fsp--;
@@ -1504,15 +1504,15 @@ public class GaptParser extends DebugParser {
     public final void synpred3_Gapt_fragment() throws RecognitionException {   
         Token i=null;
 
-        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:43:11: ( '.' i= Identifier )
+        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:43:14: ( '.' i= Identifier )
         dbg.enterAlt(1);
 
-        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:43:11: '.' i= Identifier
+        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:43:14: '.' i= Identifier
         {
-        dbg.location(43,11);
-        match(input,8,FOLLOW_8_in_synpred3_Gapt200); if (state.failed) return ;
-        dbg.location(43,16);
-        i=(Token)match(input,Identifier,FOLLOW_Identifier_in_synpred3_Gapt204); if (state.failed) return ;
+        dbg.location(43,14);
+        match(input,8,FOLLOW_8_in_synpred3_Gapt238); if (state.failed) return ;
+        dbg.location(43,19);
+        i=(Token)match(input,Identifier,FOLLOW_Identifier_in_synpred3_Gapt242); if (state.failed) return ;
 
         }
     }
@@ -1524,24 +1524,24 @@ public class GaptParser extends DebugParser {
         List<TypePattern> a = null;
 
 
-        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:42:3: ( (i= Identifier ) ( '.' i= Identifier )* ( '+' )? '.' (i= Identifier ) ( '(' (a= argTypes )? ')' )? )
+        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:42:9: ( (i= Identifier ) ( '.' i= Identifier )* ( '+' )? '.' (i= Identifier ) ( '(' (a= argTypes )? ')' )? )
         dbg.enterAlt(1);
 
-        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:42:3: (i= Identifier ) ( '.' i= Identifier )* ( '+' )? '.' (i= Identifier ) ( '(' (a= argTypes )? ')' )?
+        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:42:9: (i= Identifier ) ( '.' i= Identifier )* ( '+' )? '.' (i= Identifier ) ( '(' (a= argTypes )? ')' )?
         {
-        dbg.location(42,3);
-        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:42:3: (i= Identifier )
+        dbg.location(42,9);
+        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:42:9: (i= Identifier )
         dbg.enterAlt(1);
 
-        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:42:4: i= Identifier
+        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:42:10: i= Identifier
         {
-        dbg.location(42,5);
-        i=(Token)match(input,Identifier,FOLLOW_Identifier_in_synpred7_Gapt186); if (state.failed) return ;
+        dbg.location(42,11);
+        i=(Token)match(input,Identifier,FOLLOW_Identifier_in_synpred7_Gapt221); if (state.failed) return ;
 
         }
 
-        dbg.location(43,10);
-        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:43:10: ( '.' i= Identifier )*
+        dbg.location(43,13);
+        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:43:13: ( '.' i= Identifier )*
         try { dbg.enterSubRule(16);
 
         loop16:
@@ -1574,12 +1574,12 @@ public class GaptParser extends DebugParser {
         	case 1 :
         	    dbg.enterAlt(1);
 
-        	    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:43:11: '.' i= Identifier
+        	    // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:43:14: '.' i= Identifier
         	    {
-        	    dbg.location(43,11);
-        	    match(input,8,FOLLOW_8_in_synpred7_Gapt200); if (state.failed) return ;
-        	    dbg.location(43,16);
-        	    i=(Token)match(input,Identifier,FOLLOW_Identifier_in_synpred7_Gapt204); if (state.failed) return ;
+        	    dbg.location(43,14);
+        	    match(input,8,FOLLOW_8_in_synpred7_Gapt238); if (state.failed) return ;
+        	    dbg.location(43,19);
+        	    i=(Token)match(input,Identifier,FOLLOW_Identifier_in_synpred7_Gapt242); if (state.failed) return ;
 
         	    }
         	    break;
@@ -1590,8 +1590,8 @@ public class GaptParser extends DebugParser {
         } while (true);
         } finally {dbg.exitSubRule(16);}
 
-        dbg.location(44,10);
-        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:44:10: ( '+' )?
+        dbg.location(44,13);
+        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:44:13: ( '+' )?
         int alt17=2;
         try { dbg.enterSubRule(17);
         try { dbg.enterDecision(17);
@@ -1607,10 +1607,10 @@ public class GaptParser extends DebugParser {
             case 1 :
                 dbg.enterAlt(1);
 
-                // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:44:11: '+'
+                // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:44:14: '+'
                 {
-                dbg.location(44,11);
-                match(input,9,FOLLOW_9_in_synpred7_Gapt220); if (state.failed) return ;
+                dbg.location(44,14);
+                match(input,9,FOLLOW_9_in_synpred7_Gapt260); if (state.failed) return ;
 
                 }
                 break;
@@ -1618,21 +1618,21 @@ public class GaptParser extends DebugParser {
         }
         } finally {dbg.exitSubRule(17);}
 
-        dbg.location(45,10);
-        match(input,8,FOLLOW_8_in_synpred7_Gapt236); if (state.failed) return ;
-        dbg.location(46,10);
-        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:46:10: (i= Identifier )
+        dbg.location(45,13);
+        match(input,8,FOLLOW_8_in_synpred7_Gapt278); if (state.failed) return ;
+        dbg.location(46,13);
+        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:46:13: (i= Identifier )
         dbg.enterAlt(1);
 
-        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:46:11: i= Identifier
+        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:46:14: i= Identifier
         {
-        dbg.location(46,12);
-        i=(Token)match(input,Identifier,FOLLOW_Identifier_in_synpred7_Gapt251); if (state.failed) return ;
+        dbg.location(46,15);
+        i=(Token)match(input,Identifier,FOLLOW_Identifier_in_synpred7_Gapt295); if (state.failed) return ;
 
         }
 
-        dbg.location(47,10);
-        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:47:10: ( '(' (a= argTypes )? ')' )?
+        dbg.location(47,13);
+        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:47:13: ( '(' (a= argTypes )? ')' )?
         int alt19=2;
         try { dbg.enterSubRule(19);
         try { dbg.enterDecision(19);
@@ -1648,12 +1648,12 @@ public class GaptParser extends DebugParser {
             case 1 :
                 dbg.enterAlt(1);
 
-                // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:47:11: '(' (a= argTypes )? ')'
+                // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:47:14: '(' (a= argTypes )? ')'
                 {
-                dbg.location(47,11);
-                match(input,10,FOLLOW_10_in_synpred7_Gapt266); if (state.failed) return ;
-                dbg.location(47,15);
-                // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:47:15: (a= argTypes )?
+                dbg.location(47,14);
+                match(input,10,FOLLOW_10_in_synpred7_Gapt312); if (state.failed) return ;
+                dbg.location(47,18);
+                // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:47:18: (a= argTypes )?
                 int alt18=2;
                 try { dbg.enterSubRule(18);
                 try { dbg.enterDecision(18);
@@ -1669,10 +1669,10 @@ public class GaptParser extends DebugParser {
                     case 1 :
                         dbg.enterAlt(1);
 
-                        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:47:16: a= argTypes
+                        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:47:19: a= argTypes
                         {
-                        dbg.location(47,17);
-                        pushFollow(FOLLOW_argTypes_in_synpred7_Gapt271);
+                        dbg.location(47,20);
+                        pushFollow(FOLLOW_argTypes_in_synpred7_Gapt317);
                         a=argTypes();
 
                         state._fsp--;
@@ -1684,8 +1684,8 @@ public class GaptParser extends DebugParser {
                 }
                 } finally {dbg.exitSubRule(18);}
 
-                dbg.location(47,59);
-                match(input,11,FOLLOW_11_in_synpred7_Gapt278); if (state.failed) return ;
+                dbg.location(47,62);
+                match(input,11,FOLLOW_11_in_synpred7_Gapt324); if (state.failed) return ;
 
                 }
                 break;
@@ -1703,13 +1703,13 @@ public class GaptParser extends DebugParser {
         GaptParser.modifier_return m = null;
 
 
-        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:103:5: (m= modifier )
+        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:103:8: (m= modifier )
         dbg.enterAlt(1);
 
-        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:103:5: m= modifier
+        // C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g:103:8: m= modifier
         {
-        dbg.location(103,6);
-        pushFollow(FOLLOW_modifier_in_synpred15_Gapt563);
+        dbg.location(103,9);
+        pushFollow(FOLLOW_modifier_in_synpred15_Gapt640);
         m=modifier();
 
         state._fsp--;
@@ -1963,55 +1963,55 @@ public class GaptParser extends DebugParser {
     }
  
 
-    public static final BitSet FOLLOW_methodPattern_in_pattern56 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_returnTypePattern_in_pattern82 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_methodPattern_in_pattern92 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_modifiers_in_pattern113 = new BitSet(new long[]{0x0000000007FE2010L});
-    public static final BitSet FOLLOW_returnTypePattern_in_pattern132 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_methodPattern_in_pattern142 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_Identifier_in_methodPattern186 = new BitSet(new long[]{0x0000000000000300L});
-    public static final BitSet FOLLOW_8_in_methodPattern200 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_Identifier_in_methodPattern204 = new BitSet(new long[]{0x0000000000000300L});
-    public static final BitSet FOLLOW_9_in_methodPattern220 = new BitSet(new long[]{0x0000000000000100L});
-    public static final BitSet FOLLOW_8_in_methodPattern236 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_Identifier_in_methodPattern251 = new BitSet(new long[]{0x0000000000000402L});
-    public static final BitSet FOLLOW_10_in_methodPattern266 = new BitSet(new long[]{0x0000000007FE2810L});
-    public static final BitSet FOLLOW_argTypes_in_methodPattern271 = new BitSet(new long[]{0x0000000000000800L});
-    public static final BitSet FOLLOW_11_in_methodPattern278 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_Identifier_in_methodPattern292 = new BitSet(new long[]{0x0000000000000502L});
-    public static final BitSet FOLLOW_8_in_methodPattern306 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_Identifier_in_methodPattern310 = new BitSet(new long[]{0x0000000000000502L});
-    public static final BitSet FOLLOW_10_in_methodPattern326 = new BitSet(new long[]{0x0000000007FE2810L});
-    public static final BitSet FOLLOW_argTypes_in_methodPattern331 = new BitSet(new long[]{0x0000000000000800L});
-    public static final BitSet FOLLOW_11_in_methodPattern338 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_classPattern_in_argTypes400 = new BitSet(new long[]{0x0000000000001002L});
-    public static final BitSet FOLLOW_12_in_argTypes416 = new BitSet(new long[]{0x0000000007FE2010L});
-    public static final BitSet FOLLOW_classPattern_in_argTypes420 = new BitSet(new long[]{0x0000000000001002L});
-    public static final BitSet FOLLOW_classPattern_in_returnTypePattern444 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_primitive_in_classPattern468 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_qualifiedName_in_classPattern475 = new BitSet(new long[]{0x0000000000000202L});
-    public static final BitSet FOLLOW_9_in_classPattern478 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_className_in_qualifiedName513 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_Identifier_in_className534 = new BitSet(new long[]{0x0000000000000102L});
-    public static final BitSet FOLLOW_8_in_className537 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_Identifier_in_className539 = new BitSet(new long[]{0x0000000000000102L});
-    public static final BitSet FOLLOW_modifier_in_modifiers563 = new BitSet(new long[]{0x000000000001E002L});
+    public static final BitSet FOLLOW_methodPattern_in_pattern65 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_returnTypePattern_in_pattern92 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_methodPattern_in_pattern108 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_modifiers_in_pattern128 = new BitSet(new long[]{0x0000000007FE2010L});
+    public static final BitSet FOLLOW_returnTypePattern_in_pattern153 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_methodPattern_in_pattern169 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_Identifier_in_methodPattern221 = new BitSet(new long[]{0x0000000000000300L});
+    public static final BitSet FOLLOW_8_in_methodPattern238 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_Identifier_in_methodPattern242 = new BitSet(new long[]{0x0000000000000300L});
+    public static final BitSet FOLLOW_9_in_methodPattern260 = new BitSet(new long[]{0x0000000000000100L});
+    public static final BitSet FOLLOW_8_in_methodPattern278 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_Identifier_in_methodPattern295 = new BitSet(new long[]{0x0000000000000402L});
+    public static final BitSet FOLLOW_10_in_methodPattern312 = new BitSet(new long[]{0x0000000007FE2810L});
+    public static final BitSet FOLLOW_argTypes_in_methodPattern317 = new BitSet(new long[]{0x0000000000000800L});
+    public static final BitSet FOLLOW_11_in_methodPattern324 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_Identifier_in_methodPattern347 = new BitSet(new long[]{0x0000000000000502L});
+    public static final BitSet FOLLOW_8_in_methodPattern364 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_Identifier_in_methodPattern368 = new BitSet(new long[]{0x0000000000000502L});
+    public static final BitSet FOLLOW_10_in_methodPattern386 = new BitSet(new long[]{0x0000000007FE2810L});
+    public static final BitSet FOLLOW_argTypes_in_methodPattern391 = new BitSet(new long[]{0x0000000000000800L});
+    public static final BitSet FOLLOW_11_in_methodPattern398 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_classPattern_in_argTypes442 = new BitSet(new long[]{0x0000000000001002L});
+    public static final BitSet FOLLOW_12_in_argTypes460 = new BitSet(new long[]{0x0000000007FE2010L});
+    public static final BitSet FOLLOW_classPattern_in_argTypes464 = new BitSet(new long[]{0x0000000000001002L});
+    public static final BitSet FOLLOW_classPattern_in_returnTypePattern493 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_primitive_in_classPattern524 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_qualifiedName_in_classPattern534 = new BitSet(new long[]{0x0000000000000202L});
+    public static final BitSet FOLLOW_9_in_classPattern537 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_className_in_qualifiedName578 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_Identifier_in_className605 = new BitSet(new long[]{0x0000000000000102L});
+    public static final BitSet FOLLOW_8_in_className608 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_Identifier_in_className610 = new BitSet(new long[]{0x0000000000000102L});
+    public static final BitSet FOLLOW_modifier_in_modifiers640 = new BitSet(new long[]{0x000000000001E002L});
     public static final BitSet FOLLOW_set_in_modifier0 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_set_in_primitive619 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_methodPattern_in_synpred1_Gapt56 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_returnTypePattern_in_synpred2_Gapt82 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_methodPattern_in_synpred2_Gapt92 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_8_in_synpred3_Gapt200 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_Identifier_in_synpred3_Gapt204 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_Identifier_in_synpred7_Gapt186 = new BitSet(new long[]{0x0000000000000300L});
-    public static final BitSet FOLLOW_8_in_synpred7_Gapt200 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_Identifier_in_synpred7_Gapt204 = new BitSet(new long[]{0x0000000000000300L});
-    public static final BitSet FOLLOW_9_in_synpred7_Gapt220 = new BitSet(new long[]{0x0000000000000100L});
-    public static final BitSet FOLLOW_8_in_synpred7_Gapt236 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_Identifier_in_synpred7_Gapt251 = new BitSet(new long[]{0x0000000000000402L});
-    public static final BitSet FOLLOW_10_in_synpred7_Gapt266 = new BitSet(new long[]{0x0000000007FE2810L});
-    public static final BitSet FOLLOW_argTypes_in_synpred7_Gapt271 = new BitSet(new long[]{0x0000000000000800L});
-    public static final BitSet FOLLOW_11_in_synpred7_Gapt278 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_modifier_in_synpred15_Gapt563 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_set_in_primitive721 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_methodPattern_in_synpred1_Gapt65 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_returnTypePattern_in_synpred2_Gapt92 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_methodPattern_in_synpred2_Gapt108 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_8_in_synpred3_Gapt238 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_Identifier_in_synpred3_Gapt242 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_Identifier_in_synpred7_Gapt221 = new BitSet(new long[]{0x0000000000000300L});
+    public static final BitSet FOLLOW_8_in_synpred7_Gapt238 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_Identifier_in_synpred7_Gapt242 = new BitSet(new long[]{0x0000000000000300L});
+    public static final BitSet FOLLOW_9_in_synpred7_Gapt260 = new BitSet(new long[]{0x0000000000000100L});
+    public static final BitSet FOLLOW_8_in_synpred7_Gapt278 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_Identifier_in_synpred7_Gapt295 = new BitSet(new long[]{0x0000000000000402L});
+    public static final BitSet FOLLOW_10_in_synpred7_Gapt312 = new BitSet(new long[]{0x0000000007FE2810L});
+    public static final BitSet FOLLOW_argTypes_in_synpred7_Gapt317 = new BitSet(new long[]{0x0000000000000800L});
+    public static final BitSet FOLLOW_11_in_synpred7_Gapt324 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_modifier_in_synpred15_Gapt640 = new BitSet(new long[]{0x0000000000000002L});
 
 }

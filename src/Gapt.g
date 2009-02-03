@@ -18,16 +18,16 @@ pattern returns [Pattern pt]
 @init {
   pt = new Pattern();
 }
-	:
-		(mep=methodPattern     { pt.setMethodPattern(mep); } )       // only method		
-		
-	|	(rtp=returnTypePattern { pt.setReturnTypePattern(rtp); })
-		(mep=methodPattern     { pt.setMethodPattern(mep); } )
-				
-	|	(mod=modifiers         { pt.setModifiers(mod); } )
-		(rtp=returnTypePattern { pt.setReturnTypePattern(rtp); })
-		(mep=methodPattern     { pt.setMethodPattern(mep); } )
-	;
+    :
+        (mep=methodPattern     { pt.setMethodPattern(mep); } )       // only method
+
+    |	(rtp=returnTypePattern { pt.setReturnTypePattern(rtp); })
+        (mep=methodPattern     { pt.setMethodPattern(mep); } )
+
+    |	(mod=modifiers         { pt.setModifiers(mod); } )
+        (rtp=returnTypePattern { pt.setReturnTypePattern(rtp); })
+        (mep=methodPattern     { pt.setMethodPattern(mep); } )
+    ;
 
 
 methodPattern returns [MethodPattern mep]
@@ -37,106 +37,106 @@ methodPattern returns [MethodPattern mep]
   boolean subClass = false;
   boolean mayBeProperty = true;
 }
-	:
-	(       
-		(i=Identifier{names.add($i.text);})
-	        ('.' i=Identifier{names.add($i.text);})* 
-	        ('+' { subClass = true; })? 
-	        '.' 
-	        (i=Identifier{names.add($i.text);}) 
-	        ('(' (a=argTypes {mep.setArgTypePatterns(a);} )? ')' {mayBeProperty=false;})?
-	|
-		(i=Identifier{names.add($i.text);})
-	        ('.' i=Identifier{names.add($i.text);})* 
-	        ('(' (a=argTypes {mep.setArgTypePatterns(a);} )? ')' {mayBeProperty=false;})?	        
-	)        
+    :
+    (
+        (i=Identifier{names.add($i.text);})
+            ('.' i=Identifier{names.add($i.text);})*
+            ('+' { subClass = true; })?
+            '.'
+            (i=Identifier{names.add($i.text);})
+            ('(' (a=argTypes {mep.setArgTypePatterns(a);} )? ')' {mayBeProperty=false;})?
+    |
+        (i=Identifier{names.add($i.text);})
+            ('.' i=Identifier{names.add($i.text);})*
+            ('(' (a=argTypes {mep.setArgTypePatterns(a);} )? ')' {mayBeProperty=false;})?
+    )
 {
   String s[] = names.toArray(new String[names.size()]);
-  TypePattern t = new TypePattern(s);  
+  TypePattern t = new TypePattern(s);
   t.setSubClass(subClass);
-  mep.setTypePattern(t);  
+  mep.setTypePattern(t);
   mep.setNamePattern(s[s.length-1]);
   mep.setMayBeProperty(mayBeProperty);
-}	        
-	;	
+}
+    ;
 
 argTypes returns [List<TypePattern> pts]
 @init{
   pts = new ArrayList<TypePattern>();
 }
-	:	     c=classPattern  {pts.add(c); } 
-	        (',' c=classPattern  {pts.add(c); } )*
-	;	
+    :	     c=classPattern  {pts.add(c); }
+            (',' c=classPattern  {pts.add(c); } )*
+    ;
 
 returnTypePattern returns [TypePattern tp]
-	:	c=classPattern
+    :	c=classPattern
 {
   tp = c;
-}	
-	;
+}
+    ;
 
 classPattern returns [TypePattern tp]
-	:	
-	(	t=primitive
-	|	t=qualifiedName ('+' { t.setSubClass(true); } )?
-	)	
+    :
+    (	t=primitive
+    |	t=qualifiedName ('+' { t.setSubClass(true); } )?
+    )
 {
   tp = t;
-}	
-	;
-	
+}
+    ;
+
 qualifiedName returns [TypePattern tp]
 @init{
   tp = new TypePattern();
 }
-	:	(c=className        { tp.setClassPattern($c.text);   })
-	;
+    :	(c=className        { tp.setClassPattern($c.text);   })
+    ;
 
 className
-	:	Identifier ('.' Identifier)*
-	;
+    :	Identifier ('.' Identifier)*
+    ;
 
 modifiers returns [List<String> ms]
 @init{
   ms = new ArrayList<String>();
 }
-	:	(m=modifier {ms.add($m.text); })*
-	;
+    :	(m=modifier {ms.add($m.text); })*
+    ;
 
 modifier
-	:
-		'*' 
-	|	'public'
-	|	'private'
-	|	'protected'
-	;
-	
+    :
+        '*'
+    |	'public'
+    |	'private'
+    |	'protected'
+    ;
+
 primitive returns [TypePattern tp]
 @init {
   tp = new TypePattern();
 }
-	:	t=(
-		'*' 
-	|	'boolean'
-	|	'byte'
-	|	'char'
-	|	'double'
-	|	'float'
-	|	'int'
-	|	'long'
-	|	'short'
-	|	'void'
-	|	'..')
+    :	t=(
+        '*'
+    |	'boolean'
+    |	'byte'
+    |	'char'
+    |	'double'
+    |	'float'
+    |	'int'
+    |	'long'
+    |	'short'
+    |	'void'
+    |	'..')
 {
   tp.setPrimitive(true);
   tp.setClassPattern($t.text);
-}	
-	;
+}
+    ;
 
-Identifier 
-	: Letter ( Letter | JavaIDDigit)*
-	;
-		
+Identifier
+    : Letter ( Letter | JavaIDDigit)*
+    ;
+
 fragment
 Letter
     :  '\u0024' |
@@ -175,5 +175,5 @@ JavaIDDigit
    ;
 
 WS  :  ' ' { $channel=HIDDEN; }
-    ;    
-    
+    ;
+
