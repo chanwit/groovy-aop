@@ -1,7 +1,7 @@
-Ant.property(file:'build.properties')
+ant.property(file:'build.properties')
 
-version = Ant.project.properties.version
-testcase = Ant.project.properties.test
+version = ant.project.properties.version
+testcase = ant.project.properties.test
 
 groovyHome = System.getenv ( ).'GROOVY_HOME'
 antlibXMLns = 'antlib:org.apache.maven.artifact.ant'
@@ -18,7 +18,7 @@ coberturaReportDir=outDir+ 'cobertura-reports/'
 
 distDir='dist/'
 
-Ant.path ( id : 'compileJarSet' ) {
+ant.path ( id : 'compileJarSet' ) {
   fileset ( dir : groovyHome + '/lib' , includes : 'groovy*.jar' )
   fileset ( dir : groovyHome + '/lib' , includes : 'commons-cli*.jar' )
   fileset ( dir : groovyHome + '/lib' , includes : 'asm*.jar' )
@@ -28,16 +28,16 @@ Ant.path ( id : 'compileJarSet' ) {
   fileset ( dir : './lib'  , includes : 'ant*.jar' )
 }
 
-Ant.path ( id : 'testJarSet' ) {
+ant.path ( id : 'testJarSet' ) {
   path ( refid : 'compileJarSet' )
   fileset ( dir : groovyHome + '/lib' , includes : 'junit*.jar' )
 }
 
 doCompile = { classpathRef, srcDir, destDir ->
-  Ant.taskdef(  name : 'groovyc' , 
+  ant.taskdef(  name : 'groovyc' , 
                 classname: 'org.codehaus.groovy.ant.Groovyc' , 
                 classpathref: classpathRef) 
-  Ant.groovyc(  srcdir: srcDir, 
+  ant.groovyc(  srcdir: srcDir, 
                 destdir: destDir, 
                 fork: 'false',  
                 failonerror: 'true') {
@@ -52,18 +52,18 @@ doCompile = { classpathRef, srcDir, destDir ->
 
 doTesting = { classpathRef ->
   if ( usingCobertura ) {
-    Ant.mkdir ( dir : coberturaBinDir )
-    Ant.mkdir ( dir : coberturaReportDir )
-    Ant."${antlibXMLns}:dependencies" ( pathId :  'coberturaPathId' ) {
+    ant.mkdir ( dir : coberturaBinDir )
+    ant.mkdir ( dir : coberturaReportDir )
+    ant."${antlibXMLns}:dependencies" ( pathId :  'coberturaPathId' ) {
         dependency ( groupId : 'net.sourceforge.cobertura' , artifactId : 'cobertura' , version : '1.9' )
         // dependency ( groupId : 'org.antlr' , artifactId : 'antlr' , version : '3.0.1' )
     }
-    Ant.taskdef ( resource : 'tasks.properties' , classpathref : 'coberturaPathId' )
-    Ant.'cobertura-instrument' ( todir : coberturaBinDir ) { 
+    ant.taskdef ( resource : 'tasks.properties' , classpathref : 'coberturaPathId' )
+    ant.'cobertura-instrument' ( todir : coberturaBinDir ) { 
     	fileset ( dir : binDir ) 
     }
   }
-  Ant.junit ( printsummary : 'yes' , failureproperty : 'testsFailed' , fork : 'true' ) {
+  ant.junit ( printsummary : 'yes' , failureproperty : 'testsFailed' , fork : 'true' ) {
     formatter ( type : 'plain' )
     batchtest ( todir : testReportsDir ) {
       def includeNames = '**/*Tests.class'
@@ -84,7 +84,7 @@ doTesting = { classpathRef ->
     }
   }
   if ( usingCobertura ) { 
-  	Ant.'cobertura-report' ( srcdir : sourceDir , destdir : coberturaReportDir ) 
+  	ant.'cobertura-report' ( srcdir : sourceDir , destdir : coberturaReportDir ) 
   }
 }
 
