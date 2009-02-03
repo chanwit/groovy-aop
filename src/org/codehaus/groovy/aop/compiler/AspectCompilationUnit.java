@@ -21,9 +21,9 @@ public class AspectCompilationUnit extends CompilationUnit {
         super();
     }
 
-    public AspectCompilationUnit(CompilerConfiguration arg0, CodeSource arg1,
-            GroovyClassLoader arg2) {
-        super(arg0, arg1, arg2);
+    public AspectCompilationUnit(CompilerConfiguration config, CodeSource codeSource,
+            GroovyClassLoader gcl) {
+        super(config, codeSource, gcl);
     }
 
     public AspectCompilationUnit(CompilerConfiguration config) {
@@ -48,7 +48,8 @@ public class AspectCompilationUnit extends CompilationUnit {
 
     public void addSources(File[] files) {
         for (int i = 0; i < files.length; i++) {
-            if (files[i].getName().endsWith(".ga")) {
+            if (files[i].getName().endsWith(".ga") ||
+                files[i].getName().endsWith("Aspect.groovy")) {
                 addSource(translateAspect(files[i]));
             } else {
                 addSource(files[i]);
