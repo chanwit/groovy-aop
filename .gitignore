@@ -1,0 +1,13 @@
+bin
+bin-groovy
+classes
+lib
+target
+*.iml
+*.ipr
+*.iws
+.settings
+testplan.txt
+.classpath
+.project
+*.class

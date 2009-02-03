@@ -1,0 +1,131 @@
+Ant.property(file:'build.properties')
+
+version = Ant.project.properties.version
+testcase = Ant.project.properties.test
+
+groovyHome = System.getenv ( ).'GROOVY_HOME'
+antlibXMLns = 'antlib:org.apache.maven.artifact.ant'
+
+sourceDir='src/'
+testSourceDir='test/'
+
+outDir = 'target/'
+binDir=        outDir + 'classes/'
+testBinDir=    outDir + 'test-classes/'
+testReportsDir=outDir + 'test-reports/'
+coberturaBinDir=outDir+ 'cobertura-classes/'
+coberturaReportDir=outDir+ 'cobertura-reports/'
+
+distDir='dist/'
+
+Ant.path ( id : 'compileJarSet' ) {
+  fileset ( dir : groovyHome + '/lib' , includes : 'groovy*.jar' )
+  fileset ( dir : groovyHome + '/lib' , includes : 'commons-cli*.jar' )
+  fileset ( dir : groovyHome + '/lib' , includes : 'asm*.jar' )
+  // Picks up antlr as well as ant. This is intended.
+  fileset ( dir : groovyHome + '/lib' , includes : 'ant*.jar' )
+  // local lib  
+  fileset ( dir : './lib'  , includes : 'ant*.jar' )
+}
+
+Ant.path ( id : 'testJarSet' ) {
+  path ( refid : 'compileJarSet' )
+  fileset ( dir : groovyHome + '/lib' , includes : 'junit*.jar' )
+}
+
+doCompile = { classpathRef, srcDir, destDir ->
+  Ant.taskdef(  name : 'groovyc' , 
+                classname: 'org.codehaus.groovy.ant.Groovyc' , 
+                classpathref: classpathRef) 
+  Ant.groovyc(  srcdir: srcDir, 
+                destdir: destDir, 
+                fork: 'false',  
+                failonerror: 'true') {
+    classpath {
+      pathelement ( location : binDir )
+      pathelement ( location : testBinDir )
+      path ( refid : classpathRef )
+    }                
+    javac(source : '1.5' , target : '1.5' , debug : 'on')
+  } 	
+}
+
+doTesting = { classpathRef ->
+  if ( usingCobertura ) {
+    Ant.mkdir ( dir : coberturaBinDir )
+    Ant.mkdir ( dir : coberturaReportDir )
+    Ant."${antlibXMLns}:dependencies" ( pathId :  'coberturaPathId' ) {
+        dependency ( groupId : 'net.sourceforge.cobertura' , artifactId : 'cobertura' , version : '1.9' )
+        // dependency ( groupId : 'org.antlr' , artifactId : 'antlr' , version : '3.0.1' )
+    }
+    Ant.taskdef ( resource : 'tasks.properties' , classpathref : 'coberturaPathId' )
+    Ant.'cobertura-instrument' ( todir : coberturaBinDir ) { 
+    	fileset ( dir : binDir ) 
+    }
+  }
+  Ant.junit ( printsummary : 'yes' , failureproperty : 'testsFailed' , fork : 'true' ) {
+    formatter ( type : 'plain' )
+    batchtest ( todir : testReportsDir ) {
+      def includeNames = '**/*Tests.class'
+      if( testcase != null ) {
+		includeNames = "**/${testcase}Tests.class"   
+      } 
+	  fileset ( dir : testBinDir, includes : includeNames , excludes : '**/ant/tests/*' )
+    }    
+    classpath {
+    if( usingCobertura ) {
+        // MUST appear in classpath before the uninstrumented classes.
+        pathelement ( location : coberturaBinDir )
+        path ( refid : 'coberturaPathId' )      
+    }
+      pathelement ( location : binDir )
+      pathelement ( location : testBinDir )
+      path ( refid : classpathRef )
+    }
+  }
+  if ( usingCobertura ) { 
+  	Ant.'cobertura-report' ( srcdir : sourceDir , destdir : coberturaReportDir ) 
+  }
+}
+
+includeTargets << gant.targets.Clean
+cleanPattern <<  [ '**/*~' , 'cobertura.ser' ] 
+cleanDirectory << binDir
+cleanDirectory << testBinDir
+
+target(dist: 'Make a distribution') {
+  // TODO
+}
+
+target(prepare: 'Prepare directories') {
+  echo('Preparing directories')
+  mkdir(dir: binDir)
+  mkdir(dir: testBinDir)
+  mkdir(dir: testReportsDir)
+}
+
+target(compile: 'Compiling Groovy-AOP') {
+  depends(prepare)
+  echo("Compiling Groovy-AOP v.${version}")
+  doCompile('compileJarSet', sourceDir, binDir)  
+}
+
+target(compileTests: 'Compiling Tests') {
+  depends(compile)
+  echo('Tests')  
+  doCompile('testJarSet', testSourceDir, testBinDir) 
+}
+
+target(test:'Perform tests') {
+  usingCobertura = false
+  depends(compileTests)
+  doTesting('testJarSet')
+}
+
+target(coverage:'Coverate tests') {
+  usingCobertura = true
+  depends(compileTests)
+  doTesting('testJarSet')
+}
+
+setDefaultTarget(test)
