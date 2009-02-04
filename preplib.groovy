@@ -1,1 +1,3 @@
-1
+#!/usr/bin/env groovy
+
+println "preplib"
