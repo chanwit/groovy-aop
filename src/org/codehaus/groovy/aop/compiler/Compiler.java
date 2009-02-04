@@ -1,30 +1,34 @@
 package org.codehaus.groovy.aop.compiler;
 
-import java.io.File;
-
-import groovy.lang.GroovyClassLoader;
-import groovy.util.CliBuilder;
-
-import org.apache.commons.cli2.CommandLine;
-import org.apache.commons.cli2.DisplaySetting;
-import org.apache.commons.cli2.Group;
-import org.apache.commons.cli2.Option;
-import org.apache.commons.cli2.OptionException;
-import org.apache.commons.cli2.builder.ArgumentBuilder;
-import org.apache.commons.cli2.builder.DefaultOptionBuilder;
-import org.apache.commons.cli2.builder.GroupBuilder;
-import org.apache.commons.cli2.commandline.Parser;
-import org.apache.commons.cli2.option.DefaultOption;
-import org.apache.commons.cli2.util.HelpFormatter;
+import org.codehaus.groovy.aop.commons.cli2.Argument;
+import org.codehaus.groovy.aop.commons.cli2.CommandLine;
+import org.codehaus.groovy.aop.commons.cli2.DisplaySetting;
+import org.codehaus.groovy.aop.commons.cli2.Group;
+import org.codehaus.groovy.aop.commons.cli2.Option;
+import org.codehaus.groovy.aop.commons.cli2.OptionException;
+import org.codehaus.groovy.aop.commons.cli2.builder.ArgumentBuilder;
+import org.codehaus.groovy.aop.commons.cli2.builder.DefaultOptionBuilder;
+import org.codehaus.groovy.aop.commons.cli2.builder.GroupBuilder;
+import org.codehaus.groovy.aop.commons.cli2.commandline.Parser;
+import org.codehaus.groovy.aop.commons.cli2.option.DefaultOption;
+import org.codehaus.groovy.aop.commons.cli2.util.HelpFormatter;
 import org.codehaus.groovy.control.CompilerConfiguration;
 
 public class Compiler {
+
+    private static final String VERSION = "0.5";
 
     private static Group options;
 
     private static DefaultOption help;
     private static DefaultOption dir;
     private static DefaultOption encoding;
+
+    private static DefaultOption exception;
+
+    private static DefaultOption joint;
+
+    private static Argument srcFiles;
 
     public static CommandLine parse(String[] args) {
         final DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
@@ -45,7 +49,7 @@ public class Compiler {
 
         encoding = obuilder
                 .withLongName("encoding")
-                .withShortName("e")
+                .withShortName("c")
                 .withDescription("set input file encoding")
                 .withArgument(abuilder
                     .withDescription("character set")
@@ -56,19 +60,40 @@ public class Compiler {
                 )
                 .create();
 
+        exception = obuilder
+                .withLongName("exception")
+                .withShortName("e")
+                .withDescription("print stack trace when error")
+                .create();
+
+        joint = obuilder
+                .withLongName("joint")
+                .withShortName("j")
+                .withDescription("joint compilation with Groovy and Java")
+                .create();
+
         Option version =
             obuilder
                 .withShortName("version")
                 .withDescription("print the version information and exit")
                 .create();
 
-        options = gbuilder
-                .withName("options")
-                .withOption(help)
-                .withOption(dir)
-                .withOption(encoding)
-                .withOption(version)
+        srcFiles = abuilder
+                .withName("src-files")
+                .withDescription("aspect source files")
+                .withMinimum(0)
                 .create();
+
+        options = gbuilder
+            .withName("options")
+            .withOption(help)
+            .withOption(dir)
+            .withOption(encoding)
+            .withOption(exception)
+            .withOption(joint)
+            .withOption(version)
+            .withOption(srcFiles)
+            .create();
 
         Parser parser = new Parser();
         parser.setGroup(options);
@@ -100,6 +125,20 @@ public class Compiler {
             config.setSourceEncoding((String)cl.getValue(encoding));
         }
 
+        if(cl.hasOption(exception)) {
+            // config.set
+        }
+
+        if(cl.hasOption(joint) == false) {
+            // config.
+        } else {
+
+        }
+
+        if(cl.hasOption(srcFiles)) {
+            cl.getValues(srcFiles);
+        }
+
         /* TODO continue here to complete compilation process
             config.setClasspath("c:\\grails\\grails-0.5.6\\lib\\groovy-all-1.1-beta-2-snapshot.jar");
             config.setTargetDirectory("F:\\Projects\\groovy-aop\\bin-groovy\\");
@@ -113,7 +152,8 @@ public class Compiler {
     }
 
     private static void displayVersion() {
-        System.out.println("Groovy AOP version 0.5");
+        System.out.println("Groovy AOP version" + VERSION);
+        System.out.println("Groovy AOP Compiler version" + VERSION);
     }
 
     @SuppressWarnings("unchecked")
@@ -121,7 +161,7 @@ public class Compiler {
         HelpFormatter hf = new HelpFormatter();
         hf.setShellCommand("gac");
         hf.setHeader(
-            "Groovy AOP Compiler version 0.5\n" +
+            "Groovy AOP Compiler version "+ VERSION +"\n" +
             "(c) 2007-2009 Chanwit Kaewkasi\n"
         );
         hf.setGroup(options);
