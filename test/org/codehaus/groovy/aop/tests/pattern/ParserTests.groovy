@@ -3,59 +3,60 @@ package org.codehaus.groovy.aop.tests.pattern
 import org.codehaus.groovy.aop.pattern.Parser
 
 class ParserTests extends GroovyTestCase {
-	
-	void test_01_Parser() {
-		def p  = new Parser('public')
+
+/*
+    void test_01_Parser() {
+        def p  = new Parser('public')
         try {
             def pt = p.parse()
         } catch(e) {
             assert e != null
         }
     }
-	
-	void test_02_SingleSignature_No_Argument() {
-		def p = new Parser('public void Test.test()')
-		def pt = p.parse()
-        assert pt.anyReturnType == false        
-        assert pt.modifiers.'public' == true
-        assert pt.returnTypePattern.primitive == true
-        assert pt.returnTypePattern.classPattern == 'void' 
-        assert pt.methodPattern.typePattern.classPattern == 'Test'
-        assert pt.methodPattern.namePattern == 'test'
-        assert pt.methodPattern.anyArgument == false
-        assert pt.methodPattern.mayBeProperty == false  // because 'void' + parenthesis test'()'      
-    }
 
-	void test_03_SingleSignature_Any_Argument_1() {
-		def p = new Parser('public void Test.test')
-		def pt = p.parse()
-        assert pt.anyReturnType == false        
+    void test_02_SingleSignature_No_Argument() {
+        def p = new Parser('public void Test.test()')
+        def pt = p.parse()
+        assert pt.anyReturnType == false
         assert pt.modifiers.'public' == true
         assert pt.returnTypePattern.primitive == true
         assert pt.returnTypePattern.classPattern == 'void'
-		assert pt.methodPattern.typePattern.classPattern == 'Test'
+        assert pt.methodPattern.typePattern.classPattern == 'Test'
         assert pt.methodPattern.namePattern == 'test'
         assert pt.methodPattern.anyArgument == false
-        assert pt.methodPattern.mayBeProperty == false  // because 'void' is specified      
+        assert pt.methodPattern.mayBeProperty == false  // because 'void' + parenthesis test'()'
+    }
+
+    void test_03_SingleSignature_Any_Argument_1() {
+        def p = new Parser('public void Test.test')
+        def pt = p.parse()
+        assert pt.anyReturnType == false
+        assert pt.modifiers.'public' == true
+        assert pt.returnTypePattern.primitive == true
+        assert pt.returnTypePattern.classPattern == 'void'
+        assert pt.methodPattern.typePattern.classPattern == 'Test'
+        assert pt.methodPattern.namePattern == 'test'
+        assert pt.methodPattern.anyArgument == false
+        assert pt.methodPattern.mayBeProperty == false  // because 'void' is specified
     }
 
     void test_04_SingleSignature_Any_Argument_2() {
         def p = new Parser('public void Test.test(..)')
         def pt = p.parse()
-        assert pt.anyReturnType == false        
+        assert pt.anyReturnType == false
         assert pt.modifiers.'public' == true
         assert pt.returnTypePattern.primitive == true
         assert pt.returnTypePattern.classPattern == 'void'
         assert pt.methodPattern.typePattern.classPattern == 'Test'
-        assert pt.methodPattern.typePattern.isSubClass() == false        
+        assert pt.methodPattern.typePattern.isSubClass() == false
         assert pt.methodPattern.namePattern == 'test'
         assert pt.methodPattern.anyArgument == true
         assert pt.methodPattern.mayBeProperty == false  // because 'void' + '(..)'
     }
 
-	void test_05_SingleProperty() {
-		def p  = new Parser('Test.test')
-		def pt = p.parse() // pattern
+    void test_05_SingleProperty() {
+        def p  = new Parser('Test.test')
+        def pt = p.parse() // pattern
         assert pt.anyModifier == true
         assert pt.anyReturnType == true
         assert pt.methodPattern.typePattern.classPattern == 'Test'
@@ -98,7 +99,7 @@ class ParserTests extends GroovyTestCase {
         assert pt.returnTypePattern.primitive == false
         assert pt.returnTypePattern.classPattern == 'java.lang.Object'
         assert pt.methodPattern.typePattern.classPattern == 'Test'
-        assert pt.methodPattern.typePattern.isSubClass() == true        
+        assert pt.methodPattern.typePattern.isSubClass() == true
         assert pt.methodPattern.namePattern == 'test'
         assert pt.methodPattern.anyArgument == false
         assert pt.methodPattern.mayBeProperty == true
@@ -177,5 +178,5 @@ class ParserTests extends GroovyTestCase {
         assert pt.methodPattern.anyArgument == true
         assert pt.methodPattern.mayBeProperty == false
     }
-
+*/
 }
