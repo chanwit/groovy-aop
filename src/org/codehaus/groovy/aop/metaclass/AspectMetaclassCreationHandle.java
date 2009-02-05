@@ -5,22 +5,17 @@ import groovy.lang.MetaClass;
 import groovy.lang.MetaClassRegistry;
 import groovy.lang.MetaClassRegistry.MetaClassCreationHandle;
 
-import org.codehaus.groovy.aop.builder.AspectBuilderMetaClass;
-
 public class AspectMetaclassCreationHandle extends MetaClassCreationHandle {
 
     @SuppressWarnings("unchecked")
     protected MetaClass createNormalMetaClass(Class theClass, MetaClassRegistry registry) {
         final String className = theClass.getName();
-        if (!className.equals("org.codehaus.groovy.aop.abstraction.Aspect") &&
-                (className.endsWith("Aspect")
-                        || className.indexOf("Aspect$") > 0))
-            return new AspectBuilderMetaClass(registry, theClass);
-        else if ((className.startsWith("java.")
-                || className.startsWith("groovy.")
-                || className.startsWith("org.codehaus.groovy.")) &&
-                !className.startsWith("org.codehaus.groovy.aop.tests."))
+        if ((className.startsWith("java.") ||
+             className.startsWith("groovy.") ||
+             className.startsWith("org.codehaus.groovy."))
+             && !className.startsWith("org.codehaus.groovy.aop.tests.")) {
             return super.createNormalMetaClass(theClass, registry);
+        }
         else if (theClass != AspectMetaClass.class) {
             return new AspectMetaClass(registry, theClass);
         } else {

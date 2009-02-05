@@ -47,7 +47,7 @@ public class Weaver {
         Method method = wrapper.getDeclaredMethod("getAspect", new Class[]{});
         Closure c = (Closure)method.invoke(wrapper, new Object[]{});
         // bind it with the new aspect builder
-        c.setDelegate(new AspectBuilder());
+        // c.setDelegate(new AspectBuilder());
         c.setResolveStrategy(Closure.DELEGATE_ONLY); // or delegate only?
         c.call();
     }
