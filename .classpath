@@ -9,5 +9,5 @@
 	<classpathentry kind="lib" path="lib/groovy-all-1.6-RC-2.jar"/>
 	<classpathentry kind="lib" path="lib/stringtemplate-3.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>
