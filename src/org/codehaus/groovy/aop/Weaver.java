@@ -33,7 +33,7 @@ public class Weaver {
      *	@param aspectOwner A class that contains static aspect { ... }
      *
      * **/
-    public static void install(Class<?> aspectOwner) throws Throwable {
+    public static Aspect install(Class<?> aspectOwner) throws Throwable {
         if(!AspectMetaclassCreationHandle.isEnabled()) {
             throw new AspectMetaClassNotEnabledException();
         }
@@ -41,6 +41,9 @@ public class Weaver {
             Aspect aspect = new Aspect(aspectOwner);
             AspectRegistry.v().add(aspectOwner, aspect);
             buildAspect(aspect, aspectOwner);
+            return aspect;
+        } else {
+            return null;
         }
     }
 
