@@ -3,19 +3,20 @@ package org.codehaus.groovy.aop.tests
 import org.codehaus.groovy.aop.metaclass.AspectMetaClass
 import org.codehaus.groovy.aop.Weaver
 import org.codehaus.groovy.aop.GroovyAOPTestCase
+
 class BeforeTests extends GroovyAOPTestCase {
-	
-	static targetCode =
+
+    static targetCode =
 '''class Target {
 
-	def method(int i) {
-		return i
-	}
-	
+    def method(int i) {
+        return i
+    }
+
 }
-'''		
-	
-	static aspectCode =
+'''
+
+    static aspectCode =
 '''class BeforeAspect {
 
   static aspect = {
@@ -28,10 +29,10 @@ class BeforeTests extends GroovyAOPTestCase {
 }
 '''
 
-	void testBefore() {
-		setupAspect(aspectCode)
+    void testBefore() {
+        setupAspect(aspectCode)
 
-		def target  = gcl.parseClass(targetCode).newInstance()
-		assert target.method(1) == 1				
-	}
+        def target  = gcl.parseClass(targetCode).newInstance()
+        assert target.method(1) == 1
+    }
 }
