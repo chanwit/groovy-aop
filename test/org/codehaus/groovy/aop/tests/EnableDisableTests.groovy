@@ -8,6 +8,7 @@ import org.codehaus.groovy.aop.metaclass.AspectMetaclassCreationHandle
         assert AspectMetaclassCreationHandle.isEnabled() == true
     }
 
+    /*
     void _testEnableDisable() {
         AspectMetaClass.enableGlobally()
         assert AspectMetaclassCreationHandle.isEnabled()
@@ -24,5 +25,6 @@ import org.codehaus.groovy.aop.metaclass.AspectMetaclassCreationHandle
         AspectMetaClass.disableGlobally()
         assert AspectMetaclassCreationHandle.isEnabled() == false
     }
+    */
 
 }
