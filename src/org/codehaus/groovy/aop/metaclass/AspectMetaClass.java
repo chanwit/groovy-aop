@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 the original author or authors.
+ * Copyright 2007-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,8 +34,6 @@ import org.codehaus.groovy.aop.abstraction.Joinpoint;
 import org.codehaus.groovy.aop.abstraction.joinpoint.CallJoinpoint;
 import org.codehaus.groovy.aop.abstraction.joinpoint.GetterJoinpoint;
 import org.codehaus.groovy.aop.abstraction.joinpoint.SetterJoinpoint;
-import org.codehaus.groovy.aop.builder.AspectBuilder;
-import org.codehaus.groovy.aop.builder.AspectCreationFailedException;
 import org.codehaus.groovy.aop.cache.AdviceCacheL1;
 import org.codehaus.groovy.aop.cache.AdviceCacheL2;
 import org.codehaus.groovy.runtime.MetaClassHelper;
@@ -52,6 +50,7 @@ public class AspectMetaClass extends MetaClassImpl {
         super(registry, theClass);
     }
 
+/*
     public Object invokeMissingMethod(Object object, String methodName, Object[] originalArguments) {
         Object result=null;
         try {
@@ -65,6 +64,7 @@ public class AspectMetaClass extends MetaClassImpl {
             return result;
         }
     }
+*/
 
     private Object superInvokeMethod(Class<?> sender, Object arg0, String name,
             Object[] args, boolean isCallToSuper, boolean fromInsideClass) {

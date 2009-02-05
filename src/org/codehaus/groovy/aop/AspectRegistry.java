@@ -49,11 +49,11 @@ public class AspectRegistry {
 		_instance = new AspectRegistry();
 	}
 	
-	public void add(Class<?> aspectWrapper, Aspect aspect) {
-		if(classAspects.containsKey(aspectWrapper)) {
-			classAspects.remove(aspectWrapper);
+	public void add(Class<?> aspectOwner, Aspect aspect) {
+		if(classAspects.containsKey(aspectOwner)) {
+			classAspects.remove(aspectOwner);
 		}
-		classAspects.put(aspectWrapper, aspect);
+		classAspects.put(aspectOwner, aspect);
 		AdviceCacheL2.v().removeByAspect(aspect);
 	}
 	
@@ -80,13 +80,13 @@ public class AspectRegistry {
 //		return instanceAspects;
 //	}
 
-	public Aspect get(Class<?> aspectWrapper) {
-		return classAspects.get(aspectWrapper);
+	public Aspect get(Class<?> aspectOwner) {
+		return classAspects.get(aspectOwner);
 	}
 
-	public void remove(Class<?> aspectWrapper) {
-		Aspect aspect = classAspects.get(aspectWrapper);
-		classAspects.remove(aspectWrapper);
+	public void remove(Class<?> aspectOwner) {
+		Aspect aspect = classAspects.get(aspectOwner);
+		classAspects.remove(aspectOwner);
 		AdviceCacheL2.v().removeByAspect(aspect);
 	}
 

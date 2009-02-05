@@ -24,37 +24,41 @@ import groovy.lang.Closure;
 import java.lang.reflect.Method;
 
 import org.codehaus.groovy.aop.abstraction.Aspect;
+import org.codehaus.groovy.aop.builder.AspectBuilder;
 import org.codehaus.groovy.aop.metaclass.AspectMetaclassCreationHandle;
 
 public class Weaver {
 
-    public static void install(Class<?> aspectWrapper) throws Throwable {
+    /**
+     *	@param aspectOwner A class that contains static aspect { ... }
+     *
+     * **/
+    public static void install(Class<?> aspectOwner) throws Throwable {
         if(!AspectMetaclassCreationHandle.isEnabled()) {
             throw new AspectMetaClassNotEnabledException();
         }
-        if(containAspect(aspectWrapper)) {
-            Aspect aspect = new Aspect(aspectWrapper);
-            AspectRegistry.v().add(aspectWrapper, aspect);
-            buildAspect(aspectWrapper);
+        if(containAspect(aspectOwner)) {
+            Aspect aspect = new Aspect(aspectOwner);
+            AspectRegistry.v().add(aspectOwner, aspect);
+            buildAspect(aspect, aspectOwner);
         }
     }
 
-    public static void uninstall(Class<?> aspectWrapper) {
-        AspectRegistry.v().remove(aspectWrapper);
+    public static void uninstall(Class<?> aspectOwner) {
+        AspectRegistry.v().remove(aspectOwner);
     }
 
-    private static void buildAspect(Class<?> wrapper) throws Throwable {
-        Method method = wrapper.getDeclaredMethod("getAspect", new Class[]{});
-        Closure c = (Closure)method.invoke(wrapper, new Object[]{});
-        // bind it with the new aspect builder
-        // c.setDelegate(new AspectBuilder());
+    private static void buildAspect(Aspect aspect, Class<?> aspectOwner) throws Throwable {
+        Method method = aspectOwner.getDeclaredMethod("getAspect", new Class[]{});
+        Closure c = (Closure)method.invoke(aspectOwner, new Object[]{});
+        c.setDelegate(new AspectBuilder(aspect));
         c.setResolveStrategy(Closure.DELEGATE_ONLY); // or delegate only?
         c.call();
     }
 
-    private static boolean containAspect(Class<?> theClass) {
+    private static boolean containAspect(Class<?> theOwnerClass) {
         try {
-            theClass.getDeclaredMethod("getAspect", new Class[]{});
+            theOwnerClass.getDeclaredMethod("getAspect", new Class[]{});
             return true;
         } catch (Exception e) {
             return false;

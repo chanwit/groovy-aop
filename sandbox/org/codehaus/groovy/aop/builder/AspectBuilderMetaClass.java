@@ -26,7 +26,7 @@ public class AspectBuilderMetaClass extends MetaClassImpl {
     public AspectBuilderMetaClass(MetaClassRegistry registry, Class<?> wrapper) {
         super(registry, wrapper);
     }
-
+/*
     @Override
     public Object invokeMissingMethod(Object object, String methodName, Object[] originalArguments) {
         Object result=null;
@@ -41,6 +41,7 @@ public class AspectBuilderMetaClass extends MetaClassImpl {
             return result;
         }
     }
+*/
 
 //	@Override
 //	public Object invokeMethod(Class sender, Object object, String methodName, Object[] originalArguments, boolean isCallToSuper, boolean fromInsideClass) {
