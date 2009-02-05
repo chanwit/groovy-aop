@@ -11,7 +11,7 @@ public class GroovyAOPTestCase extends TestCase {
     private Class<?> aspect=null;
 
     protected void setUp() throws Exception {
-        AspectMetaClass.enableGlobally();
+        //AspectMetaClass.enableGlobally();
         this.gcl = new GroovyClassLoader(this.getClass().getClassLoader());
     }
 
@@ -24,7 +24,7 @@ public class GroovyAOPTestCase extends TestCase {
     protected void tearDown() throws Exception {
         this.gcl = null;
         if(aspect != null) Weaver.uninstall(aspect);
-        AspectMetaClass.disableGlobally();
+        //AspectMetaClass.disableGlobally();
     }
 
     public GroovyClassLoader getGcl() {
