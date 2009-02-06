@@ -1,4 +1,4 @@
-// $ANTLR 3.1.1 C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g 2009-02-06 04:16:26
+// $ANTLR 3.1.1 C:\\groovy-ck1\\groovy-aop\\src\\Gapt.g 2009-02-06 10:26:54
 
 package org.codehaus.groovy.aop.pattern.impl;
 
@@ -48,16 +48,16 @@ public class GaptParser extends DebugParser {
     // delegators
 
     public static final String[] ruleNames = new String[] {
-        "invalidRule", "synpred17_Gapt", "modifiers", "classPattern", "methodPattern", 
-        "synpred10_Gapt", "synpred19_Gapt", "synpred8_Gapt", "synpred15_Gapt", 
-        "synpred26_Gapt", "pattern", "returnTypePattern", "synpred27_Gapt", 
-        "synpred24_Gapt", "synpred7_Gapt", "synpred4_Gapt", "argTypes", 
-        "synpred13_Gapt", "synpred25_Gapt", "synpred22_Gapt", "synpred3_Gapt", 
-        "synpred28_Gapt", "synpred23_Gapt", "synpred16_Gapt", "className", 
-        "synpred5_Gapt", "primitive", "qualifiedName", "synpred21_Gapt", 
-        "synpred11_Gapt", "synpred12_Gapt", "synpred14_Gapt", "modifier", 
-        "synpred18_Gapt", "synpred2_Gapt", "synpred9_Gapt", "synpred20_Gapt", 
-        "synpred1_Gapt", "synpred6_Gapt"
+        "invalidRule", "synpred27_Gapt", "className", "synpred9_Gapt", 
+        "synpred18_Gapt", "returnTypePattern", "synpred22_Gapt", "synpred19_Gapt", 
+        "synpred1_Gapt", "argTypes", "classPattern", "synpred25_Gapt", "synpred13_Gapt", 
+        "pattern", "synpred24_Gapt", "qualifiedName", "synpred10_Gapt", 
+        "synpred26_Gapt", "synpred17_Gapt", "modifiers", "synpred21_Gapt", 
+        "synpred7_Gapt", "synpred2_Gapt", "synpred16_Gapt", "synpred28_Gapt", 
+        "synpred6_Gapt", "synpred20_Gapt", "synpred8_Gapt", "synpred23_Gapt", 
+        "synpred3_Gapt", "modifier", "synpred11_Gapt", "methodPattern", 
+        "synpred4_Gapt", "synpred15_Gapt", "synpred14_Gapt", "synpred12_Gapt", 
+        "primitive", "synpred5_Gapt"
     };
      
         public int ruleLevel = 0;

@@ -1,4 +1,4 @@
-// $ANTLR 3.1.1 C:\\groovy-ck1\\groovy-aop\\src\\AspectGroovy.g 2009-02-06 04:16:26
+// $ANTLR 3.1.1 C:\\groovy-ck1\\groovy-aop\\src\\AspectGroovy.g 2009-02-06 10:26:54
 
 package org.codehaus.groovy.aop.compiler;
 
@@ -41,8 +41,8 @@ public class AspectGroovyParser extends DebugParser {
     // delegators
 
     public static final String[] ruleNames = new String[] {
-        "invalidRule", "packageDecl", "modifier", "aspectDecl", "annotation", 
-        "modifiers", "annotations", "importDecl", "compilationUnit"
+        "invalidRule", "importDecl", "annotation", "annotations", "modifier", 
+        "modifiers", "compilationUnit", "aspectDecl", "packageDecl"
     };
      
         public int ruleLevel = 0;
