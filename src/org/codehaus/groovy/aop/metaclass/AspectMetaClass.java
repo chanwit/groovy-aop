@@ -143,10 +143,11 @@ public class AspectMetaClass extends MetaClassImpl {
     public Object invokeMethod(final Class sender, final Object object,
             final String methodName, Object[] args, boolean isCallToSuper,
             boolean fromInsideClass) {
-        if (object instanceof Closure) {
-            return superInvokeMethod(sender, object, methodName, args,
-                    isCallToSuper, fromInsideClass);
-        }
+
+        //if (object instanceof Closure) {
+        //    return superInvokeMethod(sender, object, methodName, args,
+        //            isCallToSuper, fromInsideClass);
+        //}
 
         Class[] argClasses = MetaClassHelper.convertToTypeArray(args);
 
@@ -166,8 +167,8 @@ public class AspectMetaClass extends MetaClassImpl {
         // TODO not included in 0.2 release
         // matchPerInstance(object, effAdvices, cjp);
         // if(effectiveAdvices.isEmpty()) {
-        if (effAdvices.isEmpty()
-            || (object instanceof Closure && "doCall".equals(methodName))) {
+        // || (object instanceof Closure && "doCall".equals(methodName))
+        if (effAdvices.isEmpty()) {
             Object result = superInvokeMethod(sender, object, methodName, args,
                     isCallToSuper, fromInsideClass);
             callStack.get().pop();
