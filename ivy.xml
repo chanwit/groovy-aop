@@ -1,0 +1,12 @@
+<ivy-module version="2.0">
+    <info organisation="org.codehaus.groovy" module="aop"/>
+    <dependencies>
+        <dependency org="org.codehaus.groovy" name="groovy-all" rev="1.6-RC-2"/>
+        <dependency org="org.antlr" name="antlr" rev="3.1.1"/>
+        <dependency org="org.antlr" name="antlr-runtime" rev="3.1.1"/>
+        <dependency org="org.antlr" name="stringtemplate" rev="3.2"/>        
+        <dependency org="org.aspectj" name="aspectjrt" rev="1.6.2"/>        
+        <dependency org="org.aspectj" name="aspectjtools" rev="1.6.2"/>        
+        <dependency org="org.aspectj" name="aspectjweaver" rev="1.6.2"/>        
+    </dependencies>
+</ivy-module>

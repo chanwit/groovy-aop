@@ -10,3 +10,5 @@ testplan.txt
 *.class
 *.tokens
 .settings
+lib2
+ivy
