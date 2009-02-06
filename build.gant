@@ -96,6 +96,7 @@ includeTargets << gant.targets.Clean
 cleanPattern <<  [ '**/*~' , 'cobertura.ser' ] 
 cleanDirectory << binDir
 cleanDirectory << testBinDir
+cleanDirectory << 'lib'
 
 target(dist: 'Make a distribution') {
   // TODO
