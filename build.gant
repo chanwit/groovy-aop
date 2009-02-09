@@ -24,7 +24,7 @@ ant.path ( id : 'compileJarSet' ) {
   fileset ( dir : groovyHome + '/lib' , includes : 'asm*.jar' )
   // Picks up antlr as well as ant. This is intended.
   fileset ( dir : groovyHome + '/lib' , includes : 'ant*.jar' )
-  // local lib  
+  // local lib
   fileset ( dir : './lib'  , includes : 'ant*.jar' )
 }
 
@@ -34,22 +34,22 @@ ant.path ( id : 'testJarSet' ) {
 }
 
 doCompile = { classpathRef, srcDir, destDir ->
-  ant.taskdef(  name : 'groovyc' , 
-                classname: 'org.codehaus.groovy.ant.Groovyc' , 
-                classpathref: classpathRef) 
-  ant.groovyc(  srcdir: srcDir, 
-                destdir: destDir, 
-                fork: 'false',  
+  ant.taskdef(  name : 'groovyc' ,
+                classname: 'org.codehaus.groovy.ant.Groovyc' ,
+                classpathref: classpathRef)
+  ant.groovyc(  srcdir: srcDir,
+                destdir: destDir,
+                fork: 'false',
                 failonerror: 'true') {
     classpath {
       pathelement ( location : binDir )
       pathelement ( location : testBinDir )
       path ( refid : classpathRef )
-    }                
-    
+    }
+
     javac(source : '1.5' , target : '1.5' , debug : 'on')
-    
-  } 	
+
+  }
 }
 
 doTesting = { classpathRef ->
@@ -61,42 +61,42 @@ doTesting = { classpathRef ->
         // dependency ( groupId : 'org.antlr' , artifactId : 'antlr' , version : '3.0.1' )
     }
     ant.taskdef ( resource : 'tasks.properties' , classpathref : 'coberturaPathId' )
-    ant.'cobertura-instrument' ( todir : coberturaBinDir ) { 
-    	fileset ( dir : binDir ) 
+    ant.'cobertura-instrument' ( todir : coberturaBinDir ) {
+        fileset ( dir : binDir )
     }
   }
-  
+
   ant.junit ( printsummary : 'yes' , failureproperty : 'testsFailed' , fork : 'true' ) {
     formatter ( type : 'plain' )
     batchtest ( todir : testReportsDir ) {
       def includeNames = '**/*Tests.class'
       if( testcase != null ) {
-		includeNames = "**/${testcase}Tests.class"   
-      } 
-	  fileset ( dir : testBinDir, includes : includeNames , excludes : '**/ant/tests/*' )
-    }    
+        includeNames = "**/${testcase}Tests.class"
+      }
+      fileset ( dir : testBinDir, includes : includeNames , excludes : '**/ant/tests/*' )
+    }
     classpath {
     if( usingCobertura ) {
         // MUST appear in classpath before the uninstrumented classes.
         pathelement ( location : coberturaBinDir )
-        path ( refid : 'coberturaPathId' )      
+        path ( refid : 'coberturaPathId' )
     }
       pathelement ( location : binDir )
       pathelement ( location : testBinDir )
       path ( refid : classpathRef )
     }
   }
-  
-  if ( usingCobertura ) { 
-  	ant.'cobertura-report' ( srcdir : sourceDir , destdir : coberturaReportDir ) 
+
+  if ( usingCobertura ) {
+      ant.'cobertura-report' ( srcdir : sourceDir , destdir : coberturaReportDir )
   }
 }
 
 includeTargets << gant.targets.Clean
-cleanPattern <<  [ '**/*~' , 'cobertura.ser' ] 
+cleanPattern <<  [ '**/*~' , 'cobertura.ser' ]
 cleanDirectory << binDir
 cleanDirectory << testBinDir
-cleanDirectory << 'lib'
+// cleanDirectory << 'lib'
 
 target(dist: 'Make a distribution') {
   // TODO
@@ -112,13 +112,13 @@ target(prepare: 'Prepare directories') {
 target(compile: 'Compiling Groovy-AOP') {
   depends(prepare)
   echo("Compiling Groovy-AOP v.${version}")
-  doCompile('compileJarSet', sourceDir, binDir)  
+  doCompile('compileJarSet', sourceDir, binDir)
 }
 
 target(compileTests: 'Compiling Tests') {
   depends(compile)
-  echo('Tests')  
-  doCompile('testJarSet', testSourceDir, testBinDir) 
+  echo('Tests')
+  doCompile('testJarSet', testSourceDir, testBinDir)
 }
 
 target(test:'Perform tests') {
