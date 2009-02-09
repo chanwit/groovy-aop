@@ -45,11 +45,6 @@ public abstract class Advice extends GroovyObjectSupport {
         this.adviceCode = code;
     }
 
-//	public Advice(Object[] args) {
-//		super();
-//		this.adviceCode = (Closure)args[1];
-//	}
-
     public Advice(Class<?> klass, Object[] args) {
         if(args[0] instanceof String) {
             PCallPCD rootPCD = new PCallPCD(new Object[]{klass.getCanonicalName()+"."+(String)args[0]});

@@ -171,7 +171,6 @@ class PCallAspect {
         assert before.size == 1
         assert after.size == 1
         assert around.size == 1
-        println after_return.size
-        // assert after_return.size == 1
+        assert after_return.size == 1
     }
 }
