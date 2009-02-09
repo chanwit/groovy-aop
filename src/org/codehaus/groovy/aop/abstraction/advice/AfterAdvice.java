@@ -41,6 +41,7 @@ public class AfterAdvice extends Advice {
                     Pointcut p = new Pointcut((PCD)pc);
                     this.setPointcut(p);
                 }
+                this.returning = true;
             }
         }
     }

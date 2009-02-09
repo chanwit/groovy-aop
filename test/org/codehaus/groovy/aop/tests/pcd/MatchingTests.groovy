@@ -60,13 +60,11 @@ static aspectCode = '''
                 false
         );
         m.matchPerClass(result, jp);
-
+        assert result.empty == false
         def before = result.get(Advice.BEFORE)
         def after = result.get(Advice.AFTER)
         def around = result.get(Advice.AROUND)
         def after_return = result.get(Advice.AFTER_RETURNING)
-
-        assert result.empty == false
 
         assert before.size == 1
         assert after.size == 1
