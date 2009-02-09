@@ -58,8 +58,8 @@ public class AfterAdvice extends Advice {
         return returning;
     }
 
-    public void setReturning(Boolean returning) {
-        this.returning = returning;
-    }
+//    public void setReturning(Boolean returning) {
+//        /this.returning = returning;
+//    }
 
 }
