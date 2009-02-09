@@ -40,6 +40,8 @@ import org.codehaus.groovy.runtime.MetaClassHelper;
 
 public class AspectMetaClass extends MetaClassImpl {
 
+    private Matcher matcher = new Matcher(AspectRegistry.v(), AdviceCacheL1.v(), AdviceCacheL2.v());
+
     private static final ThreadLocal<Stack<Object>> callStack = new ThreadLocal<Stack<Object>>() {
         protected Stack<Object> initialValue() {
             return new Stack<Object>();
@@ -49,22 +51,6 @@ public class AspectMetaClass extends MetaClassImpl {
     public AspectMetaClass(MetaClassRegistry registry, final Class<?> theClass) {
         super(registry, theClass);
     }
-
-/*
-    public Object invokeMissingMethod(Object object, String methodName, Object[] originalArguments) {
-        Object result=null;
-        try {
-            result = AspectBuilder.buildAspect(object, methodName, originalArguments);
-        } catch (AspectCreationFailedException e) {
-            return super.invokeMissingMethod(object, methodName, originalArguments);
-        }
-        if(result==null) {
-            return super.invokeMissingMethod(object, methodName, originalArguments);
-        } else {
-            return result;
-        }
-    }
-*/
 
     private Object superInvokeMethod(Class<?> sender, Object arg0, String name,
             Object[] args, boolean isCallToSuper, boolean fromInsideClass) {
@@ -110,7 +96,7 @@ public class AspectMetaClass extends MetaClassImpl {
     public Object getProperty(Object object, String property) {
         GetterJoinpoint gjp = new GetterJoinpoint(object, property);
         EffectiveAdvices effAdvices = new EffectiveAdvices();
-        matchPerClass(effAdvices, gjp);
+        matcher.matchPerClass(effAdvices, gjp);
         if(effAdvices.isEmpty()==false) {
             ArrayList<Closure> beforeClosures = effAdvices.get(Advice.BEFORE);
             execClosures(beforeClosures, object);
@@ -126,7 +112,7 @@ public class AspectMetaClass extends MetaClassImpl {
     public void setProperty(Object object, String property, Object newValue) {
         SetterJoinpoint sjp = new SetterJoinpoint(object, property, newValue);
         EffectiveAdvices effAdvices = new EffectiveAdvices();
-        matchPerClass(effAdvices, sjp);
+        matcher.matchPerClass(effAdvices, sjp);
         if(effAdvices.isEmpty()==false) {
             ArrayList<Closure> beforeClosures = effAdvices.get(Advice.BEFORE);
             Object newerValue = execClosures(beforeClosures, object, newValue);
@@ -163,7 +149,7 @@ public class AspectMetaClass extends MetaClassImpl {
         callStack.get().push(new Object[] { object, methodName });
 
         effAdvices = new EffectiveAdvices();
-        matchPerClass(effAdvices, cjp);
+        matcher.matchPerClass(effAdvices, cjp);
         // TODO not included in 0.2 release
         // matchPerInstance(object, effAdvices, cjp);
         // if(effectiveAdvices.isEmpty()) {
@@ -217,36 +203,6 @@ public class AspectMetaClass extends MetaClassImpl {
         return result;
     }
 
-    private void matchPerClass(EffectiveAdvices effAdvices, Joinpoint jp) {
-        // If there is the jp as a key in L1, retrieve it
-        if (AdviceCacheL1.v().contains(jp)) {
-            effAdvices.addAll(AdviceCacheL1.v().get(jp));
-            return;
-        }
-        // if there is no jp in L1:
-        //  - pick aspects from the registry
-        Collection<Aspect> aspects = AspectRegistry.v().getClassAspects();
-
-        // - matchPCD
-        // - store them in L2
-        for (Iterator<Aspect> iter = aspects.iterator(); iter.hasNext();) {
-            Aspect aspect = iter.next();
-            ArrayList<Advice> advices = aspect.getAdvices();
-            for (Iterator<Advice> i = advices.iterator(); i.hasNext();) {
-                Advice advice = i.next();
-                //if(advice.getPointcut() == null) continue;
-                if (advice.getPointcut().matches(jp)) {
-                    AdviceCacheL2.v().put(jp, aspect, advice);
-                }
-            }
-        }
-        // build an L1 entry from a set of L2 entries
-        // store to L1 using jp as its key
-        EffectiveAdvices result = AdviceCacheL2.v().getByJoinpoint(jp);
-        AdviceCacheL1.v().put(jp, result);
-        // then all matched advice is going to be the result
-        effAdvices.addAll(result);
-    }
 
     /**
      * Enable AOP globally
