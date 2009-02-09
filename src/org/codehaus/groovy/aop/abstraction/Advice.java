@@ -50,9 +50,9 @@ public abstract class Advice extends GroovyObjectSupport {
 //		this.adviceCode = (Closure)args[1];
 //	}
 
-    public Advice(Class<?> class1, Object[] args) {
+    public Advice(Class<?> klass, Object[] args) {
         if(args[0] instanceof String) {
-            PCallPCD rootPCD = new PCallPCD(new Object[]{class1.getCanonicalName()+"."+(String)args[0]});
+            PCallPCD rootPCD = new PCallPCD(new Object[]{klass.getCanonicalName()+"."+(String)args[0]});
             this.pointcut = new Pointcut(rootPCD);
         } else if(args[0] instanceof Map) {
             this.pointcut = null;
@@ -60,14 +60,14 @@ public abstract class Advice extends GroovyObjectSupport {
             Map m = (Map)args[0];
             // TODO clean code here
             if(m.containsKey("call")) {
-                rootPCD = new PCallPCD(new Object[]{class1.getCanonicalName()+"."+(String)m.get("call")});
+                rootPCD = new PCallPCD(new Object[]{klass.getCanonicalName()+"."+(String)m.get("call")});
             } else if(m.containsKey("get")) {
-                rootPCD = new GetPCD(new Object[]{class1.getCanonicalName()+"."+(String)m.get("get")});
+                rootPCD = new GetPCD(new Object[]{klass.getCanonicalName()+"."+(String)m.get("get")});
             } else if(m.containsKey("set")) {
-                rootPCD = new SetPCD(new Object[]{class1.getCanonicalName()+"."+(String)m.get("set")});
+                rootPCD = new SetPCD(new Object[]{klass.getCanonicalName()+"."+(String)m.get("set")});
             }
             if(m.containsKey("withIn")) {
-                PCD thisPCD = new WithInPCD(new Object[]{class1.getCanonicalName()+"."+(String)m.get("withIn")});
+                PCD thisPCD = new WithInPCD(new Object[]{klass.getCanonicalName()+"."+(String)m.get("withIn")});
                 rootPCD = rootPCD==null? thisPCD: (PCD)rootPCD.and(thisPCD);
             }
             this.pointcut = new Pointcut(rootPCD);

@@ -30,8 +30,12 @@ public class AfterAdvice extends Advice {
 
     private Boolean returning=false;
 
-    public AfterAdvice(Object[] args) {
-        super(null, args);
+    public AfterAdvice(Pointcut pointcut, Closure code) {
+        super(pointcut, code);
+    }
+
+    public AfterAdvice(Class<?> klass, Object[] args) {
+        super(klass, args);
         if(args[0] instanceof Map) {
             Object pc = ((Map)args[0]).get("returning");
             if(pc!=null) {
@@ -46,20 +50,12 @@ public class AfterAdvice extends Advice {
         }
     }
 
-    public AfterAdvice(Pointcut pointcut, Closure code) {
-        super(pointcut, code);
-    }
-
-    public AfterAdvice(Class<?> class1, Object[] originalArguments) {
-        super(class1, originalArguments);
+    public AfterAdvice(Object[] args) {
+        this(null, args);
     }
 
     public Boolean getReturning() {
         return returning;
     }
-
-//    public void setReturning(Boolean returning) {
-//        /this.returning = returning;
-//    }
 
 }
