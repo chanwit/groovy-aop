@@ -32,7 +32,7 @@ public class CallJoinpoint implements Joinpoint {
     private Object target;
     private Object[] callStackEntry;
 
-    public CallJoinpoint(Class<?> sender, String methodName, Object target, Object[] args, Class<?>[] argClasses, boolean isCallToSuper) {
+    public CallJoinpoint(Class<?> sender, String methodName, Object target, Object[] args, Class<?>[] argClasses) {
         super();
         this.sender = sender;
         this.methodName = methodName;
