@@ -11,7 +11,7 @@ public class MockCallSite implements CallSite {
     
     @Override
     public Object call(Object arg0) throws Throwable {
-        return "delegate.call(arg0);";
+        return "delegate.call("+arg0+");";
     }
 
     @Override

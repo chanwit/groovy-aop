@@ -5,7 +5,14 @@
         <key>filters</key>
         <dict>
             <key>excludeDirs</key>
-            <array />
+            <array>
+                <string>.git</string>
+                <string>.settings</string>
+                <string>lib</string>
+                <string>bin</string>
+                <string>classes</string>
+                <string>test-classes</string>
+            </array>
             <key>excludeFiles</key>
             <array>
                 <string>*.class</string>
@@ -13,10 +20,19 @@
             <key>includeDirs</key>
             <array />
             <key>includeFiles</key>
-            <array />
+            <array>
+                <string>*.java</string>
+                <string>*.aj</string>
+                <string>*.groovy</string>
+                <string>*.xml</string>
+                <string>*.gant</string>
+                <string>*.properties</string>
+            </array>
         </dict>
         <key>fileTriggers</key>
         <dict>
+            <key>asp</key>
+            <string>src\org\codehaus\groovy\aop\metaclass\AspectMetaClass.java</string>
             <key>aspectwa</key>
             <string>src\org\codehaus\groovy\aop\metaclass\AspectAwareCallSite.java</string>
             <key>b</key>

@@ -7,6 +7,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.codehaus.groovy.runtime.callsite.CallSite;
 import org.codehaus.groovy.runtime.callsite.CallSiteArray;
 
+/**
+    AspectAwareCallSite
+    Real working code are in CallSiteAspect.aj
+    These call* methods are a place holder for weaving code.
+**/
 public class AspectAwareCallSite implements CallSite {
 
     private CallSite delegate;

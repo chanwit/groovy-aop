@@ -67,7 +67,7 @@ doCompile = { classpathRef, srcDir, destDir ->
              destDir: wovenBinDir,             
              source: "1.5",
              inpath: binDir,
-             verbose: true) {
+             verbose: false) {
         include(name:"**/*.aj")
         classpath {
             pathelement ( location : binDir )
