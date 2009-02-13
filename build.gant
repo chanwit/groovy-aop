@@ -24,8 +24,10 @@ ant.path ( id : 'compileJarSet' ) {
   fileset ( dir : groovyHome + '/lib' , includes : 'asm*.jar' )
   // Picks up antlr as well as ant. This is intended.
   fileset ( dir : groovyHome + '/lib' , includes : 'ant*.jar' )
+
   // local lib
   fileset ( dir : './lib'  , includes : 'ant*.jar' )
+  fileset ( dir : './lib'  , includes : 'aspectj*.jar' )
 }
 
 ant.path ( id : 'testJarSet' ) {
@@ -34,22 +36,40 @@ ant.path ( id : 'testJarSet' ) {
 }
 
 doCompile = { classpathRef, srcDir, destDir ->
-  ant.taskdef(  name : 'groovyc' ,
+
+    // Define GroovyC ant task
+    ant.taskdef(name : 'groovyc' ,
                 classname: 'org.codehaus.groovy.ant.Groovyc' ,
                 classpathref: classpathRef)
-  ant.groovyc(  srcdir: srcDir,
+
+    // Define AspectJ ant tasks
+    ant.taskdef(resource:'org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties'
+                classpathref: classpathRef)
+
+    // Compiling with GroovyC
+    ant.groovyc(srcdir: srcDir,
                 destdir: destDir,
                 fork: 'false',
                 failonerror: 'true') {
-    classpath {
-      pathelement ( location : binDir )
-      pathelement ( location : testBinDir )
-      path ( refid : classpathRef )
+        classpath {
+          pathelement ( location : binDir )
+          pathelement ( location : testBinDir )
+          path ( refid : classpathRef )
+        }
+        javac(source : '1.5' , target : '1.5' , debug : 'on')
     }
 
-    javac(source : '1.5' , target : '1.5' , debug : 'on')
+    // Compiling Aspects and Perform weaving with AspectJ
+    ant.iajc(sourceRoots: srcDir,
+             destDir: binDir,
+             verbose: true) {
+        classpath {
+            pathelement ( location : binDir )
+            pathelement ( location : testBinDir )
+            path ( refid: classpathRef )
+        }
+    }
 
-  }
 }
 
 doTesting = { classpathRef ->
