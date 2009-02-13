@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>filters</key>
+        <dict>
+            <key>excludeDirs</key>
+            <array />
+            <key>excludeFiles</key>
+            <array>
+                <string>*.class</string>
+            </array>
+            <key>includeDirs</key>
+            <array />
+            <key>includeFiles</key>
+            <array />
+        </dict>
+        <key>fileTriggers</key>
+        <dict>
+            <key>aspectwa</key>
+            <string>src\org\codehaus\groovy\aop\metaclass\AspectAwareCallSite.java</string>
+            <key>b</key>
+            <string>..\grooy_typesheet\src\org\codehaus\groovy\typesheet\Builder.java</string>
+            <key>bui</key>
+            <string>..\grooy_typesheet\src\org\codehaus\groovy\typesheet\Builder.java</string>
+            <key>ty</key>
+            <string>..\grooy_typesheet\src\org\codehaus\groovy\typesheet\dom\Type.java</string>
+        </dict>
+    </dict>
+</plist>

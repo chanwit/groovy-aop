@@ -16,6 +16,8 @@ testReportsDir		=outDir + 'test-reports/'
 coberturaBinDir		=outDir+ 'cobertura-classes/'
 coberturaReportDir	=outDir+ 'cobertura-reports/'
 
+wovenBinDir         =outDir + 'woven-classes/'
+
 distDir='dist/'
 
 ant.path ( id : 'compileJarSet' ) {
@@ -43,7 +45,7 @@ doCompile = { classpathRef, srcDir, destDir ->
                 classpathref: classpathRef)
 
     // Define AspectJ ant tasks
-    ant.taskdef(resource:'org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties'
+    ant.taskdef(resource:'org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties',
                 classpathref: classpathRef)
 
     // Compiling with GroovyC
@@ -60,16 +62,20 @@ doCompile = { classpathRef, srcDir, destDir ->
     }
 
     // Compiling Aspects and Perform weaving with AspectJ
-    ant.iajc(sourceRoots: srcDir,
-             destDir: binDir,
+    if(srcDir == "src/") {
+    ant.iajc(srcdir: srcDir,
+             destDir: wovenBinDir,             
+             source: "1.5",
+             inpath: binDir,
              verbose: true) {
+        include(name:"**/*.aj")
         classpath {
             pathelement ( location : binDir )
-            pathelement ( location : testBinDir )
+            pathelement ( location : wovenBinDir )
             path ( refid: classpathRef )
         }
     }
-
+    }
 }
 
 doTesting = { classpathRef ->
@@ -82,7 +88,7 @@ doTesting = { classpathRef ->
     }
     ant.taskdef ( resource : 'tasks.properties' , classpathref : 'coberturaPathId' )
     ant.'cobertura-instrument' ( todir : coberturaBinDir ) {
-        fileset ( dir : binDir )
+        fileset ( dir : wovenBinDir )
     }
   }
 
@@ -101,7 +107,7 @@ doTesting = { classpathRef ->
         pathelement ( location : coberturaBinDir )
         path ( refid : 'coberturaPathId' )
     }
-      pathelement ( location : binDir )
+      pathelement ( location : wovenBinDir )
       pathelement ( location : testBinDir )
       path ( refid : classpathRef )
     }
@@ -115,6 +121,7 @@ doTesting = { classpathRef ->
 includeTargets << gant.targets.Clean
 cleanPattern <<  [ '**/*~' , 'cobertura.ser' ]
 cleanDirectory << binDir
+cleanDirectory << wovenBinDir
 cleanDirectory << testBinDir
 // cleanDirectory << 'lib'
 
@@ -125,6 +132,7 @@ target(dist: 'Make a distribution') {
 target(prepare: 'Prepare directories') {
   echo('Preparing directories')
   mkdir(dir: binDir)
+  mkdir(dir: wovenBinDir)
   mkdir(dir: testBinDir)
   mkdir(dir: testReportsDir)
 }
