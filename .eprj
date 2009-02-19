@@ -31,6 +31,8 @@
         </dict>
         <key>fileTriggers</key>
         <dict>
+            <key>AspectMetaclassCreationHandle</key>
+            <string>src\org\codehaus\groovy\aop\metaclass\AspectMetaclassCreationHandle.java</string>
             <key>asp</key>
             <string>src\org\codehaus\groovy\aop\metaclass\AspectMetaClass.java</string>
             <key>aspectwa</key>

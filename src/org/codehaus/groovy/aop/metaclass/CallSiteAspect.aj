@@ -18,17 +18,22 @@ public aspect CallSiteAspect {
     
     private pointcut pc(): execution(Object AspectAwareCallSite.call*(..));
     
+    private Joinpoint createJoinpoint(String name, CallSite cs) {
+        
+    }
+    
     before(): pc() {        
         String name = thisJoinPoint.getSignature().getName();
+        AspectAwareCallSite aacs = (AspectAwareCallSite)thisJoinPoint.getThis();
+        Joinpoint jp = createJoinpoint(name, aacs);
         // classify name
         // - call
         // - callConstructor
-        // - etc.
-        
+        // - etc.        
         // do matching
-        AspectAwareCallSite aacs = (AspectAwareCallSite)thisJoinPoint.getThis();
+        
         EffectiveAdvices effAdvices = new EffectiveAdvices();
-        matcher.matchPerClass(effAdvices, cjp);
+        matcher.matchPerClass(effAdvices, jp);
         // execute and expose jp info to closure
         // effAdvices
     }
