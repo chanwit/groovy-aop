@@ -54,8 +54,13 @@
 
     <target name="build" depends="install-ivy" description="--> resolve dependencies, compile and run the project">
         <ivy:retrieve/>
+        <copy todir="lib">
+            <fileset dir="aspectj-lib">
+               <include name="*.jar"/>
+            </fileset>
+        </copy>
     </target>
-    
+
     <target name="clean-build" depends="clean, build" />
 
 </project>

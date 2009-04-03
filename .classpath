@@ -7,11 +7,11 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/groovy-all-1.6-RC-2.jar"/>
 	<classpathentry kind="lib" path="lib/stringtemplate-3.2.jar"/>
+	<classpathentry kind="lib" path="lib/aspectjrt.jar"/>
+	<classpathentry kind="lib" path="lib/aspectjweaver.jar"/>
+	<classpathentry kind="lib" path="lib/org.aspectj.matcher.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="lib" path="lib/antlr-runtime-3.1.1.jar"/>
-	<classpathentry kind="lib" path="lib/aspectjrt-1.6.2.jar"/>
 	<classpathentry kind="lib" path="lib/antlr-3.1.1.jar"/>
-	<classpathentry kind="lib" path="lib/aspectjtools-1.6.2.jar"/>
-	<classpathentry kind="lib" path="lib/aspectjweaver-1.6.2.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
