@@ -4,6 +4,7 @@ import groovy.lang.GroovyObject;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.aspectj.weaver.tools.PointcutParser;
 import org.codehaus.groovy.runtime.callsite.CallSite;
 import org.codehaus.groovy.runtime.callsite.CallSiteArray;
 
@@ -13,6 +14,9 @@ import org.codehaus.groovy.runtime.callsite.CallSiteArray;
     These call* methods are a place holder for weaving code.
 **/
 public class AspectAwareCallSite implements CallSite {
+
+    private static PointcutParser parser =
+        PointcutParser.getPointcutParserSupportingAllPrimitivesAndUsingContextClassloaderForResolution();
 
     private CallSite delegate;
 
