@@ -1,0 +1,25 @@
+h1. Introduction
+
+This document introduce Groovy-AOP, an aspect-oriented framework built atop Groovy.
+
+h1. What is AOP?
+
+AOP is a programming paradigm to cope with crosscutting structures, so called crosscuting concerns.
+This kind of structure cannot be captured using the hierarchical concept of OOP.
+
+h1. Syntax
+
+Groovy-AOP provides a domain specific language to describe aspects.
+
+pre.
+class Aspect {
+    static aspect = {
+        def pc = call('Foo.foo') & within('main') & args(s)
+        around(pc) { context ->
+            return proceed(args)
+        }
+        typing(pc) {
+            [s: String]
+        }
+    }
+}
