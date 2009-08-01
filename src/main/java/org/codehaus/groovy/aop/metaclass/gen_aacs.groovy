@@ -21,7 +21,7 @@ public class AspectAwareCallSite implements CallSite {
     private static PointcutParser parser =
         PointcutParser.getPointcutParserSupportingAllPrimitivesAndUsingContextClassloaderForResolution();
 
-    private CallSite delegate;
+    private final CallSite delegate;
 
     public AspectAwareCallSite(CallSite delegate) {
         this.delegate = delegate;
