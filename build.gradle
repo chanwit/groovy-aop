@@ -1,4 +1,5 @@
 usePlugin 'groovy'
+usePlugin 'eclipse'
 
 version = '0.5'
 repositories {
