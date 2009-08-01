@@ -45,6 +45,9 @@ normal.each { cv ->
             args << "Object[] arg1"
             params << "arg1"
         } else {        
+            if(cv == 'Current' && i == 0) 
+                args << "GroovyObject arg${i}"
+            else 
             if(cv == 'Static' && i == 0) 
                 args << "Class arg${i}"
             else
