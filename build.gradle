@@ -4,7 +4,7 @@ usePlugin 'eclipse'
 version = '0.5'
 repositories {
     mavenCentral()
-    mavenRepo urls: ["http://repository.codehaus.org/", "http://download.java.net/maven/2/"]
+    mavenRepo urls: ['http://repository.codehaus.org/', 'http://download.java.net/maven/2/']
 }
 
 configurations {
@@ -24,21 +24,22 @@ dependencies {
 
 task generateDoc << {
     ant.taskdef(
-        resource:  "net/java/textilej/util/anttask/tasks.properties",
+        resource:  'net/java/textilej/util/anttask/tasks.properties',
         classpath: configurations.textile.asPath
     )
-    ant."textile-to-html" {
+    ant.'textile-to-html' {
         fileset(dir: 'userguide') {
-            include(name: "*.textile")
+            include(name: '*.textile')
         }
     }
 }
 
 task gen_aasc << {
-    ant.exec( dir:".",  executable:"bash",
-        output:"src/main/java/org/codehaus/groovy/aop/metaclass/AspectAwareCallSite.java"
+    def metaClassPackage = "src/main/java/org/codehaus/groovy/aop/metaclass"
+    ant.exec( dir:'.',  executable:'bash',
+        output:"${metaClassPackage}/AspectAwareCallSite.java"
     ) {
-        arg line:"-c src/main/java/org/codehaus/groovy/aop/metaclass/gen_aacs.groovy"
+        arg line:"-c ${metaClassPackage}/gen_aacs.groovy"
     }
 }
 
