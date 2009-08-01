@@ -1,18 +1,22 @@
-h1. Introduction
+h1. Groovy-AOP
+
+h2. Introduction
 
 This document introduce Groovy-AOP, an aspect-oriented framework built atop Groovy.
 
-h1. What is AOP?
+h2. What is AOP?
 
-AOP is a programming paradigm to cope with crosscutting structures, so called crosscuting concerns.
-This kind of structure cannot be captured using the hierarchical concept of OOP.
+p<>. AOP is a programming paradigm to cope with crosscutting structures, so called crosscuting concerns. This kind of structure cannot be captured using the hierarchical concept of OOP.
 
-h1. Syntax
+p<>. AOP has been proposed by Kiczales et al. [1] in 1997. The authors explained that they found a set of design decision problems that could not be captured well with procedural or OOP. These decision problems led to inefficient implementation of the system because they forced codes to be scattered and tangled throughout the program, resulting in difficulty in developing and maintaining it. The authors proposed a new concept, called _aspect_, that better reflects this kind of design decision.
+
+fn1. Aspect-oriented programming, "http://www.google.co.uk/patents/about?id=N9gLAAAAEBAJ":http://www.google.co.uk/patents/about?id=N9gLAAAAEBAJ
+
+h2. Syntax
 
 Groovy-AOP provides a domain specific language to describe aspects.
 
-pre.
-class Aspect {
+pre. class Aspect {
     static aspect = {
         def pc = call('Foo.foo') & within('main') & args(s)
         around(pc) { context ->
@@ -23,3 +27,13 @@ class Aspect {
         }
     }
 }
+
+h2. AOP Concepts
+
+h3. Join point
+
+h3. Aspect
+
+h3. Pointcut
+
+h3. Advice
