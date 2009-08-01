@@ -22,7 +22,6 @@ public abstract class GroovyAOPTestCase extends TestCase {
     protected void tearDown() throws Exception {
         this.gcl = null;
         if(aspect != null) Weaver.uninstall(aspect);
-        //AspectMetaClass.disableGlobally();
     }
 
     public GroovyClassLoader getGcl() {
