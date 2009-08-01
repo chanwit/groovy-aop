@@ -23,7 +23,8 @@ pre. class Aspect {
             return proceed(args)
         }
         typing(pc) {
-            [s: String]
+            s >> String
+            
         }
     }
 }
