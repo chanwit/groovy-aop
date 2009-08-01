@@ -43,4 +43,8 @@ task gen_aasc << {
     }
 }
 
+task install(dependsOn: libs) << {
+    ant.copy( file:"$libsDir/${jar.archiveName}", todir:"C:/groovy/groovy-1.6.4/lib" )
+}
+
 compile.dependsOn gen_aasc
