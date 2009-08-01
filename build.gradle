@@ -34,3 +34,11 @@ task generateDoc << {
         // stylesheet(url:"styles/main.css")
     }
 }
+
+task gen_aasc << {
+    ant.exec( dir:".",  executable:"groovy",
+        output:"src/main/java/org/codehaus/groovy/aop/metaclass/AspectAwareCallSite.java"
+    ) {
+        arg line:"src/main/java/org/codehaus/groovy/aop/metaclass/gen_aacs.groovy"
+    }
+}
