@@ -19,13 +19,13 @@ dependencies {
                [group: 'org.aspectj',           name: 'aspectjweaver',  version: '1.6.5'],
                [group: 'org.antlr',             name: 'antlr-runtime',  version: '3.1.1'],
                [group: 'org.antlr',             name: 'stringtemplate', version: '3.2']
-    )    
+    )
 }
 
 task generateDoc << {
     ant.taskdef(
-        resource:  "net/java/textilej/util/anttask/tasks.properties", 
-        classpath: configurations.textile.asPath     
+        resource:  "net/java/textilej/util/anttask/tasks.properties",
+        classpath: configurations.textile.asPath
     )
     ant."textile-to-html" {
         fileset(dir: 'userguide') {
