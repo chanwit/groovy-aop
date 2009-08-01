@@ -31,12 +31,12 @@ task generateDoc << {
         fileset(dir: 'userguide') {
             include(name: "*.textile")
         }
-        // stylesheet(url:"styles/main.css")
     }
 }
 
 task gen_aasc << {
     println "Generating AspectAwareCallSite .."
+    // TODO check OS
     ant.exec( dir:".",  executable:"bash.exe",
         output:"src/main/java/org/codehaus/groovy/aop/metaclass/AspectAwareCallSite.java"
     ) {
