@@ -35,9 +35,7 @@ task generateDoc << {
 }
 
 task gen_aasc << {
-    println "Generating AspectAwareCallSite .."
-    // TODO check OS
-    ant.exec( dir:".",  executable:"bash.exe",
+    ant.exec( dir:".",  executable:"bash",
         output:"src/main/java/org/codehaus/groovy/aop/metaclass/AspectAwareCallSite.java"
     ) {
         arg line:"-c src/main/java/org/codehaus/groovy/aop/metaclass/gen_aacs.groovy"
