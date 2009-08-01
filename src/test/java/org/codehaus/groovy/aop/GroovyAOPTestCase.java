@@ -1,11 +1,9 @@
 package org.codehaus.groovy.aop;
 
-import org.codehaus.groovy.aop.metaclass.AspectMetaClass;
-
 import groovy.lang.GroovyClassLoader;
 import junit.framework.TestCase;
 
-public class GroovyAOPTestCase extends TestCase {
+public abstract class GroovyAOPTestCase extends TestCase {
 
     private GroovyClassLoader gcl;
     private Class<?> aspect=null;

@@ -2,6 +2,7 @@ package org.codehaus.groovy.aop.tests.pattern
 
 import org.codehaus.groovy.aop.pattern.Parser
 
+
 class ParserTests extends GroovyTestCase {
 
 /*
