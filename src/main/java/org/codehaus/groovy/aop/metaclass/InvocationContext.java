@@ -30,13 +30,8 @@ public class InvocationContext extends GroovyObjectSupport {
     private Object[] args;
     private String methodName;
 
-    private Closure proceedClosure;
-
     public  CallSite proceedCallSite;
     public  int callIndex;
-
-//	private Closure parProceedClosure;
-//	private Stack<Closure> stack;
 
     public Object[] getArgs() {
         return args;
@@ -60,10 +55,6 @@ public class InvocationContext extends GroovyObjectSupport {
 
     public void setMethodName(String methodName) {
         this.methodName = methodName;
-    }
-
-    public void setProceedClosure(Closure closure) {
-        this.proceedClosure = closure;
     }
 
     public Object proceed(Object arguments) throws Throwable {
@@ -111,27 +102,4 @@ public class InvocationContext extends GroovyObjectSupport {
 
     }
 
-
-    // static {
-    //     //
-    //     // Fixing metaClass to prevent stack overflow
-    //     //
-    //     MetaClass mc = new MetaClassImpl(InvocationContext.class);
-    //     GroovySystem.getMetaClassRegistry().setMetaClass(
-    //         InvocationContext.class, mc
-    //     );
-    //     mc.initialize();
-    // }
-
-//    public Object invokeMethod(String name, Object args) {
-//    	if("proceed".equals(name)) {
-//    		return this.proceedClosure.call((Object[]) args);
-//    	} else {
-//    		return super.invokeMethod(name, args);
-//    	}
-//    }
-
-//	public void setProceedStack(Stack<Closure> stack) {
-//		this.stack = stack;
-//	}
  }
