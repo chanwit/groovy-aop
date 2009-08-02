@@ -34,6 +34,8 @@
         <dict>
             <key>AspectMetaclassCreationHandle</key>
             <string>src\org\codehaus\groovy\aop\metaclass\AspectMetaclassCreationHandle.java</string>
+            <key>EffectiveAdvices</key>
+            <string>src\main\java\org\codehaus\groovy\aop\metaclass\EffectiveAdvices.java</string>
             <key>Expand</key>
             <string>src\main\java\groovy\lang\ExpandoMetaClass.java</string>
             <key>asp</key>

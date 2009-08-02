@@ -39,6 +39,16 @@ public class EffectiveAdvices {
 	public boolean isEmpty() {
 		return this.empty;
 	}
+	
+	public Closure[] getBeforeClosureArray() {
+	    if(effBeforeAdvices.size() == 0) return null;
+	    return (Closure[])effBeforeAdvices.toArray[new Closure[effBeforeAdvices.size()]];
+	}
+	
+	public Closure[] getAfterClosureArray() {
+	    if(effAfterAdvices.size() == 0) return null;
+	    return (Closure[])effAfterAdvices.toArray[new Closure[effAfterAdvices.size()]];
+	}	
 
 	public ArrayList<Closure> get(int place) {
 		switch(place) {

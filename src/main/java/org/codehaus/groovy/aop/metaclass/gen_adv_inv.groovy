@@ -14,11 +14,13 @@ import org.codehaus.groovy.runtime.callsite.CallSiteArray;
 public class AdviceInvoker {
     
     private CallSite delegate;
-    private EffectiveAdvices ea;
+    private Closure[] before;
+    private Closure[] after;
     
-    public AdviceInvoker (CallSite delegate, EffectiveAdvices effectiveAdviceCodes) {
+    public AdviceInvoker (CallSite delegate, EffectiveAdvices ea) {
         this.delegate = delegate;
-        this.ea = effectiveAdviceCodes;
+        before = ea.getBeforeClosureArray();
+        after =  ea.getAfterClosureArray();
     }
 '''
 
@@ -55,13 +57,21 @@ normal.each { cv ->
 def text = """
     @Override
     public Object call${cv}(${args.join(", ")}) throws Throwable {
-        for(int i = 0; i < before.count; i++) {
-            before[i].call(context);
+        //
+        //  TODO replace this with a real invocation context object
+        //
+        Object context = null;
+        if(before!=null) {
+            for(int i = 0; i < before.count; i++) {
+                before[i].call(context);
+            }
         }
-        Object result = delegate.call${cv}(${args.join(", ")});
-        for(int i = 0; i < after.count; i++) {
-            after[i].call(context);
-        }      
+        Object result = delegate.call${cv}(${params.join(", ")});
+        if(after != null) {
+            for(int i = 0; i < after.count; i++) {
+                after[i].call(context);
+            }
+        }
         return result;  
     }
 """
