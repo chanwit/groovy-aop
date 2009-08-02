@@ -53,6 +53,7 @@ class BeforeAfterAspect {
 	}
 }
 '''
+    void testSomething() {}
 	
 	// void testBeforeSetter() {
 	// 	setupAspect(beforeCode)
