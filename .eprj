@@ -22,13 +22,12 @@
             <key>includeFiles</key>
             <array>
                 <string>*.java</string>
-                <string>*.aj</string>
                 <string>*.groovy</string>
                 <string>*.xml</string>
-                <string>*.gant</string>
                 <string>*.properties</string>
                 <string>*.gradle</string>
                 <string>*.textile</string>
+                <string>README</string>
             </array>
         </dict>
         <key>fileTriggers</key>
