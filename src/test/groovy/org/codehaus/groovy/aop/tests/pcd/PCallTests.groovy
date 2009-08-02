@@ -55,7 +55,7 @@ class PCallAspect {
 	void testPCall_All() {
 		setupAspect(aspectCode)
 		def target = gcl.parseClass(targetCode).newInstance()
-		println target.metaClass
+		// println target.metaClass
 		assert target.method_001(1) == 10
 		assert target.method_002(2) == 20
 		assert target.method_003(3) == 4

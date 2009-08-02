@@ -70,7 +70,7 @@ def text = """
         InvocationContext context = new InvocationContext();
         ${context_SetArgs}        
         if(before != null) {
-            System.out.println("doing before ...");
+            // System.out.println("doing before ...");
             for(int i = 0; i < before.length; i++) {
                 try {                
                     before[i].call(context);
@@ -86,7 +86,7 @@ def text = """
         }
         Object result = delegate.call${cv}(${params.join(", ")});
         if(after != null) {
-            System.out.println("doing after ...");
+            // System.out.println("doing after ...");
             for(int i = 0; i < after.length; i++) {
                 try {
                     after[i].call(context);

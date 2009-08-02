@@ -95,6 +95,8 @@
             <string>..\grooy_typesheet\src\org\codehaus\groovy\typesheet\Builder.java</string>
             <key>callsitetest</key>
             <string>src\test\java\org\codehaus\groovy\aop\tests\callsite\CallSiteTests.java</string>
+            <key>effec</key>
+            <string>src\main\java\org\codehaus\groovy\aop\metaclass\EffectiveAdvices.java</string>
             <key>gen</key>
             <string>src\main\java\org\codehaus\groovy\aop\metaclass\gen_adv_inv.groovy</string>
             <key>gen_</key>

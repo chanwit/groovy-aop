@@ -42,27 +42,35 @@ public class EffectiveAdvices {
         return this.empty;
     }
 
-    public Closure[] getBeforeClosureArray() {
-        if(effBeforeAdvices.size() == 0) return null;
-        Closure[] result = (Closure[])effBeforeAdvices.toArray(new Closure[effBeforeAdvices.size()]);
+    private static void resetMetaClass(Closure[] result) {
         for(int i=0; i< result.length; i++) {
-            System.out.println(result[i].getClass());
             MetaClass mc = new ClosureMetaClass(GroovySystem.getMetaClassRegistry(), result[i].getClass());
             result[i].setMetaClass(mc);
             mc.initialize();
         }
+    }
+
+    private static Closure[] convertToArray(ArrayList<Closure> source) {
+        if(source.size() == 0) return null;
+        Closure[] result = (Closure[])source.toArray(new Closure[source.size()]);
+        resetMetaClass(result);
         return result;
     }
 
+    public Closure[] getBeforeClosureArray() {
+        return convertToArray(effBeforeAdvices);
+    }
+
     public Closure[] getAfterClosureArray() {
-        if(effAfterAdvices.size() == 0) return null;
-        Closure[] result = (Closure[])effAfterAdvices.toArray(new Closure[effAfterAdvices.size()]);
-        for(int i=0; i< result.length; i++) {
-            MetaClass mc = new ClosureMetaClass(GroovySystem.getMetaClassRegistry(), result[i].getClass());
-            result[i].setMetaClass(mc);
-            mc.initialize();
-        }
-        return result;
+        return convertToArray(effAfterAdvices);
+    }
+
+    public Closure[] getAroundClosureArray() {
+        return convertToArray(effAroundAdvices);
+    }
+
+    public Closure[] getAfterReturnClosureArray() {
+        return convertToArray(effAfterReturnAdvices);
     }
 
     public ArrayList<Closure> get(int place) {
@@ -98,11 +106,6 @@ public class EffectiveAdvices {
         this.effAfterAdvices.addAll(from.effAfterAdvices);
         this.effAfterReturnAdvices.addAll(from.effAfterReturnAdvices);
         empty = false;
-    }
-
-    public Closure[] getAroundClosureArray() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }
