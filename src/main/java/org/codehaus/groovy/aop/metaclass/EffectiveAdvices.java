@@ -42,35 +42,31 @@ public class EffectiveAdvices {
         return this.empty;
     }
 
-    private static void resetMetaClass(Closure[] result) {
+    private static Closure[] convertToArrayAndResetMetaClass(ArrayList<Closure> source) {
+        if(source.size() == 0) return null;
+        Closure[] result = (Closure[])source.toArray(new Closure[source.size()]);
         for(int i=0; i< result.length; i++) {
             MetaClass mc = new ClosureMetaClass(GroovySystem.getMetaClassRegistry(), result[i].getClass());
             result[i].setMetaClass(mc);
             mc.initialize();
         }
-    }
-
-    private static Closure[] convertToArray(ArrayList<Closure> source) {
-        if(source.size() == 0) return null;
-        Closure[] result = (Closure[])source.toArray(new Closure[source.size()]);
-        resetMetaClass(result);
         return result;
     }
 
     public Closure[] getBeforeClosureArray() {
-        return convertToArray(effBeforeAdvices);
+        return convertToArrayAndResetMetaClass(effBeforeAdvices);
     }
 
     public Closure[] getAfterClosureArray() {
-        return convertToArray(effAfterAdvices);
+        return convertToArrayAndResetMetaClass(effAfterAdvices);
     }
 
     public Closure[] getAroundClosureArray() {
-        return convertToArray(effAroundAdvices);
+        return convertToArrayAndResetMetaClass(effAroundAdvices);
     }
 
     public Closure[] getAfterReturnClosureArray() {
-        return convertToArray(effAfterReturnAdvices);
+        return convertToArrayAndResetMetaClass(effAfterReturnAdvices);
     }
 
     public ArrayList<Closure> get(int place) {
