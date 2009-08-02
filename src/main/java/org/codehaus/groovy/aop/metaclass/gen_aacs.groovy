@@ -22,6 +22,12 @@ public class AspectAwareCallSite implements CallSite {
         PointcutParser.getPointcutParserSupportingAllPrimitivesAndUsingContextClassloaderForResolution();
 
     private final CallSite delegate;
+    
+    //
+    // These property can be reset for re-weaving
+    // 
+    private boolean matched = false;
+    private AdviceInvoker adviceInvoker = null;
 
     public AspectAwareCallSite(CallSite delegate) {
         this.delegate = delegate;
@@ -61,8 +67,35 @@ normal.each { cv ->
 def text = """
     @Override
     public Object call${cv}(${args.join(", ")}) throws Throwable {
-        Object result = delegate.call${cv}(${params.join(", ")});
-        return result;
+        //
+        // if this call matching never performed
+        //
+        if(matched==false) { 
+            //
+            // do matching
+            //
+            EffectiveAdvices effectiveAdviceCodes = matcher.match();
+            if(effectiveAdviceCodes != null) { // matched and get some advice codes to perform
+                adviceInvoker = new AdviceInvoker(delegate, effectiveAdviceCodes);
+            } else {
+                adviceInvoker = null; // just to make sure, it will be null.
+            }
+
+            //
+            // matching process is performed,
+            // flag set to not doing this until 
+            // - a new aspect is installed, 
+            // - or some are modified.
+            // - or some are revoked.
+            //
+            matched = true;
+        }
+        
+        if(adviceInvoker != null) {
+            return adviceInvoker.call${cv}(${params.join(", ")});
+        } else {
+            return delegate.call${cv}(${params.join(", ")});
+        }
     }
 """
     print text
@@ -72,7 +105,10 @@ def text = """
 //
 // another set to gen *property with arg0
 //
-def special_0 = ['callGetProperty', 'callGetPropertySafe', 'callGroovyObjectGetProperty', 'callGroovyObjectGetPropertySafe']
+def special_0 = ['callGetProperty', 
+                 'callGetPropertySafe', 
+                 'callGroovyObjectGetProperty', 
+                 'callGroovyObjectGetPropertySafe']
 special_0.each { m ->
 def text = """
     @Override
