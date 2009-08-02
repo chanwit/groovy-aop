@@ -27,6 +27,7 @@ import org.codehaus.groovy.runtime.MetaClassHelper;
 public class CallJoinpoint implements Joinpoint {
 
     private Class<?> sender;
+    private Class<?> receiverClass;
     private String methodName;
     private Object[] args;
     private Class<?>[] argTypes;
@@ -35,18 +36,30 @@ public class CallJoinpoint implements Joinpoint {
 
     public CallJoinpoint(Class<?> sender, String methodName, Object target, Object[] args, Class<?>[] argClasses) {
         super();
-        this.sender     = sender;
+        this.sender = sender;
+        this.methodName    = methodName;
+        this.target        = target;
+        this.receiverClass = target.getClass();        
+        this.args          = args;
+        this.argTypes      = argClasses;
+    }
+
+    public CallJoinpoint(Class<?> sender, String methodName, Object target, Object[] args) {
+        super();
+        this.sender = sender;
         this.methodName = methodName;
         this.target     = target;
-        this.args       = args;
-        this.argTypes   = argClasses;
+        this.receiverClass = target.getClass();        
+        this.args     	= args;
+        this.argTypes 	= MetaClassHelper.convertToTypeArray(this.args);
     }
-    
+
     public CallJoinpoint(Class<?> sender, String methodName, Object[] args) {
         super();
-        this.sender     = sender;
+        this.sender = sender;
         this.methodName = methodName;
         this.target     = args[0];
+        this.receiverClass = target.getClass();        
 
         if(args.length == 1) {
             this.args     = new Object[]{};
@@ -56,7 +69,7 @@ public class CallJoinpoint implements Joinpoint {
             this.argTypes = MetaClassHelper.convertToTypeArray(this.args);
         }
     }
-    
+
     public Object[] getArgs() {
         return args;
     }
@@ -81,12 +94,12 @@ public class CallJoinpoint implements Joinpoint {
         this.methodName = methodName;
     }
 
-    public Class<?> getSender() {
-        return sender;
+    public Class<?> getReceiverClass() {
+        return receiverClass;
     }
 
-    public void setSender(Class<?> sender) {
-        this.sender = sender;
+    public void setReceiverClass(Class<?> receiverClass) {
+        this.receiverClass = receiverClass;
     }
 
     public void setCallStackEntry(Object[] callStack) {
@@ -111,7 +124,7 @@ public class CallJoinpoint implements Joinpoint {
         int result = 1;
         result = PRIME * result + Arrays.hashCode(argTypes);
         result = PRIME * result + ((methodName == null) ? 0 : methodName.hashCode());
-        result = PRIME * result + ((sender.getName() == null) ? 0 : sender.getName().hashCode());
+        result = PRIME * result + ((receiverClass.getName() == null) ? 0 : receiverClass.getName().hashCode());
         return result;
     }
 
@@ -131,17 +144,17 @@ public class CallJoinpoint implements Joinpoint {
                 return false;
         } else if (!methodName.equals(other.methodName))
             return false;
-        if (sender == null) {
-            if (other.sender != null)
+        if (receiverClass == null) {
+            if (other.receiverClass != null)
                 return false;
-        } else if (!sender.getName().equals(other.sender.getName()))
+        } else if (!receiverClass.getName().equals(other.receiverClass.getName()))
             return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return sender.getName() + " " + methodName;
+        return receiverClass.getName() + " " + methodName;
     }
 
 

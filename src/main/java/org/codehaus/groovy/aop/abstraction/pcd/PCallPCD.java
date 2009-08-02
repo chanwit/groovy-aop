@@ -43,9 +43,9 @@ public class PCallPCD extends AbstractPCD {
 	protected boolean doMatches(Pattern pattern, Joinpoint jp) {
 		if(jp instanceof CallJoinpoint == false) return false;
 		CallJoinpoint cjp=(CallJoinpoint)jp;
-		Class sender = cjp.getSender();
+		Class receiverClass = cjp.getReceiverClass();
 		String methodName = cjp.getMethodName();
-		return pattern.matcher(sender.getCanonicalName()+"."+methodName).matches();
+		return pattern.matcher(receiverClass.getCanonicalName()+"."+methodName).matches();
 	}	
 
 }

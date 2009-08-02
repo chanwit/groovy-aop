@@ -20,8 +20,8 @@ class AfterTests extends GroovyAOPTestCase {
 
   static aspect = {
     def pc = pcall('Target.method')
-    after(pc) { i ->
-      assert i == 1
+    after(pc) { ctx ->
+      assert ctx.args[0] == 1
     }
   }
 

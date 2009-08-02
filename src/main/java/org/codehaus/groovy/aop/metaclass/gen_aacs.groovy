@@ -76,6 +76,10 @@ normal.each { cv ->
             params << "arg${i}"
         }
     }
+    def create_jp = "Joinpoint jp = new CallJoinpoint(sender, delegate.getName(), new Object[]{${params.join(", ")}});"
+    if(n == -1) {
+        create_jp = "Joinpoint jp = new CallJoinpoint(sender, delegate.getName(), arg0, arg1);"
+    }
 def text = """
     @Override
     public Object call${cv}(${args.join(", ")}) throws Throwable {
@@ -99,7 +103,7 @@ def text = """
             EffectiveAdvices effectiveAdviceCodes = new EffectiveAdvices();
             Class<?> sender = delegate.getArray().owner;
             // TODO need to handle when arg0 with Object[] arg1;
-            Joinpoint jp = new CallJoinpoint(sender, delegate.getName(), new Object[]{${params.join(", ")}});
+            $create_jp
             matcher.matchPerClass(effectiveAdviceCodes, jp);
             if(effectiveAdviceCodes != null) { // matched and get some advice codes to perform
                 adviceInvoker = new AdviceInvoker(delegate, effectiveAdviceCodes);

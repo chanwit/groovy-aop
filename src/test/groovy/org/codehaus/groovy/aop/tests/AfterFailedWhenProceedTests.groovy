@@ -21,8 +21,8 @@ class AfterFailedWhenProceedTests extends GroovyAOPTestCase {
 
   static aspect = {
     def pc = pcall('Target.method')
-    after(pc) { i ->
-      proceed(i)
+    after(pc) { ctx ->
+      proceed(ctx.args)
     }
   }
 }

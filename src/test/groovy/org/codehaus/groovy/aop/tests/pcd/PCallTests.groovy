@@ -5,7 +5,7 @@ import org.codehaus.groovy.aop.GroovyAOPTestCase
 class PCallTests extends GroovyAOPTestCase {
 	
 	static targetCode = '''
-class Target {
+class PCallTarget {
 	def method_001(int i) {
 		return 10
 	}
@@ -22,9 +22,9 @@ class Target {
 class PCallAspect {
 
 	static aspect = {
-		def pc1 = pcall('Target.method_001')
-		def pc2 = pcall('Target.method_002')
-		def pc3 = pcall('Target.method_003')
+		def pc1 = pcall('PCallTarget.method_001')
+		def pc2 = pcall('PCallTarget.method_002')
+		def pc3 = pcall('PCallTarget.method_003')
 
         before(pc1) { ctx ->
             assert ctx.args[0] == 1

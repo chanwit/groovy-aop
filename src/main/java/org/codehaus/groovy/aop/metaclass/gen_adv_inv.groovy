@@ -5,23 +5,24 @@ package org.codehaus.groovy.aop.metaclass;
 
 import groovy.lang.GroovyObject;
 import groovy.lang.Closure;
+import groovy.lang.MissingMethodException;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.aspectj.weaver.tools.PointcutParser;
+import org.codehaus.groovy.aop.ProceedNotAllowedException;
+import org.codehaus.groovy.runtime.InvokerInvocationException;
 import org.codehaus.groovy.runtime.callsite.CallSite;
-import org.codehaus.groovy.runtime.callsite.CallSiteArray;
 
 public class AdviceInvoker {
     
     private CallSite delegate;
     private Closure[] before;
     private Closure[] after;
+    private Closure[] around;
     
     public AdviceInvoker (CallSite delegate, EffectiveAdvices ea) {
         this.delegate = delegate;
         before = ea.getBeforeClosureArray();
-        after =  ea.getAfterClosureArray();
+        after  = ea.getAfterClosureArray();
+        around = ea.getAroundClosureArray();
     }
 '''
 
@@ -67,16 +68,36 @@ normal.each { cv ->
 def text = """
     public Object call${cv}(${args.join(", ")}) throws Throwable {
         InvocationContext context = new InvocationContext();
-        ${context_SetArgs}
-        if(before!=null) {
+        ${context_SetArgs}        
+        if(before != null) {
+            System.out.println("doing before ...");
             for(int i = 0; i < before.length; i++) {
-                before[i].call(context);
+                try {                
+                    before[i].call(context);
+                } catch(InvokerInvocationException e) {
+                    if (e.getCause() instanceof MissingMethodException) {
+                        if (((MissingMethodException)e.getCause()).getMethod().equals("proceed")) {
+                            throw new ProceedNotAllowedException();
+                        }
+                    }
+                    throw e;
+                }
             }
         }
         Object result = delegate.call${cv}(${params.join(", ")});
         if(after != null) {
+            System.out.println("doing after ...");
             for(int i = 0; i < after.length; i++) {
-                after[i].call(context);
+                try {
+                    after[i].call(context);
+                } catch(InvokerInvocationException e) {
+                    if (e.getCause() instanceof MissingMethodException) {
+                        if (((MissingMethodException)e.getCause()).getMethod().equals("proceed")) {
+                            throw new ProceedNotAllowedException();
+                        }
+                    }
+                    throw e;              
+                }
             }
         }
         return result;  

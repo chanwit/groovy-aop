@@ -20,9 +20,9 @@ class BeforeTests extends GroovyAOPTestCase {
 
   static aspect = {
     def pc = pcall('Target.method')
-    before(pc) { i ->
+    before(pc) { ctx ->
+      def i = ctx.args[0]
       assert i == 1
-      // println new Exception(i.toString())
       throw new Exception(i.toString())
     }
   }
@@ -37,7 +37,7 @@ class BeforeTests extends GroovyAOPTestCase {
             target.method(1)
             fail("cannot pass here")
         } catch(e) {
-            assert e.message == "1"
+            assert e.message == "java.lang.Exception: 1"
         }
         // assert target.method(1) == 1
     }
