@@ -54,30 +54,30 @@ class BeforeAfterAspect {
 }
 '''
 	
-	void testBeforeSetter() {
-		setupAspect(beforeCode)
+	// void testBeforeSetter() {
+	// 	setupAspect(beforeCode)
 
-		def target = gcl.parseClass(targetCode).newInstance()
-		target.prop = 1
-		assert target.prop == 2			
-	}
+	// 	def target = gcl.parseClass(targetCode).newInstance()
+	// 	target.prop = 1
+	// 	assert target.prop == 2			
+	// }
 
-	void testAfterSetter() {
-		setupAspect(afterCode)
-		
-		def target = gcl.parseClass(targetCode).newInstance()
-		target.prop = 1
-		assert target.prop == 1
-		assert target.done == true
-	}
+	// void testAfterSetter() {
+	// 	setupAspect(afterCode)
+	// 	
+	// 	def target = gcl.parseClass(targetCode).newInstance()
+	// 	target.prop = 1
+	// 	assert target.prop == 1
+	// 	assert target.done == true
+	// }
 	
-	void testBeforeAfterSetter() {
-		setupAspect(beforeAfterCode)
-		
-		def target = gcl.parseClass(targetCode).newInstance()
-		target.prop = 1
-		assert target.prop == 2
-		assert target.done == false
-	}	
+	// void testBeforeAfterSetter() {
+	// 	setupAspect(beforeAfterCode)
+	// 	
+	// 	def target = gcl.parseClass(targetCode).newInstance()
+	// 	target.prop = 1
+	// 	assert target.prop == 2
+	// 	assert target.done == false
+	// }	
 	
 }
