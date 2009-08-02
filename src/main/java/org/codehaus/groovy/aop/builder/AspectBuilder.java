@@ -7,6 +7,7 @@ import org.codehaus.groovy.aop.abstraction.Pointcut;
 import org.codehaus.groovy.aop.abstraction.advice.AfterAdvice;
 import org.codehaus.groovy.aop.abstraction.advice.AroundAdvice;
 import org.codehaus.groovy.aop.abstraction.advice.BeforeAdvice;
+import org.codehaus.groovy.aop.abstraction.advice.TypeAdvice;
 import org.codehaus.groovy.aop.abstraction.pcd.GetPCD;
 import org.codehaus.groovy.aop.abstraction.pcd.PCD;
 import org.codehaus.groovy.aop.abstraction.pcd.PCallPCD;
@@ -33,6 +34,11 @@ public class AspectBuilder {
 
     public Aspect after(Object[] args) {
         aspect.add(new AfterAdvice((Class<?>)aspect.getOwner(), args));
+        return aspect;
+    }
+
+    public Aspect typing(Object[] args) {
+        aspect.add(new TypeAdvice((Class<?>)aspect.getOwner(), args));
         return aspect;
     }
 
