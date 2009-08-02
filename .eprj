@@ -75,6 +75,8 @@
             <string>src\test\groovy\org\codehaus\groovy\aop\tests\AfterTests.groovy</string>
             <key>aftertests</key>
             <string>src\test\groovy\org\codehaus\groovy\aop\tests\AfterTests.groovy</string>
+            <key>aroundte</key>
+            <string>src\test\groovy\org\codehaus\groovy\aop\tests\AroundTests.groovy</string>
             <key>asp</key>
             <string>src\org\codehaus\groovy\aop\metaclass\AspectMetaClass.java</string>
             <key>aspectawareca</key>
@@ -115,6 +117,8 @@
             <string>src\main\java\org\codehaus\groovy\aop\metaclass\InvocationContext.java</string>
             <key>matcher</key>
             <string>src\main\java\org\codehaus\groovy\aop\metaclass\Matcher.java</string>
+            <key>pcalltest</key>
+            <string>src\test\groovy\org\codehaus\groovy\aop\tests\pcd\PCallTests.groovy</string>
             <key>settert</key>
             <string>src\test\groovy\org\codehaus\groovy\aop\tests\pcd\SetterTests.groovy</string>
             <key>testcase</key>

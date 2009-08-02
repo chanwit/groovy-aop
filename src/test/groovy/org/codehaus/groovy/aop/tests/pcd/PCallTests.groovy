@@ -41,7 +41,7 @@ class PCallAspect {
         // method_003
         around(pc3) { ctx ->
             assert ctx.args[0] == 3
-            proceed(ctx.args[0]+1)
+            return proceed(ctx.args[0]+1)
         }
 
         // method_003

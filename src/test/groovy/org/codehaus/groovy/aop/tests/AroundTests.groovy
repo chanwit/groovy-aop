@@ -18,10 +18,10 @@ class AroundAspect {
 
   static aspect = {
     def pc = pcall('Target.method')
-    around(pc) { i ->
+    around(pc) { ctx ->
     	println args[0]
     	println args.length 
-    	proceed(i)
+    	return proceed(ctx.args)
     }
   }
 

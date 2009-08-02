@@ -108,7 +108,8 @@ def text = """
             }
             context.callIndex = ${callIndex};
             context.proceedCallSite = delegate;
-            around[0].call(context);
+            around[0].setDelegate(context);
+            result = around[0].call(context);
         } else {
             result = delegate.call${cv}(${params.join(", ")});   
         }

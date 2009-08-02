@@ -69,6 +69,10 @@ public class InvocationContext extends GroovyObjectSupport {
     public Object proceed(Object arguments) throws Throwable {
         if(this.proceedCallSite == null) throw new ProceedNotAllowedException();
 
+        if((arguments instanceof Object[]) == false) {
+            arguments = new Object[]{arguments};
+        }
+
         Object[] args = (Object[])arguments;
         switch(callIndex) {
             case 1: return proceedCallSite.call(target, (Object[])arguments);
@@ -105,14 +109,6 @@ public class InvocationContext extends GroovyObjectSupport {
 
         return null;
 
-        /*
-        if(this.proceedClosure==null) throw new ProceedNotAllowedException();
-        if(args instanceof Object[]) {
-            return this.proceedClosure.call((Object[]) args);
-        } else {
-            return this.proceedClosure.call(args);
-        }
-        */
     }
 
 
