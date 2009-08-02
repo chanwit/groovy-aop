@@ -22,6 +22,7 @@ import java.util.Arrays;
 
 import org.codehaus.groovy.aop.abstraction.Joinpoint;
 import org.codehaus.groovy.aop.metaclass.InvocationContext;
+import org.codehaus.groovy.runtime.MetaClassHelper;
 
 public class CallJoinpoint implements Joinpoint {
 
@@ -34,13 +35,28 @@ public class CallJoinpoint implements Joinpoint {
 
     public CallJoinpoint(Class<?> sender, String methodName, Object target, Object[] args, Class<?>[] argClasses) {
         super();
-        this.sender = sender;
+        this.sender     = sender;
         this.methodName = methodName;
-        this.target = target;
-        this.args = args;
-        this.argTypes = argClasses;
+        this.target     = target;
+        this.args       = args;
+        this.argTypes   = argClasses;
     }
+    
+    public CallJoinpoint(Class<?> sender, String methodName, Object[] args) {
+        super();
+        this.sender     = sender;
+        this.methodName = methodName;
+        this.target     = args[0];
 
+        if(args.length == 1) {
+            this.args     = new Object[]{};
+            this.argTypes = new Class[]{};
+        } else {
+            this.args     = Arrays.copyOfRange(args, 1, args.length-1);
+            this.argTypes = MetaClassHelper.convertToTypeArray(this.args);
+        }
+    }
+    
     public Object[] getArgs() {
         return args;
     }

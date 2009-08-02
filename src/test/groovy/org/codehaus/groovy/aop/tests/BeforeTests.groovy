@@ -1,6 +1,5 @@
 package org.codehaus.groovy.aop.tests
 
-import org.codehaus.groovy.aop.metaclass.AspectMetaClass
 import org.codehaus.groovy.aop.Weaver
 import org.codehaus.groovy.aop.GroovyAOPTestCase
 
@@ -23,8 +22,8 @@ class BeforeTests extends GroovyAOPTestCase {
     def pc = pcall('Target.method')
     before(pc) { i ->
       assert i == 1
-      println new Exception(i.toString())
-      // throw new Exception(i.toString())
+      // println new Exception(i.toString())
+      throw new Exception(i.toString())
     }
   }
 

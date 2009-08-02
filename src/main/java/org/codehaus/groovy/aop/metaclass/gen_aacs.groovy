@@ -11,6 +11,13 @@ import org.aspectj.weaver.tools.PointcutParser;
 import org.codehaus.groovy.runtime.callsite.CallSite;
 import org.codehaus.groovy.runtime.callsite.CallSiteArray;
 
+import org.codehaus.groovy.aop.AspectRegistry;
+import org.codehaus.groovy.aop.cache.AdviceCacheL1;
+import org.codehaus.groovy.aop.cache.AdviceCacheL2;
+
+import org.codehaus.groovy.aop.abstraction.Joinpoint;
+import org.codehaus.groovy.aop.abstraction.joinpoint.*;
+
 /**
  *   AspectAwareCallSite
  *   The real working code is generated from gen_aasc.groovy
@@ -22,7 +29,12 @@ public class AspectAwareCallSite implements CallSite {
         PointcutParser.getPointcutParserSupportingAllPrimitivesAndUsingContextClassloaderForResolution();
 
     private final CallSite delegate;
-    
+    public static ThreadLocal<Boolean> enabled = new ThreadLocal<Boolean>(){
+        @Override protected Boolean initialValue(){
+            return true;
+        }
+    };
+        
     //
     // These property can be reset for re-weaving
     // 
@@ -68,13 +80,27 @@ def text = """
     @Override
     public Object call${cv}(${args.join(", ")}) throws Throwable {
         //
+        // We do not allow to matching inside advice invokers,
+        // so this flag is needed.
+        //
+        if(enabled.get() == false) return delegate.call${cv}(${params.join(", ")});
+        
+        //
         // if this call matching never performed
         //
         if(matched==false) { 
             //
+            // create an aspect matcher from global AspectRegistry, L1 and L2 caches.
+            //
+            Matcher matcher  = new Matcher(AspectRegistry.v(), AdviceCacheL1.v(), AdviceCacheL2.v());
+            //
             // do matching
             //
-            EffectiveAdvices effectiveAdviceCodes = matcher.match();
+            EffectiveAdvices effectiveAdviceCodes = new EffectiveAdvices();
+            Class<?> sender = delegate.getArray().owner;
+            // TODO need to handle when arg0 with Object[] arg1;
+            Joinpoint jp = new CallJoinpoint(sender, delegate.getName(), new Object[]{${params.join(", ")}});
+            matcher.matchPerClass(effectiveAdviceCodes, jp);
             if(effectiveAdviceCodes != null) { // matched and get some advice codes to perform
                 adviceInvoker = new AdviceInvoker(delegate, effectiveAdviceCodes);
             } else {
@@ -92,7 +118,12 @@ def text = """
         }
         
         if(adviceInvoker != null) {
-            return adviceInvoker.call${cv}(${params.join(", ")});
+            try {
+                enabled.set(false);
+                return adviceInvoker.call${cv}(${params.join(", ")});
+            } finally {
+                enabled.set(true);
+            }
         } else {
             return delegate.call${cv}(${params.join(", ")});
         }

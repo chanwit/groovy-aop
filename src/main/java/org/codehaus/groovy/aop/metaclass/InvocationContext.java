@@ -19,9 +19,7 @@
 package org.codehaus.groovy.aop.metaclass;
 
 import org.codehaus.groovy.aop.ProceedNotAllowedException;
-
-import groovy.lang.Closure;
-import groovy.lang.GroovyObjectSupport;
+import groovy.lang.*;
 
 public class InvocationContext extends GroovyObjectSupport {
 
@@ -38,7 +36,7 @@ public class InvocationContext extends GroovyObjectSupport {
 	}
 	
 	public void setArgs(Object[] args) {
-		this.args = args;
+        this.args = args;
 	}
 	
 	public Object getCalled() {
@@ -69,6 +67,18 @@ public class InvocationContext extends GroovyObjectSupport {
 			return this.proceedClosure.call(args);
 		}
 	}
+	
+	
+	// static {
+	//     //
+	//     // Fixing metaClass to prevent stack overflow
+	//     //
+	//     MetaClass mc = new MetaClassImpl(InvocationContext.class);
+	//     GroovySystem.getMetaClassRegistry().setMetaClass(
+	//         InvocationContext.class, mc
+    //     );
+    //     mc.initialize();
+	// }
 		
 //    public Object invokeMethod(String name, Object args) {
 //    	if("proceed".equals(name)) {

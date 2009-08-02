@@ -15,3 +15,4 @@ ivy
 build
 .gradle
 src/main/java/org/codehaus/groovy/aop/metaclass/AspectAwareCallSite.java
+src/main/java/org/codehaus/groovy/aop/metaclass/AdviceInvoker.java

@@ -1,8 +1,7 @@
 package org.codehaus.groovy.aop.tests.pcd
 
 import org.codehaus.groovy.aop.GroovyAOPTestCase
-import org.codehaus.groovy.aop.metaclass.AspectMetaClass
-import org.codehaus.groovy.aop.metaclass.AspectMetaclassCreationHandle
+
 import org.codehaus.groovy.aop.AspectRegistry
 import org.codehaus.groovy.aop.abstraction.Aspect
 

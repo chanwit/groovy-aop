@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
 
 import org.codehaus.groovy.aop.abstraction.Aspect;
 import org.codehaus.groovy.aop.builder.AspectBuilder;
-import org.codehaus.groovy.aop.metaclass.AspectMetaclassCreationHandle;
+// import org.codehaus.groovy.aop.metaclass.AspectMetaclassCreationHandle;
 
 public class Weaver {
 
@@ -34,9 +34,11 @@ public class Weaver {
      *
      * **/
     public static Aspect install(Class<?> aspectOwner) throws Throwable {
+        /*
         if(!AspectMetaclassCreationHandle.isEnabled()) {
             throw new AspectMetaClassNotEnabledException();
         }
+        */
         if(containAspect(aspectOwner)) {
             Aspect aspect = new Aspect(aspectOwner);
             AspectRegistry.v().add(aspectOwner, aspect);
@@ -55,7 +57,7 @@ public class Weaver {
         Method method = aspectOwner.getDeclaredMethod("getAspect", new Class[]{});
         Closure c = (Closure)method.invoke(aspectOwner, new Object[]{});
         c.setDelegate(new AspectBuilder(aspect));
-        c.setResolveStrategy(Closure.DELEGATE_ONLY); // or delegate only?
+        c.setResolveStrategy(Closure.DELEGATE_ONLY);
         c.call();
     }
 

@@ -1,6 +1,5 @@
 package org.codehaus.groovy.aop.bugs
 
-import org.codehaus.groovy.aop.metaclass.AspectMetaClass
 import org.codehaus.groovy.aop.Weaver
 import org.codehaus.groovy.aop.GroovyAOPTestCase
 /**
@@ -25,9 +24,9 @@ class Bug_266_Tests extends GroovyAOPTestCase {
 '''class BeforeAspect {
 
   static aspect = {
-    def pc = pcall('*')
-    before(pc) { i ->
-      assert i == 1
+    def pc = pcall('Target.*')
+    before(pc) { inv ->
+      assert inv.args[0] == 1
     }
   }
 

@@ -8,6 +8,7 @@ import org.codehaus.groovy.aop.AspectRegistry;
 import org.codehaus.groovy.aop.abstraction.Advice;
 import org.codehaus.groovy.aop.abstraction.Aspect;
 import org.codehaus.groovy.aop.abstraction.Joinpoint;
+import org.codehaus.groovy.aop.abstraction.Pointcut;
 import org.codehaus.groovy.aop.cache.AdviceCacheL1;
 import org.codehaus.groovy.aop.cache.AdviceCacheL2;
 
@@ -23,6 +24,10 @@ public class Matcher {
         l1Cache = cache;
         l2Cache = cache2;
     }
+    
+    //
+    // TODO: matchPerInstance
+    // 
 
     public void matchPerClass(EffectiveAdvices effAdvices, Joinpoint jp) {
         //

@@ -26,22 +26,22 @@ class PCallAspect {
 		def pc2 = pcall('Target.method_002')
 		def pc3 = pcall('Target.method_003')
 
-        before(pc1) { i ->
-            assert i == 1
+        before(pc1) { ctx ->
+            assert ctx.args[0] == 1
         }
-        after(pc1)  { i ->
-            assert i == 1
+        after(pc1)  { ctx ->
+            assert ctx.args[0] == 1
         }
-        after(pc2) { i ->
-            assert i == 2
+        after(pc2) { ctx ->
+            assert ctx.args[0] == 2
         }
-        before(pc3) { i -> assert i== 3 }
-        after(pc3)  { i -> assert i== 3 }
+        before(pc3) { ctx -> assert ctx.args[0] == 3 }
+        after(pc3)  { ctx -> assert ctx.args[0] == 3 }
 
         // method_003
-        around(pc3) { i ->
-            assert i == 3
-            proceed(i+1)
+        around(pc3) { ctx ->
+            assert ctx.args[0] == 3
+            proceed(ctx.args[0]+1)
         }
 
         // method_003
@@ -55,6 +55,7 @@ class PCallAspect {
 	void testPCall_All() {
 		setupAspect(aspectCode)
 		def target = gcl.parseClass(targetCode).newInstance()
+		println target.metaClass
 		assert target.method_001(1) == 10
 		assert target.method_002(2) == 20
 		assert target.method_003(3) == 4

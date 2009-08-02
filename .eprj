@@ -28,34 +28,81 @@
                 <string>*.gant</string>
                 <string>*.properties</string>
                 <string>*.gradle</string>
+                <string>*.textile</string>
             </array>
         </dict>
         <key>fileTriggers</key>
         <dict>
+            <key>01</key>
+            <string>userguide\01-Introduction.textile</string>
+            <key>AspectAwareCallSite</key>
+            <string>src\main\java\org\codehaus\groovy\aop\metaclass\AspectAwareCallSite.java</string>
+            <key>AspectMeta</key>
+            <string>src\main\java\org\codehaus\groovy\aop\metaclass\AspectMetaClass.java</string>
             <key>AspectMetaclassCreationHandle</key>
-            <string>src\org\codehaus\groovy\aop\metaclass\AspectMetaclassCreationHandle.java</string>
+            <string>src\main\java\org\codehaus\groovy\aop\metaclass\AspectMetaclassCreationHandle.java</string>
+            <key>CallJ</key>
+            <string>src\main\java\org\codehaus\groovy\aop\abstraction\joinpoint\CallJoinpoint.java</string>
+            <key>CallSiteTests</key>
+            <string>src\test\java\org\codehaus\groovy\aop\tests\callsite\CallSiteTests.java</string>
+            <key>Effe</key>
+            <string>src\main\java\org\codehaus\groovy\aop\metaclass\EffectiveAdvices.java</string>
             <key>EffectiveAdvices</key>
             <string>src\main\java\org\codehaus\groovy\aop\metaclass\EffectiveAdvices.java</string>
             <key>Expand</key>
             <string>src\main\java\groovy\lang\ExpandoMetaClass.java</string>
+            <key>Groovyte</key>
+            <string>src\test\java\org\codehaus\groovy\aop\GroovyAOPTestCase.java</string>
+            <key>L1</key>
+            <string>src\main\java\org\codehaus\groovy\aop\cache\AdviceCacheL1.java</string>
+            <key>Weav</key>
+            <string>src\main\java\org\codehaus\groovy\aop\Weaver.java</string>
             <key>aacs</key>
             <string>src\main\java\org\codehaus\groovy\aop\metaclass\AspectAwareCallSite.java</string>
+            <key>advicein</key>
+            <string>src\main\java\org\codehaus\groovy\aop\metaclass\AdviceInvoker.java</string>
+            <key>after</key>
+            <string>src\test\groovy\org\codehaus\groovy\aop\tests\AfterFailedWhenProceedTests.groovy</string>
+            <key>aftertest</key>
+            <string>src\test\groovy\org\codehaus\groovy\aop\tests\AfterTests.groovy</string>
             <key>asp</key>
             <string>src\org\codehaus\groovy\aop\metaclass\AspectMetaClass.java</string>
             <key>aspectawareca</key>
             <string>src\main\java\org\codehaus\groovy\aop\metaclass\AspectAwareCallSite.java</string>
+            <key>aspectre</key>
+            <string>src\main\java\org\codehaus\groovy\aop\AspectRegistry.java</string>
             <key>aspectwa</key>
             <string>src\org\codehaus\groovy\aop\metaclass\AspectAwareCallSite.java</string>
             <key>b</key>
             <string>..\grooy_typesheet\src\org\codehaus\groovy\typesheet\Builder.java</string>
+            <key>before</key>
+            <string>src\test\groovy\org\codehaus\groovy\aop\tests\BeforeFailedWhenProceedTests.groovy</string>
+            <key>bug</key>
+            <string>src\test\groovy\org\codehaus\groovy\aop\tests\Bug_9_EnableDisableTests.groovy</string>
+            <key>bug_</key>
+            <string>src\test\groovy\org\codehaus\groovy\aop\bugs\Bug_266_Tests.groovy</string>
             <key>bui</key>
             <string>..\grooy_typesheet\src\org\codehaus\groovy\typesheet\Builder.java</string>
+            <key>gen</key>
+            <string>src\main\java\org\codehaus\groovy\aop\metaclass\gen_adv_inv.groovy</string>
             <key>gen_</key>
-            <string>src\main\java\org\codehaus\groovy\aop\metaclass\gen_aacs.groovy</string>
+            <string>src\main\java\org\codehaus\groovy\aop\metaclass\gen_adv_inv.groovy</string>
+            <key>getter</key>
+            <string>src\test\groovy\org\codehaus\groovy\aop\tests\pcd\GetterTests.groovy</string>
+            <key>inv</key>
+            <string>src\main\java\org\codehaus\groovy\aop\metaclass\InvocationContext.java</string>
+            <key>invoca</key>
+            <string>src\main\java\org\codehaus\groovy\aop\metaclass\InvocationContext.java</string>
             <key>matcher</key>
             <string>src\main\java\org\codehaus\groovy\aop\metaclass\Matcher.java</string>
+            <key>settert</key>
+            <string>src\test\groovy\org\codehaus\groovy\aop\tests\pcd\SetterTests.groovy</string>
+            <key>testcase</key>
+            <string>src\test\java\org\codehaus\groovy\aop\GroovyAOPTestCase.java</string>
             <key>ty</key>
             <string>..\grooy_typesheet\src\org\codehaus\groovy\typesheet\dom\Type.java</string>
+            <key>weaving</key>
+            <string>src\test\groovy\org\codehaus\groovy\aop\tests\WeavingTests.groovy</string>
         </dict>
     </dict>
 </plist>

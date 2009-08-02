@@ -1,8 +1,8 @@
 package org.codehaus.groovy.aop.tests
 
-import org.codehaus.groovy.aop.metaclass.AspectMetaClass
 import org.codehaus.groovy.aop.Weaver
 import org.codehaus.groovy.aop.GroovyAOPTestCase
+
 class AfterTests extends GroovyAOPTestCase {
 	
 	static targetCode =

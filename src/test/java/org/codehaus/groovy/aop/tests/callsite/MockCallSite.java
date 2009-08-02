@@ -203,7 +203,7 @@ public class MockCallSite implements CallSite {
     //
     @Override
     public CallSiteArray getArray() {
-        return null;
+        return new CallSiteArray(MockCallSite.class, new String[]{"mock"});
     }
 
     @Override

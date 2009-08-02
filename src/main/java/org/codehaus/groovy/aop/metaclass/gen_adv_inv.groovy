@@ -4,6 +4,7 @@ def header = '''
 package org.codehaus.groovy.aop.metaclass;
 
 import groovy.lang.GroovyObject;
+import groovy.lang.Closure;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -54,21 +55,27 @@ normal.each { cv ->
             params << "arg${i}"
         }
     }
+
+    //
+    // special case
+    // when called from N arguments
+    //
+    def context_SetArgs = "context.setArgs(new Object[]{${params.join(", ")}});"
+    if(n == -1) {
+        context_SetArgs = "context.setArgs(arg1);"
+    }     
 def text = """
-    @Override
     public Object call${cv}(${args.join(", ")}) throws Throwable {
-        //
-        //  TODO replace this with a real invocation context object
-        //
-        Object context = null;
+        InvocationContext context = new InvocationContext();
+        ${context_SetArgs}
         if(before!=null) {
-            for(int i = 0; i < before.count; i++) {
+            for(int i = 0; i < before.length; i++) {
                 before[i].call(context);
             }
         }
         Object result = delegate.call${cv}(${params.join(", ")});
         if(after != null) {
-            for(int i = 0; i < after.count; i++) {
+            for(int i = 0; i < after.length; i++) {
                 after[i].call(context);
             }
         }
@@ -88,13 +95,16 @@ def special_0 = ['callGetProperty',
                  'callGroovyObjectGetPropertySafe']
 special_0.each { m ->
 def text = """
-    @Override
     public Object ${m}(Object arg0) throws Throwable {
-        for(int i = 0; i < before.count; i++) {
+        //
+        //  TODO replace this with a real invocation context object
+        //
+        Object context = null;        
+        for(int i = 0; i < before.length; i++) {
             before[i].call(context);
         }
         Object result = delegate.${m}(arg0);
-        for(int i = 0; i < after.count; i++) {
+        for(int i = 0; i < after.length; i++) {
             after[i].call(context);
         }      
         return result;

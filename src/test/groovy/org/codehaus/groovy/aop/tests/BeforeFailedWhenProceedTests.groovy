@@ -1,9 +1,9 @@
 package org.codehaus.groovy.aop.tests
 
-import org.codehaus.groovy.aop.metaclass.AspectMetaClass
 import org.codehaus.groovy.aop.Weaver
 import org.codehaus.groovy.aop.ProceedNotAllowedException
-import org.codehaus.groovy.aop.GroovyAOPTestCase
+import org.codehaus.groovy.aop.GroovyAOPTestCase
+
 class BeforeFailedWhenProceedTests extends GroovyAOPTestCase {
 	
 	static targetCode =

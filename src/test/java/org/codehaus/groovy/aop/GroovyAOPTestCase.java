@@ -27,5 +27,9 @@ public abstract class GroovyAOPTestCase extends TestCase {
     public GroovyClassLoader getGcl() {
         return gcl;
     }
+    
+    static {
+        groovy.lang.ExpandoMetaClass.enableGlobally();
+    }
 
 }

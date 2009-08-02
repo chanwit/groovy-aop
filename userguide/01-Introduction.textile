@@ -38,3 +38,9 @@ h3. Aspect
 h3. Pointcut
 
 h3. Advice
+
+h3. What is in the context?
+
+Context exposure is the concept of exposing context information of the current join point to advice codes.
+
+

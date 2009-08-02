@@ -18,7 +18,8 @@
  **/
 package org.codehaus.groovy.aop.metaclass;
 
-import groovy.lang.Closure;
+import groovy.lang.*;
+import org.codehaus.groovy.runtime.metaclass.ClosureMetaClass;
 
 import java.util.ArrayList;
 
@@ -42,20 +43,34 @@ public class EffectiveAdvices {
 	
 	public Closure[] getBeforeClosureArray() {
 	    if(effBeforeAdvices.size() == 0) return null;
-	    return (Closure[])effBeforeAdvices.toArray[new Closure[effBeforeAdvices.size()]];
+	    Closure[] result = (Closure[])effBeforeAdvices.toArray(new Closure[effBeforeAdvices.size()]);
+	    for(int i=0; i< result.length; i++) {
+	        System.out.println(result[i].getClass());
+	        MetaClass mc = new ClosureMetaClass(GroovySystem.getMetaClassRegistry(), result[i].getClass());
+            result[i].setMetaClass(mc);
+            mc.initialize();
+	    }
+	    return result;
 	}
 	
 	public Closure[] getAfterClosureArray() {
 	    if(effAfterAdvices.size() == 0) return null;
-	    return (Closure[])effAfterAdvices.toArray[new Closure[effAfterAdvices.size()]];
+	    Closure[] result = (Closure[])effAfterAdvices.toArray(new Closure[effAfterAdvices.size()]);
+	    for(int i=0; i< result.length; i++) {
+	        MetaClass mc = new ClosureMetaClass(GroovySystem.getMetaClassRegistry(), result[i].getClass());
+            result[i].setMetaClass(mc);
+            mc.initialize();
+	    }
+	    return result;
 	}	
 
 	public ArrayList<Closure> get(int place) {
 		switch(place) {
 			case Advice.BEFORE: return effBeforeAdvices;
-			case Advice.AFTER: return effAfterAdvices;
+			case Advice.AFTER:  return effAfterAdvices;
 			case Advice.AROUND: return effAroundAdvices;
-			case Advice.AFTER_RETURNING: return effAfterReturnAdvices;
+			case Advice.AFTER_RETURNING: 
+			                    return effAfterReturnAdvices;
 		}
 		return null;
 	}
