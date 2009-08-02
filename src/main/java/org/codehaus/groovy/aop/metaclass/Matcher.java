@@ -48,8 +48,8 @@ public class Matcher {
             ArrayList<Advice> advices = aspect.getAdvices();
             for (Iterator<Advice> i = advices.iterator(); i.hasNext();) {
                 Advice advice = i.next();
-                //if(advice.getPointcut() == null) continue;
-                if (advice.getPointcut().matches(jp)) {
+                Pointcut pc = advice.getPointcut();
+                if (pc != null && pc.matches(jp)) {
                     l2Cache.put(jp, aspect, advice);
                 }
             }
