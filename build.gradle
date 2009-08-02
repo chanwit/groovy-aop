@@ -41,6 +41,11 @@ task gen_aasc << {
     ) {
         arg line:"-c ${metaClassPackage}/gen_aacs.groovy"
     }
+    ant.exec( dir:'.',  executable:'bash',
+        output:"${metaClassPackage}/AdviceInvoker.java"
+    ) {
+        arg line:"-c ${metaClassPackage}/gen_adv_inv.groovy"
+    }    
 }
 
 task install(dependsOn: libs) << {
