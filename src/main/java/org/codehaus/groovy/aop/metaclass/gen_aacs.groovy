@@ -54,6 +54,11 @@ println header
 def normal = ['','Constructor','Current','Safe','Static']
 
 //
+// for making call in advice invoker
+// must keep in-sync with index generated for AdviceInvoker
+def callIndex = 0; 
+
+//
 // cv is call convention
 //
 normal.each { cv ->
@@ -85,6 +90,8 @@ normal.each { cv ->
     if(n == -1) {
         create_jp = "Joinpoint jp = new CallJoinpoint(sender, delegate.getName(), arg0, arg1);"
     }
+    
+    callIndex++
 
 def text = """
     @Override
@@ -113,7 +120,7 @@ def text = """
             $create_jp
             matcher.matchPerClass(effectiveAdviceCodes, jp);
             if(effectiveAdviceCodes != null) { // matched and get some advice codes to perform
-                adviceInvoker = new AdviceInvoker(delegate, effectiveAdviceCodes);
+                adviceInvoker = new AdviceInvoker(delegate, effectiveAdviceCodes, ${callIndex});
             } else {
                 adviceInvoker = null; // just to make sure, it will be null.
             }

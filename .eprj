@@ -65,6 +65,8 @@
             <string>src\main\java\org\codehaus\groovy\aop\Weaver.java</string>
             <key>aacs</key>
             <string>src\main\java\org\codehaus\groovy\aop\metaclass\AspectAwareCallSite.java</string>
+            <key>advi</key>
+            <string>src\main\java\org\codehaus\groovy\aop\metaclass\AdviceInvoker.java</string>
             <key>advicein</key>
             <string>src\main\java\org\codehaus\groovy\aop\metaclass\AdviceInvoker.java</string>
             <key>after</key>
@@ -98,12 +100,16 @@
             <key>effec</key>
             <string>src\main\java\org\codehaus\groovy\aop\metaclass\EffectiveAdvices.java</string>
             <key>gen</key>
-            <string>src\main\java\org\codehaus\groovy\aop\metaclass\gen_aacs.groovy</string>
-            <key>gen_</key>
             <string>src\main\java\org\codehaus\groovy\aop\metaclass\gen_adv_inv.groovy</string>
+            <key>gen_</key>
+            <string>src\main\java\org\codehaus\groovy\aop\metaclass\gen_inv_context.groovy</string>
             <key>getter</key>
             <string>src\test\groovy\org\codehaus\groovy\aop\tests\pcd\GetterTests.groovy</string>
             <key>inv</key>
+            <string>src\main\java\org\codehaus\groovy\aop\metaclass\InvocationContext.java</string>
+            <key>invo</key>
+            <string>src\main\java\org\codehaus\groovy\aop\metaclass\InvocationContext.java</string>
+            <key>invoc</key>
             <string>src\main\java\org\codehaus\groovy\aop\metaclass\InvocationContext.java</string>
             <key>invoca</key>
             <string>src\main\java\org\codehaus\groovy\aop\metaclass\InvocationContext.java</string>

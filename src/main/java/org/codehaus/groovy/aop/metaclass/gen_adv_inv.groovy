@@ -17,13 +17,16 @@ public class AdviceInvoker {
     private Closure[] before;
     private Closure[] after;
     private Closure[] around;
-
-    public AdviceInvoker (CallSite delegate, EffectiveAdvices ea) {
+    private int callIndex;
+    
+    public AdviceInvoker (CallSite delegate, EffectiveAdvices ea, int callIndex) {
         this.delegate = delegate;
+        this.callIndex = callIndex;
         before = ea.getBeforeClosureArray();
         after  = ea.getAfterClosureArray();
-        around = ea.getAroundClosureArray();
+        around = ea.getAroundClosureArray();        
     }
+
 '''
 
 println header
@@ -33,6 +36,7 @@ println header
 //
 def normal = ['','Constructor','Current','Safe','Static']
 
+def callIndex = 0;
 //
 // cv is call convention
 //
@@ -59,15 +63,27 @@ normal.each { cv ->
 
     //
     // special case
-    // when called from N arguments
+    // when called from N arguments    
     //
-    def context_SetArgs = "context.setArgs(new Object[]{${params.join(", ")}});"
+    def context_SetArgs    
+    if(cv == '' || cv == 'Current') {
+        def p = params.clone()
+        p.remove(0)
+        context_SetArgs = "context.setArgs(new Object[]{${p.join(", ")}});"
+    } else {
+        context_SetArgs = "context.setArgs(new Object[]{${params.join(", ")}});"
+    }
     if(n == -1) {
         context_SetArgs = "context.setArgs(arg1);"
     }
+    
+    callIndex++
+    
 def text = """
     public Object call${cv}(${args.join(", ")}) throws Throwable {
         InvocationContext context = new InvocationContext();
+        // TODO what if the call is STATIC?
+        context.setTarget(arg0);
         ${context_SetArgs}
         if(before != null) {
             // System.out.println("doing before ...");
@@ -84,7 +100,19 @@ def text = """
                 }
             }
         }
-        Object result = delegate.call${cv}(${params.join(", ")});
+        
+        Object result = null;
+        if(around != null) {
+            if(this.callIndex != ${callIndex}) {
+                throw new RuntimeException("Code generation broken");
+            }
+            context.callIndex = ${callIndex};
+            context.proceedCallSite = delegate;
+            around[0].call(context);
+        } else {
+            result = delegate.call${cv}(${params.join(", ")});   
+        }
+                 
         if(after != null) {
             // System.out.println("doing after ...");
             for(int i = 0; i < after.length; i++) {
