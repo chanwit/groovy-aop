@@ -7,7 +7,7 @@ import groovy.lang.GroovyObject;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.aspectj.weaver.tools.PointcutParser;
+// import org.aspectj.weaver.tools.PointcutParser;
 import org.codehaus.groovy.runtime.callsite.CallSite;
 import org.codehaus.groovy.runtime.callsite.CallSiteArray;
 
@@ -25,8 +25,8 @@ import org.codehaus.groovy.aop.abstraction.joinpoint.*;
 **/
 public class AspectAwareCallSite implements CallSite {
 
-    private static PointcutParser parser =
-        PointcutParser.getPointcutParserSupportingAllPrimitivesAndUsingContextClassloaderForResolution();
+    // private static PointcutParser parser =
+    //    PointcutParser.getPointcutParserSupportingAllPrimitivesAndUsingContextClassloaderForResolution();
 
     private final CallSite delegate;
     public static ThreadLocal<Boolean> enabled = new ThreadLocal<Boolean>(){
@@ -34,10 +34,10 @@ public class AspectAwareCallSite implements CallSite {
             return true;
         }
     };
-        
+
     //
     // These property can be reset for re-weaving
-    // 
+    //
     private boolean matched = false;
     private AdviceInvoker adviceInvoker = null;
 
@@ -76,10 +76,16 @@ normal.each { cv ->
             params << "arg${i}"
         }
     }
+
+    //
+    // Special case for arguments as Object[]
+    // Normally, it is used for invocation the first time.
+    //
     def create_jp = "Joinpoint jp = new CallJoinpoint(sender, delegate.getName(), new Object[]{${params.join(", ")}});"
     if(n == -1) {
         create_jp = "Joinpoint jp = new CallJoinpoint(sender, delegate.getName(), arg0, arg1);"
     }
+
 def text = """
     @Override
     public Object call${cv}(${args.join(", ")}) throws Throwable {
@@ -88,21 +94,22 @@ def text = """
         // so this flag is needed.
         //
         if(enabled.get() == false) return delegate.call${cv}(${params.join(", ")});
-        
+
         //
         // if this call matching never performed
         //
-        if(matched==false) { 
+        if(matched==false) {
+
             //
             // create an aspect matcher from global AspectRegistry, L1 and L2 caches.
             //
             Matcher matcher  = new Matcher(AspectRegistry.v(), AdviceCacheL1.v(), AdviceCacheL2.v());
+
             //
             // do matching
             //
             EffectiveAdvices effectiveAdviceCodes = new EffectiveAdvices();
             Class<?> sender = delegate.getArray().owner;
-            // TODO need to handle when arg0 with Object[] arg1;
             $create_jp
             matcher.matchPerClass(effectiveAdviceCodes, jp);
             if(effectiveAdviceCodes != null) { // matched and get some advice codes to perform
@@ -113,14 +120,14 @@ def text = """
 
             //
             // matching process is performed,
-            // flag set to not doing this until 
-            // - a new aspect is installed, 
+            // flag set to not doing this until
+            // - a new aspect is installed,
             // - or some are modified.
             // - or some are revoked.
             //
             matched = true;
         }
-        
+
         if(adviceInvoker != null) {
             try {
                 enabled.set(false);
@@ -140,9 +147,9 @@ def text = """
 //
 // another set to gen *property with arg0
 //
-def special_0 = ['callGetProperty', 
-                 'callGetPropertySafe', 
-                 'callGroovyObjectGetProperty', 
+def special_0 = ['callGetProperty',
+                 'callGetPropertySafe',
+                 'callGroovyObjectGetProperty',
                  'callGroovyObjectGetPropertySafe']
 special_0.each { m ->
 def text = """

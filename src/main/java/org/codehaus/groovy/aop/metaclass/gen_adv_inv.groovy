@@ -12,12 +12,12 @@ import org.codehaus.groovy.runtime.InvokerInvocationException;
 import org.codehaus.groovy.runtime.callsite.CallSite;
 
 public class AdviceInvoker {
-    
+
     private CallSite delegate;
     private Closure[] before;
     private Closure[] after;
     private Closure[] around;
-    
+
     public AdviceInvoker (CallSite delegate, EffectiveAdvices ea) {
         this.delegate = delegate;
         before = ea.getBeforeClosureArray();
@@ -64,15 +64,15 @@ normal.each { cv ->
     def context_SetArgs = "context.setArgs(new Object[]{${params.join(", ")}});"
     if(n == -1) {
         context_SetArgs = "context.setArgs(arg1);"
-    }     
+    }
 def text = """
     public Object call${cv}(${args.join(", ")}) throws Throwable {
         InvocationContext context = new InvocationContext();
-        ${context_SetArgs}        
+        ${context_SetArgs}
         if(before != null) {
             // System.out.println("doing before ...");
             for(int i = 0; i < before.length; i++) {
-                try {                
+                try {
                     before[i].call(context);
                 } catch(InvokerInvocationException e) {
                     if (e.getCause() instanceof MissingMethodException) {
@@ -96,11 +96,11 @@ def text = """
                             throw new ProceedNotAllowedException();
                         }
                     }
-                    throw e;              
+                    throw e;
                 }
             }
         }
-        return result;  
+        return result;
     }
 """
     print text
@@ -110,9 +110,9 @@ def text = """
 //
 // another set to gen *property with arg0
 //
-def special_0 = ['callGetProperty', 
-                 'callGetPropertySafe', 
-                 'callGroovyObjectGetProperty', 
+def special_0 = ['callGetProperty',
+                 'callGetPropertySafe',
+                 'callGroovyObjectGetProperty',
                  'callGroovyObjectGetPropertySafe']
 special_0.each { m ->
 def text = """
@@ -120,14 +120,14 @@ def text = """
         //
         //  TODO replace this with a real invocation context object
         //
-        Object context = null;        
+        Object context = null;
         for(int i = 0; i < before.length; i++) {
             before[i].call(context);
         }
         Object result = delegate.${m}(arg0);
         for(int i = 0; i < after.length; i++) {
             after[i].call(context);
-        }      
+        }
         return result;
     }
 """

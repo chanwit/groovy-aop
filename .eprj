@@ -98,7 +98,7 @@
             <key>effec</key>
             <string>src\main\java\org\codehaus\groovy\aop\metaclass\EffectiveAdvices.java</string>
             <key>gen</key>
-            <string>src\main\java\org\codehaus\groovy\aop\metaclass\gen_adv_inv.groovy</string>
+            <string>src\main\java\org\codehaus\groovy\aop\metaclass\gen_aacs.groovy</string>
             <key>gen_</key>
             <string>src\main\java\org\codehaus\groovy\aop\metaclass\gen_adv_inv.groovy</string>
             <key>getter</key>
