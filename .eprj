@@ -38,6 +38,8 @@
             <string>src\main\java\org\codehaus\groovy\aop\metaclass\EffectiveAdvices.java</string>
             <key>Expand</key>
             <string>src\main\java\groovy\lang\ExpandoMetaClass.java</string>
+            <key>aacs</key>
+            <string>src\main\java\org\codehaus\groovy\aop\metaclass\AspectAwareCallSite.java</string>
             <key>asp</key>
             <string>src\org\codehaus\groovy\aop\metaclass\AspectMetaClass.java</string>
             <key>aspectawareca</key>
@@ -50,6 +52,8 @@
             <string>..\grooy_typesheet\src\org\codehaus\groovy\typesheet\Builder.java</string>
             <key>gen_</key>
             <string>src\main\java\org\codehaus\groovy\aop\metaclass\gen_aacs.groovy</string>
+            <key>matcher</key>
+            <string>src\main\java\org\codehaus\groovy\aop\metaclass\Matcher.java</string>
             <key>ty</key>
             <string>..\grooy_typesheet\src\org\codehaus\groovy\typesheet\dom\Type.java</string>
         </dict>

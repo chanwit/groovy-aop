@@ -13,10 +13,9 @@ import org.codehaus.groovy.aop.cache.AdviceCacheL2;
 
 public class Matcher {
 
-    private AdviceCacheL1 l1Cache;
-    private AdviceCacheL2 l2Cache;
-    private AspectRegistry registry;
-
+    final private AdviceCacheL1 l1Cache;
+    final private AdviceCacheL2 l2Cache;
+    final private AspectRegistry registry;
 
     public Matcher(AspectRegistry registry, AdviceCacheL1 cache, AdviceCacheL2 cache2) {
         super();
@@ -26,17 +25,24 @@ public class Matcher {
     }
 
     public void matchPerClass(EffectiveAdvices effAdvices, Joinpoint jp) {
+        //
         // If there is the jp as a key in L1, retrieve it
+        //
         if (l1Cache.contains(jp)) {
             effAdvices.addAll(l1Cache.get(jp));
             return;
         }
+        
+        //
         // if there is no jp in L1:
         //  - pick aspects from the registry
+        //
         Collection<Aspect> aspects = registry.getClassAspects();
 
+        //
         // - matchPCD
         // - store them in L2
+        //
         for (Iterator<Aspect> iter = aspects.iterator(); iter.hasNext();) {
             Aspect aspect = iter.next();
             ArrayList<Advice> advices = aspect.getAdvices();
@@ -48,11 +54,17 @@ public class Matcher {
                 }
             }
         }
+
+        //
         // build an L1 entry from a set of L2 entries
         // store to L1 using jp as its key
+        //
         EffectiveAdvices result = l2Cache.getByJoinpoint(jp);
         l1Cache.put(jp, result);
+        
+        //
         // then all matched advice is going to be the result
+        //
         effAdvices.addAll(result);
     }
 
