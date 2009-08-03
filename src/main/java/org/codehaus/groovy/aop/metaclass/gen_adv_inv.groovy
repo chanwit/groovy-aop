@@ -91,7 +91,7 @@ def text = """
             for(int i = 0; i < before.length; i++) {
                 try {
                     before[i].setDelegate(context);
-                    before[i].setResolveStrategy(Closure.DELEGATE_ONLY);
+                    before[i].setResolveStrategy(Closure.DELEGATE_FIRST);
                     before[i].call(context);
                 } catch(InvokerInvocationException e) {
                     if (e.getCause() instanceof MissingMethodException) {
@@ -122,7 +122,7 @@ def text = """
             for(int i = 0; i < after.length; i++) {
                 try {
                     after[i].setDelegate(context);
-                    after[i].setResolveStrategy(Closure.DELEGATE_ONLY);
+                    after[i].setResolveStrategy(Closure.DELEGATE_FIRST);
                     after[i].call(context);
                 } catch(InvokerInvocationException e) {
                     if (e.getCause() instanceof MissingMethodException) {

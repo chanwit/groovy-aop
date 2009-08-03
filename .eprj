@@ -38,12 +38,16 @@
             <string>src\main\java\org\codehaus\groovy\aop\metaclass\AdviceInvoker.java</string>
             <key>AfterFailedWhenProceedTests</key>
             <string>src\test\groovy\org\codehaus\groovy\aop\tests\AfterFailedWhenProceedTests.groovy</string>
+            <key>AroundTests</key>
+            <string>src\test\groovy\org\codehaus\groovy\aop\tests\AroundTests.groovy</string>
             <key>AspectAwareCallSite</key>
             <string>src\main\java\org\codehaus\groovy\aop\metaclass\AspectAwareCallSite.java</string>
             <key>AspectMeta</key>
             <string>src\main\java\org\codehaus\groovy\aop\metaclass\AspectMetaClass.java</string>
             <key>AspectMetaclassCreationHandle</key>
             <string>src\main\java\org\codehaus\groovy\aop\metaclass\AspectMetaclassCreationHandle.java</string>
+            <key>BeforeFailedWhenProceedTests</key>
+            <string>src\test\groovy\org\codehaus\groovy\aop\tests\BeforeFailedWhenProceedTests.groovy</string>
             <key>Call</key>
             <string>src\main\java\org\codehaus\groovy\aop\abstraction\joinpoint\CallJoinpoint.java</string>
             <key>CallJ</key>
@@ -75,6 +79,8 @@
             <key>aftertests</key>
             <string>src\test\groovy\org\codehaus\groovy\aop\tests\AfterTests.groovy</string>
             <key>aroundte</key>
+            <string>src\test\groovy\org\codehaus\groovy\aop\tests\AroundTests.groovy</string>
+            <key>aroundtest</key>
             <string>src\test\groovy\org\codehaus\groovy\aop\tests\AroundTests.groovy</string>
             <key>asp</key>
             <string>src\org\codehaus\groovy\aop\metaclass\AspectMetaClass.java</string>

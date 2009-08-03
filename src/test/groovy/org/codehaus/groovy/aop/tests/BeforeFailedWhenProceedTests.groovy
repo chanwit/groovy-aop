@@ -36,7 +36,7 @@ class BeforeFailedWhenProceedTests extends GroovyAOPTestCase {
 		try {
 		  target.method(1)
 		} catch(e) {
-			assert e instanceof ProceedNotAllowedException
+			assert e.cause instanceof ProceedNotAllowedException
 		}
 	}
 }
