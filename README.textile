@@ -1,6 +1,6 @@
-h1. Groovy-AOP
+h1. Groovy AOP
 
-Groovy-AOP is an AOP implementation atop the "Groovy":http://groovy.codehaus.org language.
+@Groovy AOP@ is an AOP implementation atop the "Groovy":http://groovy.codehaus.org language.
 
 Current version is 0.5 for Groovy 1.6 series.
 Tested with Groovy 1.6.3 and 1.6.4.
