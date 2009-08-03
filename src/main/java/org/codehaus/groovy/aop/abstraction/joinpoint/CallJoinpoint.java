@@ -34,12 +34,15 @@ public class CallJoinpoint implements Joinpoint {
     private Object target;
     private Object[] callStackEntry;
 
+    // arg binding for context exposure
+    private String[] binding;
+
     public CallJoinpoint(Class<?> sender, String methodName, Object target, Object[] args, Class<?>[] argClasses) {
         super();
         this.sender = sender;
         this.methodName    = methodName;
         this.target        = target;
-        this.receiverClass = target.getClass();        
+        this.receiverClass = target.getClass();
         this.args          = args;
         this.argTypes      = argClasses;
     }
@@ -49,7 +52,7 @@ public class CallJoinpoint implements Joinpoint {
         this.sender = sender;
         this.methodName = methodName;
         this.target     = target;
-        this.receiverClass = target.getClass();        
+        this.receiverClass = target.getClass();
         this.args     	= args;
         this.argTypes 	= MetaClassHelper.convertToTypeArray(this.args);
     }
@@ -59,7 +62,7 @@ public class CallJoinpoint implements Joinpoint {
         this.sender = sender;
         this.methodName = methodName;
         this.target     = args[0];
-        this.receiverClass = target.getClass();        
+        this.receiverClass = target.getClass();
 
         if(args.length == 1) {
             this.args     = new Object[]{};
@@ -155,6 +158,16 @@ public class CallJoinpoint implements Joinpoint {
     @Override
     public String toString() {
         return receiverClass.getName() + " " + methodName;
+    }
+
+    @Override
+    public void setBinding(String[] args) {
+        this.binding = args;
+    }
+
+    @Override
+    public String[] getBinding() {
+        return this.binding;
     }
 
 

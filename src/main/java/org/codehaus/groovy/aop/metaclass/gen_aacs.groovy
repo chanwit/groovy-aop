@@ -120,7 +120,9 @@ def text = """
             $create_jp
             matcher.matchPerClass(effectiveAdviceCodes, jp);
             if(effectiveAdviceCodes != null) { // matched and get some advice codes to perform
-                adviceInvoker = new AdviceInvoker(delegate, effectiveAdviceCodes, ${callIndex});
+                InvocationContext context = new InvocationContext();
+                context.setBinding(jp.getBinding());
+                adviceInvoker = new AdviceInvoker(delegate, effectiveAdviceCodes, context, ${callIndex});
             } else {
                 adviceInvoker = null; // just to make sure, it will be null.
             }

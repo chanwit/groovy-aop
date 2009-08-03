@@ -18,8 +18,6 @@
  **/
 package org.codehaus.groovy.aop.metaclass;
 
-import java.util.Arrays;
-
 import org.codehaus.groovy.aop.ProceedNotAllowedException;
 import groovy.lang.*;
 import org.codehaus.groovy.runtime.callsite.CallSite;
@@ -32,6 +30,12 @@ public class InvocationContext extends GroovyObjectSupport {
 
     public  CallSite proceedCallSite;
     public  int callIndex;
+
+    private String[] binding;
+
+    public void setBinding(String[] binding) {
+        this.binding = binding;
+    }
 
     public Object[] getArgs() {
         return args;
@@ -55,6 +59,18 @@ public class InvocationContext extends GroovyObjectSupport {
 
     public void setMethodName(String methodName) {
         this.methodName = methodName;
+    }
+
+    public Object propertyMissing(String name) {
+        int found = -1;
+        for(int i=0; i < binding.length; i++) {
+            if(binding[i].equals(name)) {
+                found = i;
+                break;
+            }
+        }
+        if(found == -1) throw new MissingPropertyException(name, InvocationContext.class);
+        return args[found];
     }
 
     public Object proceed(Object arguments) throws Throwable {

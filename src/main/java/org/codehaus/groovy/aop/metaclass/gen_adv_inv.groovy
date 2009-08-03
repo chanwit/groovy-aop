@@ -18,10 +18,12 @@ public class AdviceInvoker {
     private Closure[] after;
     private Closure[] around;
     private int callIndex;
+    private InvocationContext context;
     
-    public AdviceInvoker (CallSite delegate, EffectiveAdvices ea, int callIndex) {
+    public AdviceInvoker (CallSite delegate, EffectiveAdvices ea, InvocationContext context, int callIndex) {
         this.delegate = delegate;
         this.callIndex = callIndex;
+        this.context =  context;
         before = ea.getBeforeClosureArray();
         after  = ea.getAfterClosureArray();
         around = ea.getAroundClosureArray();        
@@ -81,7 +83,6 @@ normal.each { cv ->
     
 def text = """
     public Object call${cv}(${args.join(", ")}) throws Throwable {
-        InvocationContext context = new InvocationContext();
         // TODO what if the call is STATIC?
         context.setTarget(arg0);
         ${context_SetArgs}
@@ -89,6 +90,8 @@ def text = """
             // System.out.println("doing before ...");
             for(int i = 0; i < before.length; i++) {
                 try {
+                    before[i].setDelegate(context);
+                    before[i].setResolveStrategy(Closure.DELEGATE_ONLY);
                     before[i].call(context);
                 } catch(InvokerInvocationException e) {
                     if (e.getCause() instanceof MissingMethodException) {
@@ -118,6 +121,8 @@ def text = """
             // System.out.println("doing after ...");
             for(int i = 0; i < after.length; i++) {
                 try {
+                    after[i].setDelegate(context);
+                    after[i].setResolveStrategy(Closure.DELEGATE_ONLY);
                     after[i].call(context);
                 } catch(InvokerInvocationException e) {
                     if (e.getCause() instanceof MissingMethodException) {

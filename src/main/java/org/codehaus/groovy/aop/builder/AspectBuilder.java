@@ -8,6 +8,7 @@ import org.codehaus.groovy.aop.abstraction.advice.AfterAdvice;
 import org.codehaus.groovy.aop.abstraction.advice.AroundAdvice;
 import org.codehaus.groovy.aop.abstraction.advice.BeforeAdvice;
 import org.codehaus.groovy.aop.abstraction.advice.TypeAdvice;
+import org.codehaus.groovy.aop.abstraction.pcd.ArgsPCD;
 import org.codehaus.groovy.aop.abstraction.pcd.GetPCD;
 import org.codehaus.groovy.aop.abstraction.pcd.PCD;
 import org.codehaus.groovy.aop.abstraction.pcd.PCallPCD;
@@ -22,6 +23,9 @@ public class AspectBuilder {
         this.aspect = aspect;
     }
 
+    //
+    // Advice declaration
+    //
     public Aspect around(Object[] args) {
         aspect.add(new AroundAdvice((Class<?>)aspect.getOwner(), args));
         return aspect;
@@ -42,6 +46,9 @@ public class AspectBuilder {
         return aspect;
     }
 
+    //
+    // PCD declaration
+    //
     public Object pointcut(Closure closure) {
         Pointcut p = new Pointcut((PCD)closure.call());
         return p;
@@ -61,6 +68,18 @@ public class AspectBuilder {
 
     public Object within(Object[] args) {
         return new WithInPCD(args);
+    }
+
+    public Object args(Object[] args) {
+        return new ArgsPCD(args);
+    }
+
+    //
+    // Support for named variable binding
+    //
+    public Object propertyMissing(String name) {
+        // TODO return a proper type
+        return name;
     }
 
 }
