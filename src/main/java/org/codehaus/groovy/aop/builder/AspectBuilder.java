@@ -75,7 +75,7 @@ public class AspectBuilder {
     }
 
     //
-    // Support for named variable binding
+    // Support for named variable binding (via the args PCD)
     //
     public Object propertyMissing(String name) {
         // TODO return a proper type
