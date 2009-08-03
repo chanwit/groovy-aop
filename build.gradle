@@ -38,9 +38,7 @@ task gen_aasc << {
     def metaClassPackage = 'src/main/java/org/codehaus/groovy/aop/metaclass'
     ['gen_aacs':    'AspectAwareCallSite', 
      'gen_adv_inv': 'AdviceInvoker'].each { k, v ->
-        ant.exec( dir:'.',  executable:'bash',
-            output:"${metaClassPackage}/${v}.java"
-        ) {
+        ant.exec( dir:'.', executable:'bash', output:"${metaClassPackage}/${v}.java") {
             arg line:"-c ${metaClassPackage}/${k}.groovy"
         }
     }
