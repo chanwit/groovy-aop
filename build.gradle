@@ -1,7 +1,7 @@
 usePlugin 'groovy'
 usePlugin 'eclipse'
 
-version = '0.5.1'
+version = '0.5.2'
 repositories {
     mavenCentral()
     mavenRepo urls: ['http://repository.codehaus.org/', 'http://download.java.net/maven/2/']
