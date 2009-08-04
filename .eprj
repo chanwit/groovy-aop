@@ -58,6 +58,8 @@
             <string>src\main\java\org\codehaus\groovy\aop\abstraction\joinpoint\CallJoinpoint.java</string>
             <key>CallSiteTests</key>
             <string>src\test\java\org\codehaus\groovy\aop\tests\callsite\CallSiteTests.java</string>
+            <key>ClosureMethodCallTest</key>
+            <string>src\test\groovy\groovy\ClosureMethodCallTest.groovy</string>
             <key>ClosureMethodsOnFileTest</key>
             <string>src\test\groovy\groovy\ClosureMethodsOnFileTest.groovy</string>
             <key>ClosureWithDefaultParamTest</key>
@@ -136,8 +138,10 @@
             <string>src\main\java\org\codehaus\groovy\aop\metaclass\EffectiveAdvices.java</string>
             <key>epan</key>
             <string>src\main\java\groovy\lang\ExpandoMetaClass.java</string>
+            <key>expando</key>
+            <string>src\main\java\groovy\lang\ExpandoMetaClass.java</string>
             <key>gen</key>
-            <string>src\main\java\org\codehaus\groovy\aop\metaclass\gen_adv_inv.groovy</string>
+            <string>src\main\java\org\codehaus\groovy\aop\metaclass\gen_aacs.groovy</string>
             <key>gen_</key>
             <string>src\main\java\org\codehaus\groovy\aop\metaclass\gen_inv_context.groovy</string>
             <key>getter</key>

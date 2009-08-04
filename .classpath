@@ -13,6 +13,6 @@
 	<classpathentry kind="lib" path="C:/Documents and Settings/chanwit/.gradle/cache/org.apache.ant/ant-launcher/jars/ant-launcher-1.7.1.jar"/>
 	<classpathentry kind="lib" path="C:/Documents and Settings/chanwit/.gradle/cache/org.apache.ant/ant/jars/ant-1.7.1.jar"/>
 	<classpathentry kind="lib" path="C:/Documents and Settings/chanwit/.gradle/cache/org.aspectj/aspectjweaver/jars/aspectjweaver-1.6.5.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/chanwit/.gradle/cache/org.codehaus.groovy/groovy-all/jars/groovy-all-1.6.4.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/chanwit/.gradle/cache/org.codehaus.groovy/groovy-all/jars/groovy-all-1.6.4.jar" sourcepath="C:/groovy/groovy-src-1.6.4.zip"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
