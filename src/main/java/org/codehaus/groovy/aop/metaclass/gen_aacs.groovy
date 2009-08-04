@@ -119,7 +119,7 @@ def text = """
             Class<?> sender = delegate.getArray().owner;
             $create_jp
             matcher.matchPerClass(effectiveAdviceCodes, jp);
-            if(effectiveAdviceCodes != null) { // matched and get some advice codes to perform
+            if(effectiveAdviceCodes.isEmpty() == false) { // matched and get some advice codes to perform
                 InvocationContext context = new InvocationContext();
                 context.setBinding(jp.getBinding());
                 adviceInvoker = new AdviceInvoker(delegate, effectiveAdviceCodes, context, ${callIndex});
