@@ -2,6 +2,10 @@ usePlugin 'groovy'
 usePlugin 'eclipse'
 
 version = '0.5.2'
+test {
+    scanForTestClasses = false
+    excludes = ["**/*Support.class", "**/UnitTestAsScriptTest.class"]
+}
 repositories {
     mavenCentral()
     mavenRepo urls: ['http://repository.codehaus.org/', 'http://download.java.net/maven/2/']
