@@ -220,9 +220,8 @@ public class DefaultGroovyStaticMethods {
      * @param aspectClass
      * @since 1.6.4-AOP
      */    
-    public static void weave(Object self, Class<?> aspectClass) throws Throwable {
-        System.out.println("weaving: " + aspectClass);
-        Weaver.install(aspectClass);
+    public static Object weave(Object self, Class<?> aspectClass) throws Throwable {
+        return Weaver.install(aspectClass);
     }
 
     /**
@@ -231,7 +230,6 @@ public class DefaultGroovyStaticMethods {
      * @since 1.6.4-AOP
      */
     public static void unweave(Object self, Class<?> aspectClass) throws Throwable {
-        System.out.println("unweaving: " + aspectClass);
         Weaver.uninstall(aspectClass);
     }    
 }
