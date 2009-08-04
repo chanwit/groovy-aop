@@ -86,9 +86,12 @@ normal.each { cv ->
     // Special case for arguments as Object[]
     // Normally, it is used for invocation the first time.
     //
-    def create_jp = "Joinpoint jp = new CallJoinpoint(sender, delegate.getName(), new Object[]{${params.join(", ")}});"
+    def jp_prefix = ""
+    if(cv == 'Static' || cv == 'Constructor') { jp_prefix = cv }
+    
+    def create_jp = "Joinpoint jp = new ${jp_prefix}CallJoinpoint(sender, delegate.getName(), new Object[]{${params.join(", ")}});"
     if(n == -1) {
-        create_jp = "Joinpoint jp = new CallJoinpoint(sender, delegate.getName(), arg0, arg1);"
+        create_jp = "Joinpoint jp = new ${jp_prefix}CallJoinpoint(sender, delegate.getName(), arg0, arg1);"
     }
     
     callIndex++
