@@ -69,4 +69,8 @@ public class Weaver {
             return false;
         }
     }
+    
+    static {
+        groovy.lang.ExpandoMetaClass.enableGlobally();
+    }
 }

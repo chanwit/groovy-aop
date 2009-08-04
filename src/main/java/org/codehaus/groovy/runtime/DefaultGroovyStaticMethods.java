@@ -26,6 +26,8 @@ import java.util.regex.Matcher;
 import org.codehaus.groovy.runtime.typehandling.DefaultTypeTransformation;
 import org.codehaus.groovy.reflection.ReflectionUtils;
 
+import org.codehaus.groovy.aop.Weaver;
+
 /**
  * This class defines all the new static groovy methods which appear on normal
  * JDK classes inside the Groovy environment. Static methods are used with the
@@ -218,8 +220,9 @@ public class DefaultGroovyStaticMethods {
      * @param aspectClass
      * @since 1.6.4-AOP
      */    
-    public static void weave(Object self, Class<?> aspectClass) {
+    public static void weave(Object self, Class<?> aspectClass) throws Throwable {
         System.out.println("weaving: " + aspectClass);
+        Weaver.install(aspectClass);
     }
 
     /**
@@ -227,7 +230,8 @@ public class DefaultGroovyStaticMethods {
      * @param aspectClass
      * @since 1.6.4-AOP
      */
-    public static void unweave(Object self, Class<?> aspectClass) {
+    public static void unweave(Object self, Class<?> aspectClass) throws Throwable {
         System.out.println("unweaving: " + aspectClass);
+        Weaver.uninstall(aspectClass);
     }    
 }
