@@ -66,6 +66,10 @@ public class AspectBuilder {
         return new PCallPCD(args);
     }
 
+    public Object call(Object[] args) {
+        return new PCallPCD(args);
+    }
+
     public Object within(Object[] args) {
         return new WithInPCD(args);
     }
