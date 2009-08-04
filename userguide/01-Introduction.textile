@@ -42,4 +42,22 @@ h3. What is in the context?
 
 Context exposure is the concept of exposing context information of the current join point to advice codes.
 
+h3. Example Script
 
+pre. // aspect MyAspect
+class MyAspect {
+  static aspect = {
+    def pc = pcall("T.*")
+    before(pc) { println "before testing" }
+  }
+}
+// class T
+class T {
+  def test() {
+    println "hello"
+  }
+}
+// Script starts here
+weave MyAspect.class
+new T().test()
+unweave MyAspect.class
