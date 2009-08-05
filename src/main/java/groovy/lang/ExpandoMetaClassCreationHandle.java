@@ -17,6 +17,8 @@ package groovy.lang;
 
 import groovy.lang.MetaClassRegistry.MetaClassCreationHandle;
 import org.codehaus.groovy.reflection.ClassInfo;
+import org.codehaus.groovy.runtime.GeneratedClosure;
+import org.codehaus.groovy.runtime.metaclass.ClosureMetaClass;
 
 /**
  * <p>A handle for the MetaClassRegistry that changes all classes loaded into the Grails VM
