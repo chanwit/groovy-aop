@@ -49,6 +49,9 @@ public class Transformer implements ClassFileTransformer {
         }
     }
 
+    //
+    // skip this transformation atm
+    //
     private byte[] instrumentingCallSiteArray(byte[] classfileBuffer) {
         return classfileBuffer;
 //        ClassReader cr = new ClassReader(classfileBuffer);
@@ -58,6 +61,9 @@ public class Transformer implements ClassFileTransformer {
 //        return cw.toByteArray();
     }
 
+    //
+    // skip this transformation atm
+    //
     private byte[] instrumentingMetaClass(byte[] classfileBuffer) {
         return classfileBuffer;
 //        ClassReader cr = new ClassReader(classfileBuffer);
