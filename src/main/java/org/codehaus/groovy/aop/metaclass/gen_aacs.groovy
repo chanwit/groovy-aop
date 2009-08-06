@@ -56,7 +56,7 @@ def normal = ['','Constructor','Current','Safe','Static']
 //
 // for making call in advice invoker
 // must keep in-sync with index generated for AdviceInvoker
-def callIndex = 0; 
+def callIndex = 0;
 
 //
 // cv is call convention
@@ -90,7 +90,7 @@ normal.each { cv ->
     if(n == -1) {
         create_jp = "Joinpoint jp = new CallJoinpoint(sender, delegate.getName(), arg0, arg1);"
     }
-    
+
     callIndex++
 
 def text = """
@@ -110,8 +110,9 @@ def text = """
             //
             // create an aspect matcher from global AspectRegistry, L1 and L2 caches.
             //
-            Matcher matcher  = new Matcher(AspectRegistry.v(), AdviceCacheL1.v(), AdviceCacheL2.v());
-
+            Matcher matcher  = new Matcher(AspectRegistry.instance(),
+                                           AdviceCacheL1.instance(),
+                                           AdviceCacheL2.instance());
             //
             // do matching
             //

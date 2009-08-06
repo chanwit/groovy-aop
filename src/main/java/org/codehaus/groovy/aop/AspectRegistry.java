@@ -21,7 +21,6 @@ package org.codehaus.groovy.aop;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -31,15 +30,11 @@ import org.codehaus.groovy.aop.cache.AdviceCacheL2;
 public class AspectRegistry {
 
     private static AspectRegistry _instance=null;
-
     private ConcurrentMap<Class<?>,Aspect> classAspects = new ConcurrentHashMap<Class<?>, Aspect>();
-
-//	TODO not included in 0.2 release
-//	private HashMap<Object, Aspect> instanceAspects = new HashMap<Object, Aspect>();
 
     private AspectRegistry(){}
 
-    public static AspectRegistry v() {
+    public static AspectRegistry instance() {
         if(_instance == null) {
             _instance = new AspectRegistry();
         }
@@ -55,31 +50,12 @@ public class AspectRegistry {
             classAspects.remove(aspectOwner);
         }
         classAspects.put(aspectOwner, aspect);
-        AdviceCacheL2.v().removeByAspect(aspect);
+        AdviceCacheL2.instance().removeByAspect(aspect);
     }
-
-//	TODO not included in 0.2 release
-//	public void add(Object instance, Aspect aspect) {
-//		if(instanceAspects.containsKey(instance)) {
-//			instanceAspects.remove(instance);
-//		}
-//		instanceAspects.put(instance, aspect);
-//		AdviceCacheL2.v().removeByAspect(aspect);
-//	}
 
     public Collection<Aspect> getClassAspects() {
         return new ArrayList<Aspect>(classAspects.values());
     }
-
-//	TODO not included in 0.2 release
-//	public Collection<Aspect> getInstanceAspects() {
-//		return instanceAspects.values();
-//	}
-
-//	TODO not included in 0.2 release
-//	public HashMap<Object, Aspect> getInstanceAspectMap() {
-//		return instanceAspects;
-//	}
 
     public Aspect get(Class<?> aspectOwner) {
         return classAspects.get(aspectOwner);
@@ -88,15 +64,14 @@ public class AspectRegistry {
     public void remove(Class<?> aspectOwner) {
         Aspect aspect = classAspects.get(aspectOwner);
         classAspects.remove(aspectOwner);
-        AdviceCacheL2.v().removeByAspect(aspect);
+        AdviceCacheL2.instance().removeByAspect(aspect);
     }
 
     public String toString() {
-        Set<Class<?>> cc = classAspects.keySet();
         StringBuffer sb = new StringBuffer();
         sb.append("===\n");
-        for (Class<?> class1 : cc) {
-            sb.append(class1.getName() + "\n");
+        for (Class<?> clazz : classAspects.keySet()) {
+            sb.append(clazz.getName() + "\n");
         }
         sb.append("===\n");
         return sb.toString();
