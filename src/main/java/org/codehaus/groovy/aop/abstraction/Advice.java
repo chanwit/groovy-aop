@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2008 the original author or authors.
+ * Copyright 2007-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,9 +31,9 @@ import org.codehaus.groovy.aop.abstraction.pcd.WithInPCD;
 
 public abstract class Advice extends GroovyObjectSupport {
 
-    public final static int BEFORE = 1;
-    public final static int AFTER = 2;
-    public final static int AROUND = 3;
+    public final static int BEFORE          = 1;
+    public final static int AFTER           = 2;
+    public final static int AROUND          = 3;
     public final static int AFTER_RETURNING = 4;
 
     private Pointcut pointcut;
@@ -52,17 +52,17 @@ public abstract class Advice extends GroovyObjectSupport {
         } else if(args[0] instanceof Map) {
             this.pointcut = null;
             PCD rootPCD=null;
-            Map m = (Map)args[0];
+            Map map = (Map)args[0];
             // TODO clean code here
-            if(m.containsKey("call")) {
-                rootPCD = new PCallPCD(new Object[]{klass.getCanonicalName()+"."+(String)m.get("call")});
-            } else if(m.containsKey("get")) {
-                rootPCD = new GetPCD(new Object[]{klass.getCanonicalName()+"."+(String)m.get("get")});
-            } else if(m.containsKey("set")) {
-                rootPCD = new SetPCD(new Object[]{klass.getCanonicalName()+"."+(String)m.get("set")});
+            if(map.containsKey("call")) {
+                rootPCD = new PCallPCD(new Object[]{klass.getCanonicalName()+"."+(String)map.get("call")});
+            } else if(map.containsKey("get")) {
+                rootPCD = new GetPCD(new Object[]{klass.getCanonicalName()+"."+(String)map.get("get")});
+            } else if(map.containsKey("set")) {
+                rootPCD = new SetPCD(new Object[]{klass.getCanonicalName()+"."+(String)map.get("set")});
             }
-            if(m.containsKey("withIn")) {
-                PCD thisPCD = new WithInPCD(new Object[]{klass.getCanonicalName()+"."+(String)m.get("withIn")});
+            if(map.containsKey("withIn")) {
+                PCD thisPCD = new WithInPCD(new Object[]{klass.getCanonicalName()+"."+(String)map.get("withIn")});
                 rootPCD = rootPCD==null? thisPCD: (PCD)rootPCD.and(thisPCD);
             }
             this.pointcut = new Pointcut(rootPCD);
@@ -71,6 +71,7 @@ public abstract class Advice extends GroovyObjectSupport {
         }  else if(args[0] instanceof PCD){
             this.pointcut = new Pointcut((PCD)args[0]);
         }
+
         this.adviceCode = (Closure)args[1];
     }
 
@@ -91,11 +92,16 @@ public abstract class Advice extends GroovyObjectSupport {
     }
 
     public static int kind(String name) {
-        if("around".equals(name)) return Advice.AROUND; else
-        if("before".equals(name)) return Advice.BEFORE; else
-        if("after".equals(name)) return Advice.AFTER; else
-        if("afterReturning".equals(name)) return Advice.AFTER_RETURNING; else
-        return 0;
+        if("around".equals(name))
+            return Advice.AROUND;
+        else if("before".equals(name))
+            return Advice.BEFORE;
+        else if("after".equals(name))
+            return Advice.AFTER;
+        else if("afterReturning".equals(name))
+            return Advice.AFTER_RETURNING;
+        else
+            return 0;
     }
 
 }
