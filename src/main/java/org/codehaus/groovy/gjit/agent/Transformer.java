@@ -6,10 +6,6 @@ import java.security.ProtectionDomain;
 
 import org.codehaus.groovy.gjit.Optimiser;
 import org.codehaus.groovy.gjit.PreProcess;
-//import org.codehaus.groovy.gjit.agent.instrumentor.CallSiteArrayInstrumentor;
-//import org.codehaus.groovy.gjit.agent.instrumentor.MetaClassInstumentor;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassWriter;
 
 public class Transformer implements ClassFileTransformer {
 
