@@ -7,7 +7,7 @@ public class Agent {
     private static Instrumentation _inst = null;
 
     public static void premain(String args, Instrumentation inst) {
-        inst.addTransformer(new Transformer());
+        inst.addTransformer(new Transformer(), true);
         _inst = inst;
     }
 
