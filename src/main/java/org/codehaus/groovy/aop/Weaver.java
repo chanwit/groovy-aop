@@ -38,7 +38,7 @@ public class Weaver {
 
         try {
             Aspect aspect = buildAspect(aspectOwner);
-            AspectRegistry.v().add(aspectOwner, aspect);
+            AspectRegistry.instance().add(aspectOwner, aspect);
             return aspect;
         } catch(Throwable e) {
             //
@@ -50,7 +50,7 @@ public class Weaver {
     }
 
     public static void uninstall(Class<?> aspectOwner) {
-        AspectRegistry.v().remove(aspectOwner);
+        AspectRegistry.instance().remove(aspectOwner);
     }
 
     private static Aspect buildAspect(Class<?> aspectOwner) throws Throwable {
