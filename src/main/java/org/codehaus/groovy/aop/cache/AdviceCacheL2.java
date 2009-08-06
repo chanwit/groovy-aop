@@ -62,7 +62,7 @@ public class AdviceCacheL2 {
     private AdviceCacheL2() {
     }
 
-    public static AdviceCacheL2 instance() {
+    public static AdviceCacheL2 v() {
         if (_instance == null) {
             _instance = new AdviceCacheL2();
         }
@@ -95,7 +95,7 @@ public class AdviceCacheL2 {
             HashSet<Key> jpKeys = idxJoinpoint.get(jp);
             jpKeys.remove(key);
             // re-build each cache-L1 entry
-            AdviceCacheL1.instance().put(jp, getByJoinpoint(jpKeys));
+            AdviceCacheL1.v().put(jp, getByJoinpoint(jpKeys));
         }
         idxAspect.remove(aspect); // update index
     }
