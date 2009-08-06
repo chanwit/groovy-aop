@@ -22,10 +22,10 @@ package org.codehaus.groovy.aop;
 import groovy.lang.Closure;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 import org.codehaus.groovy.aop.abstraction.Aspect;
 import org.codehaus.groovy.aop.builder.AspectBuilder;
-// import org.codehaus.groovy.aop.metaclass.AspectMetaclassCreationHandle;
 
 public class Weaver {
 
@@ -34,17 +34,17 @@ public class Weaver {
      *
      * **/
     public static Aspect install(Class<?> aspectOwner) throws Throwable {
-        /*
-        if(!AspectMetaclassCreationHandle.isEnabled()) {
-            throw new AspectMetaClassNotEnabledException();
-        }
-        */
-        if(containAspect(aspectOwner)) {
-            Aspect aspect = new Aspect(aspectOwner);
+        if(!containAspect(aspectOwner)) return null;
+
+        try {
+            Aspect aspect = buildAspect(aspectOwner);
             AspectRegistry.v().add(aspectOwner, aspect);
-            buildAspect(aspect, aspectOwner);
             return aspect;
-        } else {
+        } catch(Throwable e) {
+            //
+            // something wring occurs in buildAspect
+            // so, AspectRegistry would not add the aspect
+            //
             return null;
         }
     }
@@ -53,23 +53,30 @@ public class Weaver {
         AspectRegistry.v().remove(aspectOwner);
     }
 
-    private static void buildAspect(Aspect aspect, Class<?> aspectOwner) throws Throwable {
+    private static Aspect buildAspect(Class<?> aspectOwner) throws Throwable {
+        Aspect aspect = new Aspect(aspectOwner);
         Method method = aspectOwner.getDeclaredMethod("getAspect", new Class[]{});
         Closure c = (Closure)method.invoke(aspectOwner, new Object[]{});
         c.setDelegate(new AspectBuilder(aspect));
         c.setResolveStrategy(Closure.DELEGATE_ONLY);
         c.call();
+
+        return aspect;
     }
 
     private static boolean containAspect(Class<?> theOwnerClass) {
         try {
-            theOwnerClass.getDeclaredMethod("getAspect", new Class[]{});
-            return true;
+            //
+            // checking for declaration of
+            //   static aspect = { }
+            //
+            Method m = theOwnerClass.getDeclaredMethod("getAspect", new Class[]{});
+            return Modifier.isStatic(m.getModifiers());
         } catch (Exception e) {
             return false;
         }
     }
-    
+
     static {
         groovy.lang.ExpandoMetaClass.enableGlobally();
     }
