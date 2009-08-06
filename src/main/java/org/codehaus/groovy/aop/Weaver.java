@@ -38,7 +38,7 @@ public class Weaver {
 
         try {
             Aspect aspect = buildAspect(aspectOwner);
-            AspectRegistry.instance().add(aspectOwner, aspect);
+            AspectRegistry.v().add(aspectOwner, aspect);
             return aspect;
         } catch(Throwable e) {
             //
