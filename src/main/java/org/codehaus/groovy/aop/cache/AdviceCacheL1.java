@@ -18,49 +18,50 @@
  **/
 package org.codehaus.groovy.aop.cache;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.codehaus.groovy.aop.abstraction.Joinpoint;
 import org.codehaus.groovy.aop.metaclass.EffectiveAdvices;
 
 public class AdviceCacheL1 {
 
-	private static AdviceCacheL1 _instance=null;
-	private HashMap<Joinpoint, EffectiveAdvices> _inner = new HashMap<Joinpoint, EffectiveAdvices>();
+    private static AdviceCacheL1 _instance=null;
+    private ConcurrentMap<Joinpoint,EffectiveAdvices> _inner = new ConcurrentHashMap<Joinpoint, EffectiveAdvices>();
 
-	private AdviceCacheL1(){}
+    private AdviceCacheL1(){}
 
-	public static AdviceCacheL1 v() {
-		if(_instance == null) {
-			_instance = new AdviceCacheL1();
-		}
-		return _instance;
-	}
+    public static AdviceCacheL1 v() {
+        if(_instance == null) {
+            _instance = new AdviceCacheL1();
+        }
+        return _instance;
+    }
 
-	public static void reset() {
-		_instance = new AdviceCacheL1();
-	}
+    public static void reset() {
+        _instance = new AdviceCacheL1();
+    }
 
-	public boolean contains(Joinpoint jp) {
-		return _inner.containsKey(jp);
-	}
+    public boolean contains(Joinpoint jp) {
+        return _inner.containsKey(jp);
+    }
 
-	public EffectiveAdvices get(Joinpoint jp) {
-		return _inner.get(jp);
-	}
+    public EffectiveAdvices get(Joinpoint jp) {
+        return _inner.get(jp);
+    }
 
-	public void put(Joinpoint jp, EffectiveAdvices advices) {
-		if(advices.isEmpty()) {
-			_inner.remove(jp);
-		} else {
-			EffectiveAdvices results = new EffectiveAdvices();
-			results.addAll(advices);
-			_inner.put(jp, results);
-		}
-	}
+    public void put(Joinpoint jp, EffectiveAdvices advices) {
+        if(advices.isEmpty()) {
+            _inner.remove(jp);
+        } else {
+            EffectiveAdvices results = new EffectiveAdvices();
+            results.addAll(advices);
+            _inner.put(jp, results);
+        }
+    }
 
-	public void remove(Joinpoint jp) {
-		_inner.remove(jp);
-	}
+    public void remove(Joinpoint jp) {
+        _inner.remove(jp);
+    }
 
 }
