@@ -9,7 +9,6 @@ public abstract class GroovyAOPTestCase extends TestCase {
     private Class<?> aspect=null;
 
     protected void setUp() throws Exception {
-        //AspectMetaClass.enableGlobally();
         this.gcl = new GroovyClassLoader(this.getClass().getClassLoader());
     }
 
@@ -27,7 +26,7 @@ public abstract class GroovyAOPTestCase extends TestCase {
     public GroovyClassLoader getGcl() {
         return gcl;
     }
-    
+
     static {
         groovy.lang.ExpandoMetaClass.enableGlobally();
     }
