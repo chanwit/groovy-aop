@@ -8,7 +8,7 @@ import org.codehaus.groovy.runtime.callsite.CallSite;
 import org.codehaus.groovy.runtime.callsite.CallSiteArray;
 
 public class MockCallSite implements CallSite {
-    
+
     @Override
     public Object call(Object arg0) throws Throwable {
         return "delegate.call("+arg0+");";
