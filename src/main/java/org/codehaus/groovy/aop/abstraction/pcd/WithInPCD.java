@@ -23,19 +23,17 @@ import java.util.regex.Pattern;
 
 import org.codehaus.groovy.aop.abstraction.Joinpoint;
 import org.codehaus.groovy.aop.abstraction.joinpoint.CallJoinpoint;
+import org.codehaus.groovy.aop.builder.Symbol;
 
 public class WithInPCD extends AbstractPCD {
 
     public WithInPCD(Object[] args) {
-        if (args.length == 1) {
-            if (args[0] instanceof String) {
-                setExpression((String) args[0]);
-            }
-            else if (args[0] instanceof Map) {
-                System.out.println("not implemented");
-            }
-        } else {
-            System.out.println("not implemented");
+        if (args.length != 1) throw new RuntimeException("NYI");
+
+        if (args[0] instanceof String || args[0] instanceof Symbol) {
+            setExpression(args[0].toString());
+        } else if (args[0] instanceof Map) {
+        	throw new RuntimeException("NYI");
         }
     }
 

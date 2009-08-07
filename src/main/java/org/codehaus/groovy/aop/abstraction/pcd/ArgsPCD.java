@@ -11,7 +11,7 @@ public class ArgsPCD extends AbstractPCD {
     public ArgsPCD(Object[] args) {
         this.args = new String[args.length];
         for (int i = 0; i < args.length; i++) {
-            this.args[i] = (String)args[i];
+            this.args[i] = args[i].toString();
         }
     }
 
