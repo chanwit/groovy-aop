@@ -2,15 +2,15 @@ usePlugin 'groovy'
 usePlugin 'eclipse'
 
 version = '0.5.3'
-test {
-    scanForTestClasses = false
-    excludes = ["**/*Support.class", "**/UnitTestAsScriptTest.class"]
-}
+
 repositories {
     mavenCentral()
     mavenRepo urls: ['http://repository.codehaus.org/', 'http://download.java.net/maven/2/']
 }
-
+test {
+    scanForTestClasses = false
+    excludes = ["**/*Support.class", "**/UnitTestAsScriptTest.class"]
+}
 configurations {
     textile
 }
@@ -54,3 +54,7 @@ task install(dependsOn: libs) << {
 }
 
 compile.dependsOn gen_aasc
+manifest.mainAttributes(
+	"Premain-Class":		"org.codehaus.groovy.gjit.agent.Agent",
+	"Can-Redefine-Classes": "true"
+)
