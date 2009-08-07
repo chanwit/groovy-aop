@@ -39,7 +39,7 @@ public class AspectRegistry {
 
     private AspectRegistry(){}
 
-    public static AspectRegistry v() {
+    public static AspectRegistry instance() {
         if(_instance == null) {
             _instance = new AspectRegistry();
         }
@@ -55,7 +55,7 @@ public class AspectRegistry {
             classAspects.remove(aspectOwner);
         }
         classAspects.put(aspectOwner, aspect);
-        AdviceCacheL2.v().removeByAspect(aspect);
+        AdviceCacheL2.instance().removeByAspect(aspect);
     }
 
 //	TODO not included in 0.2 release
@@ -88,7 +88,7 @@ public class AspectRegistry {
     public void remove(Class<?> aspectOwner) {
         Aspect aspect = classAspects.get(aspectOwner);
         classAspects.remove(aspectOwner);
-        AdviceCacheL2.v().removeByAspect(aspect);
+        AdviceCacheL2.instance().removeByAspect(aspect);
     }
 
     public String toString() {
