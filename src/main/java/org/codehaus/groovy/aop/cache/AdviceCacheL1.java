@@ -31,7 +31,7 @@ public class AdviceCacheL1 {
 
     private AdviceCacheL1(){}
 
-    public static AdviceCacheL1 v() {
+    public static AdviceCacheL1 instance() {
         if(_instance == null) {
             _instance = new AdviceCacheL1();
         }
