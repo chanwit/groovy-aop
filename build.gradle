@@ -6,6 +6,7 @@ version = '0.5.3'
 repositories {
     mavenCentral()
     mavenRepo urls: ['http://repository.codehaus.org/', 'http://download.java.net/maven/2/']
+    flatDir name: 'localRepository', dirs: 'lib'
 }
 test {
     scanForTestClasses = false
@@ -25,6 +26,7 @@ dependencies {
                [group: 'org.antlr',           name: 'stringtemplate', version: '3.2'],
                [group: 'asm',                 name: 'asm-all',        version: '3.1']
     )
+    compile    new FileSet(dir: 'lib', includes: ['*.jar'])
 }
 
 task generateDoc << {
