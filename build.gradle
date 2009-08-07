@@ -1,7 +1,7 @@
 usePlugin 'groovy'
 usePlugin 'eclipse'
 
-version = '0.5.2'
+version = '0.5.3'
 test {
     scanForTestClasses = false
     excludes = ["**/*Support.class", "**/UnitTestAsScriptTest.class"]
@@ -41,7 +41,7 @@ task generateDoc << {
 
 task gen_aasc << {
     def metaClassPackage = 'src/main/java/org/codehaus/groovy/aop/metaclass'
-    ['gen_aacs':    'AspectAwareCallSite', 
+    ['gen_aacs':    'AspectAwareCallSite',
      'gen_adv_inv': 'AdviceInvoker'].each { k, v ->
         ant.exec( dir:'.', executable:'bash', output:"${metaClassPackage}/${v}.java") {
             arg line:"-c ${metaClassPackage}/${k}.groovy"
