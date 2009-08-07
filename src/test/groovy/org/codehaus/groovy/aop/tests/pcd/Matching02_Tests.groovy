@@ -70,9 +70,9 @@ class PCallAspect {
         setupAspect(aspectCode)
         def target = gcl.parseClass(targetCode).newInstance()
         def m = new Matcher(
-                AspectRegistry.v(),
-                AdviceCacheL1.v(),
-                AdviceCacheL2.v()
+                AspectRegistry.instance(),
+                AdviceCacheL1.instance(),
+                AdviceCacheL2.instance()
         )
 
         def result = new EffectiveAdvices();
@@ -108,9 +108,9 @@ class PCallAspect {
         setupAspect(aspectCode)
         def target = gcl.parseClass(targetCode).newInstance()
         def m = new Matcher(
-                AspectRegistry.v(),
-                AdviceCacheL1.v(),
-                AdviceCacheL2.v()
+                AspectRegistry.instance(),
+                AdviceCacheL1.instance(),
+                AdviceCacheL2.instance()
         )
 
         def result = new EffectiveAdvices();
@@ -145,9 +145,9 @@ class PCallAspect {
         setupAspect(aspectCode)
         def target = gcl.parseClass(targetCode).newInstance()
         def m = new Matcher(
-                AspectRegistry.v(),
-                AdviceCacheL1.v(),
-                AdviceCacheL2.v()
+                AspectRegistry.instance(),
+                AdviceCacheL1.instance(),
+                AdviceCacheL2.instance()
         )
 
         def result = new EffectiveAdvices();

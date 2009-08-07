@@ -48,7 +48,7 @@ class Test1Aspect {
         assert c != null
 
         def a = Weaver.install(c)
-        def a1 = AspectRegistry.v().get(c)
+        def a1 = AspectRegistry.instance().get(c)
         assert a == a1
         assert a instanceof Aspect
         def advice = a.advices[0]
@@ -67,7 +67,7 @@ class Test1Aspect {
 
         Weaver.install(c)
         Weaver.uninstall(c)
-        def a = AspectRegistry.v().get(c)
+        def a = AspectRegistry.instance().get(c)
         assert a == null
         // AspectMetaClass.disableGlobally()
     }

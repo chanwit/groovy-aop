@@ -24,11 +24,11 @@ class WeavingTests extends GroovyTestCase {
         //AspectMetaClass.enableGlobally()
         // assert AspectMetaclassCreationHandle.isEnabled()
         Weaver.install(SubjectAspect.class)
-        def a = AspectRegistry.v().get(SubjectAspect.class)
+        def a = AspectRegistry.instance().get(SubjectAspect.class)
         assert a instanceof Aspect
 
         Weaver.uninstall(SubjectAspect.class)
-        def a2 = AspectRegistry.v().get(SubjectAspect.class)
+        def a2 = AspectRegistry.instance().get(SubjectAspect.class)
         assert a2 == null
 
         //AspectMetaClass.disableGlobally()
@@ -40,7 +40,7 @@ class WeavingTests extends GroovyTestCase {
         // assert AspectMetaclassCreationHandle.isEnabled()
 
         Weaver.install(NotContainAspect.class)
-        def a = AspectRegistry.v().get(NotContainAspect.class)
+        def a = AspectRegistry.instance().get(NotContainAspect.class)
         assert a == null
 
         //AspectMetaClass.disableGlobally()
@@ -51,16 +51,16 @@ class WeavingTests extends GroovyTestCase {
         // AspectMetaClass.enableGlobally()
         // assert AspectMetaclassCreationHandle.isEnabled()
         Weaver.install(SubjectAspect.class)
-        def a = AspectRegistry.v().get(SubjectAspect.class)
+        def a = AspectRegistry.instance().get(SubjectAspect.class)
         assert a instanceof Aspect
 
         Weaver.install(SubjectAspect.class)
-        def a2 = AspectRegistry.v().get(SubjectAspect.class)
+        def a2 = AspectRegistry.instance().get(SubjectAspect.class)
         assert a2 instanceof Aspect
         assert a != a2
 
         Weaver.uninstall(SubjectAspect.class)
-        def a3 = AspectRegistry.v().get(SubjectAspect.class)
+        def a3 = AspectRegistry.instance().get(SubjectAspect.class)
         assert a3 == null
 
         //AspectMetaClass.disableGlobally()
