@@ -84,6 +84,9 @@ public class AdviceCacheL2 {
     }
 
     public void removeByAspect(Aspect aspect) {
+    	if(aspect == null) return;
+    	if(!(idxAspect.containsKey(aspect))) return;
+
         Collection<Key> keys = idxAspect.get(aspect);
         if (keys == null)
             return;

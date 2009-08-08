@@ -41,6 +41,8 @@ public class Weaver {
             AspectRegistry.instance().add(aspectOwner, aspect);
             return aspect;
         } catch(Throwable e) {
+        	//
+        	e.printStackTrace();
             //
             // something wring occurs in buildAspect
             // so, AspectRegistry would not add the aspect

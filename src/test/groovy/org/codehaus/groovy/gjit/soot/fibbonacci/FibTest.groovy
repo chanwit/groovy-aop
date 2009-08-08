@@ -4,8 +4,10 @@ import groovy.util.GroovyTestCase
 class FibTest extends GroovyTestCase {
 
 	void testRunFib() {
-		weave FibAspect.class
+		def aspect = weave(FibAspect)
+		assert aspect != null
 		Fib.main([] as String[])
+		unweave(FibAspect)
 	}
 
 }

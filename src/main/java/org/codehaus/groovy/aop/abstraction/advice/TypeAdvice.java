@@ -15,6 +15,10 @@ public class TypeAdvice extends Advice {
 		super(null, args);
 	}
 
+	//
+	// TODO make it supports multiple PCDs. For example,
+	// typing(pc1, pc2) { ... }
+	//
 	public TypeAdvice(Pointcut pointcut, Closure code) {
 		super(pointcut, code);
 	}
