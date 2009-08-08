@@ -17,7 +17,6 @@ import soot.SootClass;
 import soot.SootMethod;
 import soot.SourceLocator;
 import soot.baf.Baf;
-import soot.grimp.Grimp;
 import soot.jimple.JimpleBody;
 import soot.options.Options;
 import soot.shimple.Shimple;
@@ -27,12 +26,10 @@ import soot.util.JasminOutputStream;
 public class SingleClassOptimizer {
 
 	private int format = Options.output_format_class;
-
-	private boolean whole_shimple = false;
 	private boolean via_shimple   = false;
 
 	public byte[] optimize(Class<?> c) {
-		SootClass sc = Scene.v().getSootClass(c.getName());
+		SootClass sc = Scene.v().loadClassAndSupport(c.getName());
 		runBodyPacks(sc);
 		return writeClass(sc);
 	}
@@ -40,7 +37,6 @@ public class SingleClassOptimizer {
 	private void runBodyPacks(SootClass c) {
 		boolean produceJimple = true;
 		boolean produceBaf = false;
-		boolean produceGrimp = false;
 		boolean produceShimple = false;
 
 		switch (format) {
@@ -55,10 +51,6 @@ public class SingleClassOptimizer {
 				// FLIP produceJimple
 				produceJimple = false;
 				break;
-			case Options.output_format_grimp:
-			case Options.output_format_grimple:
-				produceGrimp = true;
-				break;
 			case Options.output_format_baf:
 			case Options.output_format_b:
 				produceBaf = true;
@@ -71,7 +63,6 @@ public class SingleClassOptimizer {
 				throw new RuntimeException();
 		}
 
-		boolean wholeShimple = this.whole_shimple;
 		if (this.via_shimple)
 			produceShimple = true;
 
@@ -93,7 +84,7 @@ public class SingleClassOptimizer {
 			if (!m.isConcrete())
 				continue;
 
-			if (produceShimple || wholeShimple) {
+			if (produceShimple) {
 				ShimpleBody sBody = null;
 				// whole shimple or not?
 				{
@@ -112,7 +103,7 @@ public class SingleClassOptimizer {
 				PackManager.v().getPack("stp").apply(sBody);
 				PackManager.v().getPack("sop").apply(sBody);
 
-				if (produceJimple || (wholeShimple && !produceShimple))
+				if (produceJimple)
 					m.setActiveBody(sBody.toJimpleBody());
 			}
 
@@ -126,10 +117,7 @@ public class SingleClassOptimizer {
 				PackManager.v().getPack("jap").apply(body);
 			}
 
-			if (produceGrimp) {
-				m.setActiveBody(Grimp.v().newBody(m.getActiveBody(), "gb"));
-				PackManager.v().getPack("gop").apply(m.getActiveBody());
-			} else if (produceBaf) {
+			if (produceBaf) {
 				m.setActiveBody(Baf.v().newBody(
 					(JimpleBody) m.getActiveBody()
 				));

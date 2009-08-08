@@ -1,5 +1,6 @@
 package org.codehaus.groovy.gjit.soot;
 
+import groovy.lang.Closure;
 import soot.Pack;
 import soot.PackManager;
 import soot.Scene;
@@ -25,9 +26,10 @@ public class Main {
         // jtp.add(new Transform("jtp.prototype",
         //        new Prototype_2()
         //));
-
+        Scene.v().loadBasicClasses();
         initClasses();
-        soot.Main.main(args);
+        byte[] bytes = new SingleClassOptimizer().optimize(Closure.class);
+        System.out.println(bytes.length);
     }
 
     private static void initClasses() {
