@@ -50,12 +50,12 @@ import soot.jimple.internal.JimpleLocal;
 public class GroovyJimpleBody {
 
 	private static final RefType JAVA_LANG_CHARACTER = RefType.v("java.lang.Character");
-	private static final RefType JAVA_LANG_BYTE = RefType.v("java.lang.Byte");
-	private static final RefType JAVA_LANG_SHORT = RefType.v("java.lang.Short");
-	private static final RefType JAVA_LANG_DOUBLE = RefType.v("java.lang.Double");
-	private static final RefType JAVA_LANG_FLOAT = RefType.v("java.lang.Float");
-	private static final RefType JAVA_LANG_LONG = RefType.v("java.lang.Long");
-	private static final RefType JAVA_LANG_INTEGER = RefType.v("java.lang.Integer");
+	private static final RefType JAVA_LANG_BYTE      = RefType.v("java.lang.Byte");
+	private static final RefType JAVA_LANG_SHORT     = RefType.v("java.lang.Short");
+	private static final RefType JAVA_LANG_DOUBLE    = RefType.v("java.lang.Double");
+	private static final RefType JAVA_LANG_FLOAT     = RefType.v("java.lang.Float");
+	private static final RefType JAVA_LANG_LONG      = RefType.v("java.lang.Long");
+	private static final RefType JAVA_LANG_INTEGER   = RefType.v("java.lang.Integer");
 
 	private Body body;
 	private PatchingChain<Unit> units;
@@ -224,25 +224,25 @@ public class GroovyJimpleBody {
 
 	private PrimType getPrimitiveType(RefType refType) {
 		PrimType primType=null;
-		if(refType.equals(JAVA_LANG_INTEGER)) primType = IntType.v(); else
-		if(refType.equals(JAVA_LANG_LONG)) primType = LongType.v(); else
-		if(refType.equals(JAVA_LANG_FLOAT)) primType = FloatType.v(); else
-		if(refType.equals(JAVA_LANG_DOUBLE)) primType = DoubleType.v(); else
-		if(refType.equals(JAVA_LANG_SHORT)) primType = ShortType.v(); else
-		if(refType.equals(JAVA_LANG_BYTE)) primType = ByteType.v(); else
+		if(refType.equals(JAVA_LANG_INTEGER))   primType = IntType.v(); else
+		if(refType.equals(JAVA_LANG_LONG))      primType = LongType.v(); else
+		if(refType.equals(JAVA_LANG_FLOAT))     primType = FloatType.v(); else
+		if(refType.equals(JAVA_LANG_DOUBLE))    primType = DoubleType.v(); else
+		if(refType.equals(JAVA_LANG_SHORT))     primType = ShortType.v(); else
+		if(refType.equals(JAVA_LANG_BYTE))      primType = ByteType.v(); else
 		if(refType.equals(JAVA_LANG_CHARACTER)) primType = CharType.v();
 		return primType;
 	}
 
 	private RefType getWrapperType(PrimType t) {
 		String name=null;
-		if(t == IntType.v()) name = "java.lang.Integer"; else
-		if(t == ByteType.v()) name = "java.lang.Byte"; else
-		if(t == CharType.v()) name = "java.lang.Character"; else
-		if(t == LongType.v()) name = "java.lang.Long"; else
-		if(t == ShortType.v()) name = "java.lang.Short"; else
-		if(t == FloatType.v()) name = "java.lang.Float"; else
-		if(t == DoubleType.v()) name = "java.lang.Double"; else
+		if(t == IntType.v())     name = "java.lang.Integer";   else
+		if(t == ByteType.v())    name = "java.lang.Byte";      else
+		if(t == CharType.v())    name = "java.lang.Character"; else
+		if(t == LongType.v())    name = "java.lang.Long";      else
+		if(t == ShortType.v())   name = "java.lang.Short";     else
+		if(t == FloatType.v())   name = "java.lang.Float";     else
+		if(t == DoubleType.v())  name = "java.lang.Double";    else
 		if(t == BooleanType.v()) name = "java.lang.Boolean";
 		RefType refType = RefType.v(name);
 		return refType;
@@ -499,10 +499,14 @@ public class GroovyJimpleBody {
 			}
 			Value condition=null;
 			switch(cm) {
-				case compareLessThan: condition = Jimple.v().newGeExpr(v,v2); break;
-				case compareGreaterThan: condition = Jimple.v().newLeExpr(v,v2); break;
-				case compareLessThanEqual: condition = Jimple.v().newGtExpr(v,v2); break;
-				case compareGreaterThanEqual: condition = Jimple.v().newLtExpr(v,v2); break;
+				case compareLessThan:
+					condition = Jimple.v().newGeExpr(v,v2); break;
+				case compareGreaterThan:
+					condition = Jimple.v().newLeExpr(v,v2); break;
+				case compareLessThanEqual:
+					condition = Jimple.v().newGtExpr(v,v2); break;
+				case compareGreaterThanEqual:
+					condition = Jimple.v().newLtExpr(v,v2); break;
 			}
 			if(condition==null) return false;
 			JIfStmt f = (JIfStmt)s1;
