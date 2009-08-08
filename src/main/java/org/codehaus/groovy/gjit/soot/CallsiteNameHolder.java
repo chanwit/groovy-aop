@@ -9,7 +9,7 @@ public class CallsiteNameHolder extends ConcurrentHashMap<SootClass, String[]> {
 	private static CallsiteNameHolder instance;
 
 	public static ConcurrentHashMap<SootClass, String[]> v() {
-		if(instance != null)
+		if(instance == null)
 			instance = new CallsiteNameHolder();
 
 		return instance;
