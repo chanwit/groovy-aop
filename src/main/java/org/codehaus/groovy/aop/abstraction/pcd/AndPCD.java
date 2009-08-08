@@ -23,9 +23,8 @@ public class AndPCD extends ComposablePCD {
 
 	@Override
 	public boolean matches(Joinpoint jp) {
-		if(!left.matches(jp))
-			return false;
-		else
-			return right.matches(jp);
+		boolean leftResult  = left.matches(jp);
+		boolean rightResult = right.matches(jp);
+		return leftResult && rightResult;
 	}
 }

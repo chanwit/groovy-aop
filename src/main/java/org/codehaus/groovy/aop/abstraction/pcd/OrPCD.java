@@ -23,9 +23,9 @@ public class OrPCD extends ComposablePCD {
 
 	@Override
 	public boolean matches(Joinpoint jp) {
-		if(left.matches(jp) == true)
-		return true;
-			else
-		return right.matches(jp);
+		boolean leftResult  = left.matches(jp);
+		boolean rightResult = right.matches(jp);
+		return leftResult || rightResult;
+
 	}
 }
