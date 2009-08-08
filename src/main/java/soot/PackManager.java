@@ -508,12 +508,9 @@ public class PackManager {
                 PackManager.v().getPack("jop").apply(body);
                 PackManager.v().getPack("jap").apply(body);
                 if (options.xml_attributes() && options.output_format() != Options.output_format_jimple) {
-                    //System.out.println("collecting body tags");
                     tc.collectBodyTags(body);
                 }
             }
-
-            //PackManager.v().getPack("cfg").apply(m.retrieveActiveBody());
 
             if (produceGrimp) {
                 m.setActiveBody(Grimp.v().newBody(m.getActiveBody(), "gb"));
