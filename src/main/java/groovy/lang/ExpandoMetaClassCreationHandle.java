@@ -46,8 +46,7 @@ public class ExpandoMetaClassCreationHandle extends MetaClassCreationHandle {
 	protected MetaClass createNormalMetaClass(Class theClass, MetaClassRegistry registry) {
 	    if (GeneratedClosure.class.isAssignableFrom(theClass)) {
             return new ClosureMetaClass(registry, theClass);
-        }
-		if(theClass != ExpandoMetaClass.class) {
+        } else if(theClass != ExpandoMetaClass.class) {
 			return new ExpandoMetaClass(theClass, true, true);
 		}
 		else {
