@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 
 import org.codehaus.groovy.aop.abstraction.Joinpoint;
 
-public abstract class AbstractPCD implements PCD {
+public abstract class AbstractPCD extends ComposablePCD {
 
     private String expression;
     private Pattern pattern;
@@ -59,18 +59,6 @@ public abstract class AbstractPCD implements PCD {
     public void setExpression(String expression) {
         this.expression = wildcardToPattern(expression);
         this.pattern    = Pattern.compile(this.expression);
-    }
-
-    public Object and(Object right) {
-    	return new AndPCD(this, (PCD)right);
-    }
-
-    public Object negate() {
-        return new NotPCD(this);
-    }
-
-    public Object or(Object target) {
-        return new OrPCD(this, (PCD)target);
     }
 
     public boolean matches(Joinpoint jp) {

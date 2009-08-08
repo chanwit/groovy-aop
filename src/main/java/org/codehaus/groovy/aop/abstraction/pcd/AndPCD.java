@@ -2,7 +2,7 @@ package org.codehaus.groovy.aop.abstraction.pcd;
 
 import org.codehaus.groovy.aop.abstraction.Joinpoint;
 
-public class AndPCD implements PCD {
+public class AndPCD extends ComposablePCD {
 
 	private PCD left;
 	private PCD right;

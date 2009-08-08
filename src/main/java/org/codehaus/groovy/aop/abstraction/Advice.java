@@ -23,6 +23,7 @@ import java.util.Map;
 import groovy.lang.Closure;
 import groovy.lang.GroovyObjectSupport;
 
+import org.codehaus.groovy.aop.abstraction.pcd.AndPCD;
 import org.codehaus.groovy.aop.abstraction.pcd.GetPCD;
 import org.codehaus.groovy.aop.abstraction.pcd.PCD;
 import org.codehaus.groovy.aop.abstraction.pcd.PCallPCD;
@@ -61,9 +62,9 @@ public abstract class Advice extends GroovyObjectSupport {
             } else if(map.containsKey("set")) {
                 rootPCD = new SetPCD(new Object[]{klass.getCanonicalName()+"."+(String)map.get("set")});
             }
-            if(map.containsKey("withIn")) {
+            if(map.containsKey("within")) {
                 PCD thisPCD = new WithInPCD(new Object[]{klass.getCanonicalName()+"."+(String)map.get("withIn")});
-                rootPCD = rootPCD==null? thisPCD: (PCD)rootPCD.and(thisPCD);
+                rootPCD = rootPCD==null? thisPCD: new AndPCD(rootPCD, thisPCD);
             }
             this.pointcut = new Pointcut(rootPCD);
         }  else if(args[0] instanceof Pointcut) {

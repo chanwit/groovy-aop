@@ -2,11 +2,11 @@ package org.codehaus.groovy.aop.abstraction.pcd;
 
 import org.codehaus.groovy.aop.abstraction.Joinpoint;
 
-public class NotPCD implements PCD {
+public class NotPCD extends ComposablePCD {
 
-	PCD original;
+	private PCD original;
 
-	public NotPCD(AbstractPCD original) {
+	public NotPCD(PCD original) {
 		this.original = original;
 	}
 
