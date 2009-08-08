@@ -18,13 +18,11 @@
  **/
 package org.codehaus.groovy.aop.abstraction.pcd;
 
-import groovy.lang.GroovyObjectSupport;
-
 import java.util.regex.Pattern;
 
 import org.codehaus.groovy.aop.abstraction.Joinpoint;
 
-public abstract class AbstractPCD extends GroovyObjectSupport implements PCD {
+public abstract class AbstractPCD implements PCD {
 
     private String expression;
     private Pattern pattern;
@@ -63,30 +61,19 @@ public abstract class AbstractPCD extends GroovyObjectSupport implements PCD {
         this.pattern    = Pattern.compile(this.expression);
     }
 
-    public Object and(Object target) {
-        this.operation = AND;
-        this.nextNode = (PCD)target;
-        return this;
+    public Object and(Object right) {
+    	return new AndPCD(this, (PCD)right);
     }
 
     public Object negate() {
-        this.operation = NOT;
-        this.nextNode = null;
-        return this;
+        return new NotPCD(this);
     }
 
     public Object or(Object target) {
-        this.operation = OR;
-        this.nextNode = (PCD)target;
-        return this;
+        return new OrPCD(this, (PCD)target);
     }
 
     public boolean matches(Joinpoint jp) {
-        switch(this.operation) {
-            case AND: return (nextNode==null?true :nextNode.matches(jp)) && doMatches(this.pattern, jp);
-            case OR:  return (nextNode==null?false:nextNode.matches(jp)) || doMatches(this.pattern, jp);
-            case NOT: return !doMatches(this.pattern, jp);
-        }
         return doMatches(this.pattern, jp);
     }
 
