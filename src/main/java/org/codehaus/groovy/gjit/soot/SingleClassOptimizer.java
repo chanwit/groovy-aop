@@ -9,13 +9,17 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+import org.codehaus.groovy.gjit.soot.transformer.CallsiteNameCollector;
+
 import soot.Body;
 import soot.CompilationDeathException;
+import soot.Pack;
 import soot.PackManager;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.SourceLocator;
+import soot.Transform;
 import soot.baf.Baf;
 import soot.jimple.JimpleBody;
 import soot.options.Options;
@@ -146,6 +150,40 @@ public class SingleClassOptimizer {
         } catch (IOException e) {
             throw new CompilationDeathException("Cannot close output file " + fileName);
         }
+    }
+
+    private static void initClasses() {
+        String classes[] = {
+            "groovy.lang.Closure",
+            "org.codehaus.groovy.grails.web.metaclass.RenderDynamicMethod"
+        };
+
+        for (int i = 0; i < classes.length; i++) {
+            Scene.v().addBasicClass(classes[i], SootClass.SIGNATURES);
+        }
+    }
+
+    static {
+        Scene.v().setPhantomRefs(true);
+        Pack jtp = PackManager.v().getPack("jtp");
+
+        //
+        // TODO add required transformers here
+        //
+         jtp.add(new Transform("jtp.callsite_name_collector",
+                new CallsiteNameCollector()
+         ));
+        // jtp.add(new Transform("jtp.render_declaration",
+        //        new RenderIntroduction()
+        // ));
+        // jtp.add(new Transform("jtp.closure_detector",
+        //        new ClosureDetector()
+        //));
+        // jtp.add(new Transform("jtp.prototype",
+        //        new Prototype_2()
+        //));
+        initClasses();
+        Scene.v().loadBasicClasses();
     }
 
 }

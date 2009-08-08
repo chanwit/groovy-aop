@@ -16,15 +16,15 @@ import soot.jimple.internal.JAssignStmt;
 import soot.jimple.internal.JNewArrayExpr;
 
 public class CallSiteRecorder extends BodyTransformer {
-	
+
 	private static CallSiteRecorder instance=null;
 
 	public static CallSiteRecorder v() {
-		if(instance==null) {
+		if(instance==null)
 			instance = new CallSiteRecorder();
-		}
+
 		return instance;
-	}	
+	}
 
 	@Override
 	protected void internalTransform(Body b, String phaseName, Map options) {
@@ -45,12 +45,12 @@ public class CallSiteRecorder extends BodyTransformer {
 					JArrayRef ar = (JArrayRef)l;
 					StringConstant sc = (StringConstant)r;
 					siteName[((IntConstant)ar.getIndex()).value] = sc.value;
-				}				
+				}
 			}
 		}
-		
+
 		String className = b.getMethod().getDeclaringClass().getName();
-		CallSiteArrayPack.v().put(className, siteName);		
+		CallSiteArrayPack.v().put(className, siteName);
 	}
-	
+
 }
