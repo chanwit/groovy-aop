@@ -54,8 +54,9 @@ class Test1Aspect {
         def advice = a.advices[0]
         assert advice instanceof AroundAdvice
         assert advice.pointcut !=null
-        assert advice.pointcut.root instanceof PCallPCD
-        assert advice.pointcut.root.nextNode instanceof WithInPCD
+        assert advice.pointcut.root instanceof AndPCD
+        assert advice.pointcut.root.left instanceof PCallPCD
+        assert advice.pointcut.root.right instanceof WithInPCD
         Weaver.uninstall(c)
         // AspectMetaClass.disableGlobally()
     }

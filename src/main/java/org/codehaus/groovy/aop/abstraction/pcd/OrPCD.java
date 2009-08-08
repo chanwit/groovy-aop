@@ -7,6 +7,14 @@ public class OrPCD implements PCD {
 	private PCD left;
 	private PCD right;
 
+	public PCD getLeft() {
+		return left;
+	}
+
+	public PCD getRight() {
+		return right;
+	}
+
 	public OrPCD(PCD left, PCD right) {
 		super();
 		this.left = left;
