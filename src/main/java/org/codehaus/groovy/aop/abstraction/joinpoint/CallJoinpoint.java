@@ -20,11 +20,10 @@ package org.codehaus.groovy.aop.abstraction.joinpoint;
 
 import java.util.Arrays;
 
-import org.codehaus.groovy.aop.abstraction.Joinpoint;
 import org.codehaus.groovy.aop.metaclass.InvocationContext;
 import org.codehaus.groovy.runtime.MetaClassHelper;
 
-public class CallJoinpoint implements Joinpoint {
+public class CallJoinpoint extends JoinpointAdapter {
 
     private Class<?> sender;
     private Class<?> receiverClass;
@@ -33,9 +32,6 @@ public class CallJoinpoint implements Joinpoint {
     private Class<?>[] argTypes;
     private Object target;
     private Object[] callStackEntry;
-
-    // arg binding for context exposure
-    private String[] binding;
 
     public CallJoinpoint(Class<?> sender, String methodName, Object target, Object[] args, Class<?>[] argClasses) {
         super();
@@ -159,17 +155,5 @@ public class CallJoinpoint implements Joinpoint {
     public String toString() {
         return receiverClass.getName() + " " + methodName;
     }
-
-    @Override
-    public void setBinding(String[] args) {
-        this.binding = args;
-    }
-
-    @Override
-    public String[] getBinding() {
-        return this.binding;
-    }
-
-
 
 }

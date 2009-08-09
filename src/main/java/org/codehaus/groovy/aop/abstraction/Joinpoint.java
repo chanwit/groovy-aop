@@ -23,4 +23,7 @@ public interface Joinpoint {
     void setBinding(String[] args);
     String[] getBinding();
 
+	void setThisBinding(String _this);
+	String   getThisBinding();
+
 }
