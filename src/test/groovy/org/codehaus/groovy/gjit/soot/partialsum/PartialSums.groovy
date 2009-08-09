@@ -5,7 +5,16 @@ package org.codehaus.groovy.gjit.soot.partialsum
 		def n = Integer.parseInt(args[0])
 
 		def twothirds = 2.0/3.0
-		def a1  = a2 = a3 = a4 = a5 = a6 = a7 = a8 = a9 = 0.0D
+		def a1 = 0.0D
+		def a2 = 0.0D
+		def a3 = 0.0D
+		def a4 = 0.0D
+		def a5 = 0.0D
+		def a6 = 0.0D
+		def a7 = 0.0D
+		def a8 = 0.0D
+		def a9 = 0.0D
+
 		def alt = -1.0D
 		def k   =  1.0D
 
@@ -29,15 +38,15 @@ package org.codehaus.groovy.gjit.soot.partialsum
 		   k += 1.0
 		}
 
-		printf("%.9f\t(2/3)^k\n", a1);
-		printf("%.9f\tk^-0.5\n", a2);
-		printf("%.9f\t1/k(k+1)\n", a3);
-		printf("%.9f\tFlint Hills\n", a4);
-		printf("%.9f\tCookson Hills\n", a5);
-		printf("%.9f\tHarmonic\n", a6);
-		printf("%.9f\tRiemann Zeta\n", a7);
-		printf("%.9f\tAlternating Harmonic\n", a8);
-		printf("%.9f\tGregory\n", a9);
+		println "${a1}\t(2/3)^k"
+		println "${a2}\tk^-0.5"
+		println "${a3}\t1/k(k+1)"
+		println "${a4}\tFlint Hills"
+		println "${a5}\tCookson Hills"
+		println "${a6}\tHarmonic"
+		println "${a7}\tRiemann Zeta"
+		println "${a8}\tAlternating Harmonic"
+		println "${a9}\tGregory"
 	}
 
 }
