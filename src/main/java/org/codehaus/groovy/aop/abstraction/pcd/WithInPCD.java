@@ -18,6 +18,8 @@
  **/
 package org.codehaus.groovy.aop.abstraction.pcd;
 
+import groovy.lang.GString;
+
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -30,11 +32,15 @@ public class WithInPCD extends AbstractPCD {
     public WithInPCD(Object[] args) {
         if (args.length != 1) throw new RuntimeException("NYI");
 
-        if (args[0] instanceof String || args[0] instanceof Symbol) {
+        if (args[0] instanceof String  ||
+            args[0] instanceof GString ||
+        	args[0] instanceof Symbol) {
             setExpression(args[0].toString());
         } else if (args[0] instanceof Map) {
         	throw new RuntimeException("NYI");
-        }
+        } else {
+			throw new RuntimeException("NYI");
+		}
     }
 
     protected boolean doMatches(Pattern pattern, Joinpoint jp) {
