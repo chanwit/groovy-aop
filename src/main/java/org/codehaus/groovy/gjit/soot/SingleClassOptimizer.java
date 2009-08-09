@@ -27,11 +27,30 @@ import soot.shimple.Shimple;
 import soot.shimple.ShimpleBody;
 import soot.util.JasminOutputStream;
 
+/**
+ *
+ * This class is preparing a Jimple output.
+ * Setting via_shimple to get an SSA form.
+ *
+ * @author chanwit
+ *
+ */
 public class SingleClassOptimizer {
 
 	private int format = Options.output_format_class;
-	private boolean via_shimple   = false;
 
+	//
+	// set this optimisation to go via shimple to get SSA form
+	//
+	private boolean viaShimple = false;
+
+	/**
+	 * The main entry of optimisation.
+	 *
+	 * @param c a class. Actually this method uses only its name to
+	 * perform optimization.
+	 * @return a byte array containing optimized class
+	 */
 	public byte[] optimize(Class<?> c) {
 		SootClass sc = Scene.v().loadClassAndSupport(c.getName());
 		runBodyPacks(sc);
@@ -67,7 +86,7 @@ public class SingleClassOptimizer {
 				throw new RuntimeException();
 		}
 
-		if (this.via_shimple)
+		if (this.viaShimple)
 			produceShimple = true;
 
 		//
