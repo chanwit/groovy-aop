@@ -1,4 +1,4 @@
-package org.codehaus.groovy.gjit.soot.partialsum
+package org.codehaus.groovy.gjit.soot.partialsums
 class PartialSums {
 
 	static void main(args) {
