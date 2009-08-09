@@ -57,7 +57,7 @@ task install(dependsOn: libs) << {
 
 compile.dependsOn gen_aasc
 manifest.mainAttributes(
-	"Premain-Class":		   "org.codehaus.groovy.gjit.agent.Agent",
-	"Can-Redefine-Classes":    "true",
-	"Can-Retransform-Classes": "true"
+    "Premain-Class":           "org.codehaus.groovy.gjit.agent.Agent",
+    "Can-Redefine-Classes":    "true",
+    "Can-Retransform-Classes": "true"
 )
