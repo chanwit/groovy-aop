@@ -12,7 +12,7 @@ import org.codehaus.groovy.gjit.soot.transformer.CallSiteNameCollector;
 
 /**
  *  This test case needs enabling JVMTI to run it
- **/class TypingTest extends GroovyTestCase {
+ **/class RedefiningClassTest extends GroovyTestCase {
 
 	def i
 
