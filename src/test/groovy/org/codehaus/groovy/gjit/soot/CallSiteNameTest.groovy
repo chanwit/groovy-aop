@@ -1,12 +1,11 @@
 package org.codehaus.groovy.gjit.soot
 
-import soot.Sceneimport org.codehaus.groovy.gjit.soot.transformer.CallSiteNameCollector;
-
+import soot.Sceneimport org.codehaus.groovy.gjit.soot.transformer.CallSiteNameCollector
 
 import groovy.lang.GroovyClassLoader
 import groovy.util.GroovyTestCase
 
-class CallsiteNameTest extends GroovyTestCase {
+class CallSiteNameTest extends GroovyTestCase {
 
 /*
 	void testCollectingCallSiteFromNewlyLoadedClass() {
