@@ -2,7 +2,7 @@ package org.codehaus.groovy.gjit.soot.transformer;
 
 import java.util.Map;
 
-import org.codehaus.groovy.gjit.soot.CallsiteNameHolder;
+import org.codehaus.groovy.gjit.soot.CallSiteNameHolder;
 
 import soot.Body;
 import soot.BodyTransformer;
@@ -13,7 +13,7 @@ import soot.jimple.IntConstant;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.StringConstant;
 
-public class CallsiteNameCollector extends BodyTransformer {
+public class CallSiteNameCollector extends BodyTransformer {
 
     @Override
     protected void internalTransform(Body b, String phaseName, Map options) {
@@ -38,7 +38,7 @@ public class CallsiteNameCollector extends BodyTransformer {
         }
 
         if (callsitenames != null) {
-            CallsiteNameHolder.v().put(b.getMethod().getDeclaringClass().getName(), callsitenames);
+            CallSiteNameHolder.v().put(b.getMethod().getDeclaringClass().getName(), callsitenames);
         }
     }
 }

@@ -1,7 +1,7 @@
 package org.codehaus.groovy.gjit.soot;
 
 import org.codehaus.groovy.gjit.soot.transformer.CallSiteRecorder;
-import org.codehaus.groovy.gjit.soot.transformer.ConstantRecorder;
+import org.codehaus.groovy.gjit.soot.transformer.ConstantCollector;
 import org.codehaus.groovy.gjit.soot.transformer.PrimitiveBinOps;
 
 import soot.Pack;
@@ -12,7 +12,7 @@ public class Optimizer {
 
     public static void main(String[] args) {
         Pack jtp = PackManager.v().getPack("jtp");
-        jtp.add(new Transform("jtp.groovy.constantRecorder", ConstantRecorder.v()));
+        jtp.add(new Transform("jtp.groovy.constantRecorder", ConstantCollector.v()));
         jtp.add(new Transform("jtp.groovy.callsiteRecorder", CallSiteRecorder.v()));
 
 //		jtp.add(new Transform("jtp.groovy.primitiveLeafs", PrimitiveLeafs.v()));

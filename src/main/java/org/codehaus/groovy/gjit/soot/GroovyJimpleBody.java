@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.codehaus.groovy.gjit.soot.ConstantHolder.ConstantPack;
 import org.codehaus.groovy.gjit.soot.transformer.Utils;
 
 import soot.ArrayType;
@@ -70,7 +71,7 @@ public class GroovyJimpleBody {
 		this.body = b;
 		this.units = body.getUnits();
 		this.callSiteNames = new HashMap<Value, String>();
-		this.pack = ConstantRecord.v().get(b.getMethod().getDeclaringClass().getName());
+		this.pack = ConstantHolder.v().get(b.getMethod().getDeclaringClass().getName());
 		initialise();
 	}
 
@@ -81,7 +82,7 @@ public class GroovyJimpleBody {
 			return;
 		}
 		this.optimizable = true;
-		final String[] names = CallSiteArrayPack.v().get(body.getMethod().getDeclaringClass().getName());
+		final String[] names = CallSiteNameHolder.v().get(body.getMethod().getDeclaringClass().getName());
 
 		Iterator<Unit> stmts = units.snapshotIterator();
 		while (stmts.hasNext()) {

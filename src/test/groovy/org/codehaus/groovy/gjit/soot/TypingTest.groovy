@@ -8,7 +8,7 @@ import groovy.util.GroovyTestCase
 import java.lang.instrument.ClassDefinition
 import org.codehaus.groovy.gjit.agent.Agent
 
-import org.codehaus.groovy.gjit.soot.transformer.CallsiteNameCollector;
+import org.codehaus.groovy.gjit.soot.transformer.CallSiteNameCollector;
 
 /**
  *  This test case needs enabling JVMTI to run it
@@ -40,7 +40,7 @@ import org.codehaus.groovy.gjit.soot.transformer.CallsiteNameCollector;
 				viaShimple:   true,
 				transformers: [CallsiteNameCollector]
 			).optimize(c)
-			String[] names = CallsiteNameHolder.v().get(c.name)
+			String[] names = CallSiteNameHolder.v().get(c.name)
 			assert names[0] == "println"
 			assert names[1] == "plus"
 

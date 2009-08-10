@@ -6,8 +6,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.codehaus.groovy.gjit.soot.ConstantPack;
-import org.codehaus.groovy.gjit.soot.ConstantRecord;
+import org.codehaus.groovy.gjit.soot.ConstantHolder;
+import org.codehaus.groovy.gjit.soot.ConstantHolder.ConstantPack;
 
 import soot.Body;
 import soot.BodyTransformer;
@@ -32,24 +32,24 @@ import soot.jimple.internal.JimpleLocal;
 public class PrimitiveLeafs extends BodyTransformer {
 
 	private static PrimitiveLeafs instance = new PrimitiveLeafs();
-	
+
 	private PrimitiveLeafs() {
 	}
-	
-	public static PrimitiveLeafs v() {		
-		return instance;
-	}	
-	
-	@Override
-	protected void internalTransform(Body b, String phaseName, Map options) {	
 
-		//if(b.getMethod().getName().equals("expr_001")==false) return;		
-		
+	public static PrimitiveLeafs v() {
+		return instance;
+	}
+
+	@Override
+	protected void internalTransform(Body b, String phaseName, Map options) {
+
+		//if(b.getMethod().getName().equals("expr_001")==false) return;
+
 		Set<JimpleLocal> leafs = new HashSet<JimpleLocal>();
 		HashMap<JimpleLocal, JimpleLocal> boxedFromInts = new HashMap<JimpleLocal, JimpleLocal>();
-		HashMap<JimpleLocal, Value> constants = new HashMap<JimpleLocal, Value>();	
-		ConstantPack constPack = ConstantRecord.v().get(b.getMethod().getDeclaringClass().getName());
-		
+		HashMap<JimpleLocal, Value> constants = new HashMap<JimpleLocal, Value>();
+		ConstantPack constPack = ConstantHolder.v().get(b.getMethod().getDeclaringClass().getName());
+
 		PatchingChain<Unit> units = b.getUnits();
 		Iterator<Unit> stmts = units.snapshotIterator();
 		while(stmts.hasNext()) {
@@ -58,7 +58,7 @@ public class PrimitiveLeafs extends BodyTransformer {
 			recordLeafs(stmt, leafs);
 			recordBoxedFromInts(stmt, boxedFromInts);
 			recordConstants(stmt, constants, constPack);
-			
+
 			if(isBinaryOperation(stmt)) {
 				JAssignStmt a = (JAssignStmt)stmt;
 				JInterfaceInvokeExpr iv = (JInterfaceInvokeExpr)a.getInvokeExpr();
@@ -68,10 +68,10 @@ public class PrimitiveLeafs extends BodyTransformer {
 					if(args != null) {
 						SootClass c = Scene.v().loadClass("org.codehaus.groovy.runtime.callsite.CallSite", SootClass.SIGNATURES);
 						/// TODO generalize types
-						SootMethod m = c.getMethod("java.lang.Object call(int,int)");						
+						SootMethod m = c.getMethod("java.lang.Object call(int,int)");
 						iv.setMethodRef(m.makeRef());
 						iv.setArg(0, args[0]);
-						iv.setArg(1, args[1]);						
+						iv.setArg(1, args[1]);
 						cleanIntBoxes(units, stmt, olds);
 					}
 				}
@@ -97,15 +97,15 @@ public class PrimitiveLeafs extends BodyTransformer {
 					units.remove(done1);
 					units.remove(done2);
 					break;
-				}				
+				}
 			} catch(IndexOutOfBoundsException e) {
 				continue;
 			}
 		}
-	}	
+	}
 
 	private Value[] isConvertableToPrimitive(JInterfaceInvokeExpr iv,
-			HashMap<JimpleLocal, JimpleLocal> boxedFromInts, 
+			HashMap<JimpleLocal, JimpleLocal> boxedFromInts,
 			HashMap<JimpleLocal,Value> constants) {
 		// TODO more criteria
 		// 1. use primitive argument
@@ -122,13 +122,13 @@ public class PrimitiveLeafs extends BodyTransformer {
 		}
 		if(!boxedFromInts.containsKey(arg1) && !constants.containsKey(arg1) ) return null;
 		if(boxedFromInts.containsKey(arg1)) {
-			v[1] = boxedFromInts.get(arg1);			
+			v[1] = boxedFromInts.get(arg1);
 		} else {
 			v[1] = constants.get(arg1);
 		}
 		return v;
-	}	
-	
+	}
+
 	private void recordConstants(Unit stmt,HashMap<JimpleLocal, Value> constants,ConstantPack pack) {
 		if(stmt instanceof JAssignStmt) {
 			JAssignStmt a = (JAssignStmt)stmt;
@@ -137,7 +137,7 @@ public class PrimitiveLeafs extends BodyTransformer {
 				String name = r.getField().getName();
 				if(name.startsWith("$const$")) {
 					Value v = pack.get(name);
-					// System.out.println(name + ": " + v);					
+					// System.out.println(name + ": " + v);
 					constants.put((JimpleLocal)a.getLeftOp(), v);
 				}
 			}
@@ -145,8 +145,8 @@ public class PrimitiveLeafs extends BodyTransformer {
 	}
 
 	private static final String BOX_METHOD = "box";
-	private static final String TRANSFORMATION_CLASS = "org.codehaus.groovy.runtime.typehandling.DefaultTypeTransformation";	
-	
+	private static final String TRANSFORMATION_CLASS = "org.codehaus.groovy.runtime.typehandling.DefaultTypeTransformation";
+
 	private void recordBoxedFromInts(Unit stmt, HashMap<JimpleLocal, JimpleLocal> boxedFromInts) {
 		if(stmt instanceof JAssignStmt) {
 			JAssignStmt a = (JAssignStmt)stmt;
@@ -168,27 +168,27 @@ public class PrimitiveLeafs extends BodyTransformer {
 
 	private static final String CALLSITE_CLASS = "org.codehaus.groovy.runtime.callsite.CallSite";
 	private static final String CALLSITE_CALL_METHOD = "call";
-	
+
 	private boolean isBinaryOperation(Unit stmt) {
 		if(stmt instanceof JIdentityStmt) return false;
 		if(stmt instanceof JAssignStmt) return isBinOp((JAssignStmt)stmt);
 		return false;
-	}	
-	
+	}
+
 	private boolean isBinOp(JAssignStmt stmt) {
 		if(stmt.containsInvokeExpr()) {
 			InvokeExpr iv = stmt.getInvokeExpr();
 			if(iv instanceof JInterfaceInvokeExpr) {
 				SootMethod m = iv.getMethod();
-				String cname = iv.getMethodRef().declaringClass().getName();				
-				if(cname.equals(CALLSITE_CLASS) && 
+				String cname = iv.getMethodRef().declaringClass().getName();
+				if(cname.equals(CALLSITE_CLASS) &&
 					m.getName().equals(CALLSITE_CALL_METHOD) && (m.getParameterCount() == 2)) {
 					return true;
 				}
 			}
 		}
 		return false;
-	}	
+	}
 
 	private void recordLeafs(Unit stmt, Set<JimpleLocal> leafs) {
 		if(stmt instanceof JIdentityStmt) {
@@ -197,24 +197,24 @@ public class PrimitiveLeafs extends BodyTransformer {
 			}
 		} else if(stmt instanceof JAssignStmt) {
 			JAssignStmt a = (JAssignStmt)stmt;
-			if(a.getLeftOp() instanceof JimpleLocal) {	
-				if(a.containsInvokeExpr()) {					
+			if(a.getLeftOp() instanceof JimpleLocal) {
+				if(a.containsInvokeExpr()) {
 					String c = a.getInvokeExpr().getMethodRef().declaringClass().getName();
 					String m = a.getInvokeExpr().getMethod().getName();
 					if(!(c.equals(CALLSITE_CLASS) && m.equals(CALLSITE_CALL_METHOD))) {
 						leafs.add((JimpleLocal) a.getLeftOp());
-					} 
+					}
 				} else { // TODO more conditions here
 					leafs.add((JimpleLocal) a.getLeftOp());
 				}
-			}			
-		}		
+			}
+		}
 	}
 
 	private boolean isLeafCall(JInterfaceInvokeExpr iv, Set<JimpleLocal> leafs) {
 		if(leafs.contains(iv.getArg(0)) && leafs.contains(iv.getArg(1))) return true;
 		return false;
-		
+
 	}
 
 }

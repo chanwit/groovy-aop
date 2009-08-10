@@ -3,8 +3,8 @@ package org.codehaus.groovy.gjit.soot.transformer;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.codehaus.groovy.gjit.soot.ConstantPack;
-import org.codehaus.groovy.gjit.soot.ConstantRecord;
+import org.codehaus.groovy.gjit.soot.ConstantHolder;
+import org.codehaus.groovy.gjit.soot.ConstantHolder.ConstantPack;
 
 import soot.Body;
 import soot.BodyTransformer;
@@ -20,21 +20,21 @@ import soot.jimple.internal.JSpecialInvokeExpr;
 import soot.jimple.internal.JStaticInvokeExpr;
 import soot.jimple.internal.JimpleLocal;
 
-public class ConstantRecorder extends BodyTransformer {
-	
-	private static ConstantRecorder instance;
-	
-	private ConstantRecorder() {}
-	
-	public static ConstantRecorder v() {	
+public class ConstantCollector extends BodyTransformer {
+
+	private static ConstantCollector instance;
+
+	private ConstantCollector() {}
+
+	public static ConstantCollector v() {
 		if(instance==null) {
-			instance = new ConstantRecorder();
+			instance = new ConstantCollector();
 		}
 		return instance;
-	}	
+	}
 
 	@Override
-	protected void internalTransform(Body b, String phaseName, Map options) {	
+	protected void internalTransform(Body b, String phaseName, Map options) {
 		if(b.getMethod().getName().equals("<clinit>")) {
 			System.out.println("Collecting constants");
 			ConstantPack pack = new ConstantPack();
@@ -48,15 +48,15 @@ public class ConstantRecorder extends BodyTransformer {
 					if(constName.startsWith("$const$")) {
 						pack.put(constName, siv.getInvokeExpr().getArg(0));
 					}
-				}				
-			}			
-			ConstantRecord.v().put(b.getMethod().getDeclaringClass().getName(),pack);
+				}
+			}
+			ConstantHolder.v().put(b.getMethod().getDeclaringClass().getName(),pack);
 		}
 	}
 
 	private String findConstantName(PatchingChain<Unit> units, Unit s) {
 		JInvokeStmt siv = (JInvokeStmt)s;
-		JSpecialInvokeExpr ss = (JSpecialInvokeExpr) siv.getInvokeExpr();		
+		JSpecialInvokeExpr ss = (JSpecialInvokeExpr) siv.getInvokeExpr();
 		JimpleLocal lhr = (JimpleLocal) ss.getBase();
 		Unit cur = s;
 		while(cur != null) {
@@ -75,7 +75,7 @@ public class ConstantRecorder extends BodyTransformer {
 					if(lhr.equivTo(r)) {
 						return ref.getField().getName();
 					}
-				}				
+				}
 			}
 		}
 		return null;
