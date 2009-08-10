@@ -18,10 +18,12 @@
  **/
 package org.codehaus.groovy.aop.abstraction;
 
+import org.codehaus.groovy.aop.Symbol;
+
 public interface Joinpoint {
 
-    void setBinding(String[] args);
-    String[] getBinding();
+    void setBinding(Symbol[] args);
+    Symbol[] getBinding();
 
 	void setThisBinding(String _this);
 	String   getThisBinding();

@@ -17,14 +17,36 @@
  *
  **/
 
-package org.codehaus.groovy.aop.builder;
+package org.codehaus.groovy.aop;
 
 public class Symbol {
 
 	private String string;
+	private int index = -1;
+	private Class<?> type = null;
 
 	public Symbol(String string) {
 		this.string = string;
+	}
+
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
+	}
+
+	public Class<?> getType() {
+		return type;
+	}
+
+	public void setType(Class<?> type) {
+		this.type = type;
+	}
+
+	public void rightShift(Object object) {
+		this.type = (Class<?>)object;
 	}
 
 	public Object propertyMissing(String propName) {
@@ -34,6 +56,10 @@ public class Symbol {
 
 	@Override
 	public String toString() {
+		return this.string;
+	}
+
+	public String getName() {
 		return this.string;
 	}
 

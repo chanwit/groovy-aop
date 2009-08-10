@@ -2,6 +2,7 @@ package org.codehaus.groovy.aop.builder;
 
 import groovy.lang.Closure;
 
+import org.codehaus.groovy.aop.Symbol;
 import org.codehaus.groovy.aop.abstraction.Aspect;
 import org.codehaus.groovy.aop.abstraction.Pointcut;
 import org.codehaus.groovy.aop.abstraction.advice.AfterAdvice;

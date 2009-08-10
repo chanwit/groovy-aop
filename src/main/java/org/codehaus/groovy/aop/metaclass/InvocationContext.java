@@ -19,6 +19,8 @@
 package org.codehaus.groovy.aop.metaclass;
 
 import org.codehaus.groovy.aop.ProceedNotAllowedException;
+import org.codehaus.groovy.aop.Symbol;
+
 import groovy.lang.*;
 import org.codehaus.groovy.runtime.callsite.CallSite;
 
@@ -31,9 +33,9 @@ public class InvocationContext extends GroovyObjectSupport {
     public  CallSite proceedCallSite;
     public  int callIndex;
 
-    private String[] binding;
+    protected Symbol[] binding;
 
-    public void setBinding(String[] binding) {
+    public void setBinding(Symbol[] binding) {
         this.binding = binding;
     }
 
@@ -64,7 +66,7 @@ public class InvocationContext extends GroovyObjectSupport {
     public Object propertyMissing(String name) {
         int found = -1;
         for(int i=0; i < binding.length; i++) {
-            if(binding[i].equals(name)) {
+            if(binding[i].getName().equals(name)) {
                 found = i;
                 break;
             }

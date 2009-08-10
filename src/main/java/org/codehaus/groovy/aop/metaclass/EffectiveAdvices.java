@@ -70,6 +70,10 @@ public class EffectiveAdvices {
         return convertToArrayAndResetMetaClass(effAfterReturnAdvices);
     }
 
+    public Closure[] getTypeAdviceClosureArray() {
+        return convertToArrayAndResetMetaClass(effTypeAdvices);
+    }
+
     public ArrayList<Closure> get(int place) {
         switch(place) {
             case Advice.BEFORE: return effBeforeAdvices;
@@ -106,5 +110,9 @@ public class EffectiveAdvices {
         this.effAfterReturnAdvices.addAll(from.effAfterReturnAdvices);
         empty = false;
     }
+
+	public boolean containsTypeAdvice() {
+		return effTypeAdvices.size() != 0;
+	}
 
 }

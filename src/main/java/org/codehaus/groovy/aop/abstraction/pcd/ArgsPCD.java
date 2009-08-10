@@ -2,16 +2,18 @@ package org.codehaus.groovy.aop.abstraction.pcd;
 
 import java.util.regex.Pattern;
 
+import org.codehaus.groovy.aop.Symbol;
 import org.codehaus.groovy.aop.abstraction.Joinpoint;
 
 public class ArgsPCD extends AbstractPCD {
 
-    private String[] args;
+    private Symbol[] args;
 
     public ArgsPCD(Object[] args) {
-        this.args = new String[args.length];
+        this.args = new Symbol[args.length];
         for (int i = 0; i < args.length; i++) {
-            this.args[i] = args[i].toString();
+            this.args[i] = (Symbol)args[i];
+            this.args[i].setIndex(i);
         }
     }
 

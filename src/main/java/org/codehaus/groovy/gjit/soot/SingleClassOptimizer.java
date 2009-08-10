@@ -83,6 +83,13 @@ public class SingleClassOptimizer {
 		return transformers;
 	}
 
+	public void setTransformers(BodyTransformer[] transformers) throws Throwable {
+		this.transformers = new ArrayList<BodyTransformer>();
+		for (int i = 0; i < transformers.length; i++) {
+			this.transformers.add(transformers[i]);
+		}
+	}
+
 	public void setTransformers(List<?> transformers) throws Throwable {
 		this.transformers = new ArrayList<BodyTransformer>();
 		for (Iterator<?> iterator = transformers.iterator(); iterator.hasNext();) {

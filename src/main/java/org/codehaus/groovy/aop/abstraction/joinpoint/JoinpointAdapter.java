@@ -1,20 +1,21 @@
 package org.codehaus.groovy.aop.abstraction.joinpoint;
 
+import org.codehaus.groovy.aop.Symbol;
 import org.codehaus.groovy.aop.abstraction.Joinpoint;
 
 public class JoinpointAdapter implements Joinpoint {
 
     // arg binding for context exposure
-    private String[] binding;
+    private Symbol[] binding;
 	private String _this;
 
     @Override
-    public void setBinding(String[] args) {
+    public void setBinding(Symbol[] args) {
         this.binding = args;
     }
 
     @Override
-    public String[] getBinding() {
+    public Symbol[] getBinding() {
         return this.binding;
     }
 

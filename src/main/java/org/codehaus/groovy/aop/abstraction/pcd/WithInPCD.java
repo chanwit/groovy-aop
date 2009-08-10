@@ -23,9 +23,9 @@ import groovy.lang.GString;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.codehaus.groovy.aop.Symbol;
 import org.codehaus.groovy.aop.abstraction.Joinpoint;
 import org.codehaus.groovy.aop.abstraction.joinpoint.CallJoinpoint;
-import org.codehaus.groovy.aop.builder.Symbol;
 
 public class WithInPCD extends AbstractPCD {
 

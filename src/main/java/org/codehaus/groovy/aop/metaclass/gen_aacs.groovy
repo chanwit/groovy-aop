@@ -3,25 +3,27 @@
 def header = '''
 package org.codehaus.groovy.aop.metaclass;
 
-import groovy.lang.GroovyObject;
+import groovy.lang.*;
 
+import java.lang.instrument.ClassDefinition;
+import java.lang.instrument.Instrumentation;
 import java.util.concurrent.atomic.AtomicInteger;
 
-// import org.aspectj.weaver.tools.PointcutParser;
+import org.codehaus.groovy.aop.*;
+import org.codehaus.groovy.aop.abstraction.Joinpoint;
+import org.codehaus.groovy.aop.abstraction.joinpoint.CallJoinpoint;
+import org.codehaus.groovy.aop.cache.*;
+import org.codehaus.groovy.gjit.agent.Agent;
+import org.codehaus.groovy.gjit.soot.SingleClassOptimizer;
+import org.codehaus.groovy.gjit.soot.transformer.AspectAwareTransformer;
 import org.codehaus.groovy.runtime.callsite.CallSite;
 import org.codehaus.groovy.runtime.callsite.CallSiteArray;
 
-import org.codehaus.groovy.aop.AspectRegistry;
-import org.codehaus.groovy.aop.cache.AdviceCacheL1;
-import org.codehaus.groovy.aop.cache.AdviceCacheL2;
-
-import org.codehaus.groovy.aop.abstraction.Joinpoint;
-import org.codehaus.groovy.aop.abstraction.joinpoint.*;
+import soot.BodyTransformer;
 
 /**
  *   AspectAwareCallSite
  *   The real working code is generated from gen_aasc.groovy
- *   These call* methods are a place holder for weaving code.
 **/
 public class AspectAwareCallSite implements CallSite {
 
@@ -120,7 +122,10 @@ def text = """
             Class<?> sender = delegate.getArray().owner;
             $create_jp
             matcher.matchPerClass(effectiveAdviceCodes, jp);
-            if(effectiveAdviceCodes.isEmpty() == false) { // matched and get some advice codes to perform
+            if(effectiveAdviceCodes.containsTypeAdvice()) {
+        		performTypeAdvice(effectiveAdviceCodes, sender, jp);
+        	}
+        	if(effectiveAdviceCodes.isEmpty() == false) { // matched and get some advice codes to perform
                 InvocationContext context = new InvocationContext();
                 context.setBinding(jp.getBinding());
                 adviceInvoker = new AdviceInvoker(delegate, effectiveAdviceCodes, context, ${callIndex});
@@ -173,6 +178,31 @@ def text = """
 }
 
 def footer = '''
+	private void performTypeAdvice(EffectiveAdvices effectiveAdviceCodes,
+			Class<?> sender, Joinpoint jp) throws Throwable {
+		// create typing-invocation-context
+		TypingInvocationContext tic = new TypingInvocationContext();
+		tic.setBinding(jp.getBinding());
+		// execute type advice closure to obtain type intervention
+		Closure[] typing = effectiveAdviceCodes.getTypeAdviceClosureArray();
+		for (int i = 0; i < typing.length; i++) {
+			typing[i].setDelegate(tic);
+			typing[i].setResolveStrategy(Closure.DELEGATE_ONLY);
+			typing[i].call(tic);
+		}
+		// do transformation
+		SingleClassOptimizer sco = new SingleClassOptimizer();
+		sco.setViaShimple(true);
+		AspectAwareTransformer aatf = new AspectAwareTransformer();
+		aatf.setArgTypes(tic.getArgTypeOfBinding());
+		sco.setTransformers(new BodyTransformer[]{aatf});
+		byte[] bytes = sco.optimize(sender);
+		Instrumentation i = Agent.getInstrumentation();
+		if(i != null) {
+			i.redefineClasses(new ClassDefinition(sender, bytes));
+		}
+	}
+
     @Override
     public CallSiteArray getArray() {
         return delegate.getArray();
