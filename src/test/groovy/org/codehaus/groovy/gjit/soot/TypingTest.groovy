@@ -10,12 +10,19 @@ import org.codehaus.groovy.gjit.agent.Agent
  *  This test case needs enabling JVMTI to run it
  **/class TypingTest extends GroovyTestCase {
 
-	void testSomething() {
-		def i = Agent.getInstrumentation()
+	def i
+
+	@Override
+	protected void setUp() throws Exception {
+		 i = Agent.getInstrumentation()
+	}
+
+	void testSelfTest() {
 		assert i != null
-		byte[] bytes = new SingleClassOptimizer(viaShimple: true).optimize(Subject.class)
+		def c = Subject.class
+		byte[] bytes = new SingleClassOptimizer(viaShimple: true).optimize(c)
 		assert bytes.length != 0
-		i.redefineClasses(new ClassDefinition(Subject.class, bytes))
+		i.redefineClasses(new ClassDefinition(c, bytes))
 		assert new Subject().add(10, 20) == 30
 	}
 
