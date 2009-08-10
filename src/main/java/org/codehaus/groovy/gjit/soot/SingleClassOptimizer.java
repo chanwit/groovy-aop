@@ -9,9 +9,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import org.codehaus.groovy.gjit.soot.transformer.CallsiteNameCollector;
-
 import soot.Body;
+import soot.BodyTransformer;
 import soot.CompilationDeathException;
 import soot.Pack;
 import soot.PackManager;
@@ -43,6 +42,15 @@ public class SingleClassOptimizer {
 	// set this optimisation to go via shimple to get SSA form
 	//
 	private boolean viaShimple = false;
+	private List<BodyTransformer> transformers = null;
+
+	public List<BodyTransformer> getTransformers() {
+		return transformers;
+	}
+
+	public void setTransformers(List<BodyTransformer> transformers) {
+		this.transformers = transformers;
+	}
 
 	public boolean isViaShimple() {
 		return viaShimple;
@@ -61,8 +69,12 @@ public class SingleClassOptimizer {
 	 */
 	public byte[] optimize(Class<?> c) {
 		SootClass sc = Scene.v().loadClassAndSupport(c.getName());
-		runBodyPacks(sc);
-		return writeClass(sc);
+		try {
+			runBodyPacks(sc);
+			return writeClass(sc);
+		} finally {
+			Scene.v().removeClass(sc);
+		}
 	}
 
 	private void runBodyPacks(SootClass c) {
@@ -141,9 +153,14 @@ public class SingleClassOptimizer {
 			if (produceJimple) {
 				JimpleBody body = (JimpleBody) m.retrieveActiveBody();
 				PackManager.v().getPack("jtp").apply(body);
-				//if (options.validate()) {
-				//	body.validate();
-				//}
+				if(transformers != null) {
+					for (Iterator<BodyTransformer> iterator = transformers.iterator();
+						 iterator.hasNext();) {
+						BodyTransformer t = iterator.next();
+						t.transform(body);
+					}
+				}
+
 				PackManager.v().getPack("jop").apply(body);
 				PackManager.v().getPack("jap").apply(body);
 			}
@@ -196,9 +213,9 @@ public class SingleClassOptimizer {
         //
         // TODO add required transformers here
         //
-         jtp.add(new Transform("jtp.callsite_name_collector",
-                new CallsiteNameCollector()
-         ));
+        // jtp.add(new Transform("jtp.callsite_name_collector",
+        //        new CallsiteNameCollector()
+        // ));
         // jtp.add(new Transform("jtp.render_declaration",
         //        new RenderIntroduction()
         // ));
