@@ -218,23 +218,6 @@ public class SingleClassOptimizer {
 
     static {
         Scene.v().setPhantomRefs(true);
-        Pack jtp = PackManager.v().getPack("jtp");
-
-        //
-        // TODO add required transformers here
-        //
-        // jtp.add(new Transform("jtp.callsite_name_collector",
-        //        new CallsiteNameCollector()
-        // ));
-        // jtp.add(new Transform("jtp.render_declaration",
-        //        new RenderIntroduction()
-        // ));
-        // jtp.add(new Transform("jtp.closure_detector",
-        //        new ClosureDetector()
-        //));
-        // jtp.add(new Transform("jtp.prototype",
-        //        new Prototype_2()
-        //));
         initClasses();
         Scene.v().loadBasicClasses();
     }
