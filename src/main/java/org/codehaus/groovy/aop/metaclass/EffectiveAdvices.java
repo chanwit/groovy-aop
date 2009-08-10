@@ -28,6 +28,7 @@ import org.codehaus.groovy.aop.abstraction.Advice;
 import org.codehaus.groovy.aop.abstraction.advice.AfterAdvice;
 import org.codehaus.groovy.aop.abstraction.advice.AroundAdvice;
 import org.codehaus.groovy.aop.abstraction.advice.BeforeAdvice;
+import org.codehaus.groovy.aop.abstraction.advice.TypeAdvice;
 
 public class EffectiveAdvices {
 
@@ -86,7 +87,9 @@ public class EffectiveAdvices {
     }
 
     public void add(Advice advice) {
-        if(advice instanceof BeforeAdvice)
+    	if(advice instanceof TypeAdvice)
+    		effTypeAdvices.add(advice.getAdviceCode());
+    	else if(advice instanceof BeforeAdvice)
         	effBeforeAdvices.add(advice.getAdviceCode());
         else if(advice instanceof AroundAdvice)
         	effAroundAdvices.add(advice.getAdviceCode());
@@ -104,6 +107,7 @@ public class EffectiveAdvices {
         if (from.isEmpty()) {
             return;
         }
+        this.effTypeAdvices.addAll(from.effTypeAdvices);
         this.effBeforeAdvices.addAll(from.effBeforeAdvices);
         this.effAroundAdvices.addAll(from.effAroundAdvices);
         this.effAfterAdvices.addAll(from.effAfterAdvices);

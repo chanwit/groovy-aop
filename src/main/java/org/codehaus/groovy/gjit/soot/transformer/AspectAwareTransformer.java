@@ -33,6 +33,7 @@ public class AspectAwareTransformer extends BodyTransformer {
 		Iterator<Unit> stmts = u.snapshotIterator();
 		while (stmts.hasNext()) {
 			Unit s = stmts.next();
+			System.out.println(s);
 		}
 	}
 
