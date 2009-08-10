@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -44,12 +45,21 @@ public class SingleClassOptimizer {
 	private boolean viaShimple = false;
 	private List<BodyTransformer> transformers = null;
 
-	public List<BodyTransformer> getTransformers() {
+	public List getTransformers() {
 		return transformers;
 	}
 
-	public void setTransformers(List<BodyTransformer> transformers) {
-		this.transformers = transformers;
+	public void setTransformers(List<?> transformers) throws Throwable {
+		this.transformers = new ArrayList<BodyTransformer>();
+		for (Iterator<?> iterator = transformers.iterator(); iterator.hasNext();) {
+			Object object = iterator.next();
+			if(object instanceof Class<?>) {
+				Class<?> c = (Class<?>)object;
+				this.transformers.add((BodyTransformer)c.newInstance());
+			} else if(object instanceof BodyTransformer) {
+				this.transformers.add((BodyTransformer)object);
+			}
+		}
 	}
 
 	public boolean isViaShimple() {

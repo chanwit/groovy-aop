@@ -24,25 +24,32 @@ import org.codehaus.groovy.gjit.soot.transformer.CallsiteNameCollector;
 	void testSelfTest() {
 		assert i != null
 		def c = Subject.class
-		byte[] bytes = new SingleClassOptimizer(viaShimple: true).optimize(c)
+		byte[] bytes = new SingleClassOptimizer(
+			viaShimple: true
+		).optimize(c)
 		assert bytes.length != 0
 		i.redefineClasses(new ClassDefinition(c, bytes))
 		assert new Subject().add(10, 20) == 30
 	}
 
-	void testReplacingOperator() {
-		def c = Subject.class
-		byte[] bytes = new SingleClassOptimizer(
-				viaShimple: true,
-				transformers: [new CallsiteNameCollector()]
-		).optimize(c)
-		String[] names = CallsiteNameHolder.v().get(c.name)
-		assert names[0] == "println"
-		assert names[1] == "plus"
+	void testInjectingTransformerForSingleClassOptimizer() {
+		try {
+			assert i != null
+			def c = Subject.class
+			byte[] bytes = new SingleClassOptimizer(
+				viaShimple:   true,
+				transformers: [CallsiteNameCollector]
+			).optimize(c)
+			String[] names = CallsiteNameHolder.v().get(c.name)
+			assert names[0] == "println"
+			assert names[1] == "plus"
 
-		assert bytes.length != 0
-		i.redefineClasses(new ClassDefinition(c, bytes))
-		assert new Subject().add(10, 20) == 30
+			assert bytes.length != 0
+			i.redefineClasses(new ClassDefinition(c, bytes))
+			assert new Subject().add(10, 20) == 30
+		} finally {
+			CallsiteNameHolder.v().clear()
+		}
 	}
 
 }
