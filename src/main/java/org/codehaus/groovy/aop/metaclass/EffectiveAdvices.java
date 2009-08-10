@@ -31,10 +31,11 @@ import org.codehaus.groovy.aop.abstraction.advice.BeforeAdvice;
 
 public class EffectiveAdvices {
 
-    private ArrayList<Closure> effBeforeAdvices = new ArrayList<Closure>();
-    private ArrayList<Closure> effAfterAdvices = new ArrayList<Closure>();
-    private ArrayList<Closure> effAroundAdvices = new ArrayList<Closure>();
+    private ArrayList<Closure> effBeforeAdvices      = new ArrayList<Closure>();
+    private ArrayList<Closure> effAfterAdvices       = new ArrayList<Closure>();
+    private ArrayList<Closure> effAroundAdvices      = new ArrayList<Closure>();
     private ArrayList<Closure> effAfterReturnAdvices = new ArrayList<Closure>();
+    private ArrayList<Closure> effTypeAdvices        = new ArrayList<Closure>();
 
     private boolean empty = true;
 
@@ -81,8 +82,10 @@ public class EffectiveAdvices {
     }
 
     public void add(Advice advice) {
-        if(advice instanceof BeforeAdvice) effBeforeAdvices.add(advice.getAdviceCode());
-        else if(advice instanceof AroundAdvice) effAroundAdvices.add(advice.getAdviceCode());
+        if(advice instanceof BeforeAdvice)
+        	effBeforeAdvices.add(advice.getAdviceCode());
+        else if(advice instanceof AroundAdvice)
+        	effAroundAdvices.add(advice.getAdviceCode());
         else if(advice instanceof AfterAdvice) {
             AfterAdvice af = (AfterAdvice)advice;
             if(af.getReturning())
