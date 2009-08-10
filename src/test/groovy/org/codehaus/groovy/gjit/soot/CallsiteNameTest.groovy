@@ -1,6 +1,8 @@
 package org.codehaus.groovy.gjit.soot
 
-import soot.Scene
+import soot.Sceneimport org.codehaus.groovy.gjit.soot.transformer.CallsiteNameCollector;
+
+
 import groovy.lang.GroovyClassLoader
 import groovy.util.GroovyTestCase
 
@@ -30,11 +32,15 @@ class Test {
 */
 
 	void testCollectingCallSiteFromClass() {
-		def sc = Scene.v().loadClassAndSupport(Subject.class.name)
-		assert sc != null
-		new SingleClassOptimizer().optimize(Subject.class)
-		def callsiteNames = CallsiteNameHolder.v().get(sc)
-		assert callsiteNames != null
-		assert callsiteNames[0] == "println"
+		try {
+			def sc = Scene.v().loadClassAndSupport(Subject.class.name)
+			assert sc != null
+			new SingleClassOptimizer(transformers:[CallsiteNameCollector]).optimize(Subject.class)
+			def callsiteNames = CallsiteNameHolder.v().get(Subject.class.name)
+			assert callsiteNames != null
+			assert callsiteNames[0] == "println"
+		} finally {
+			CallsiteNameHolder.v().clear()
+		}
 	}
 }
