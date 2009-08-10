@@ -44,6 +44,14 @@ public class SingleClassOptimizer {
 	//
 	private boolean viaShimple = false;
 
+	public boolean isViaShimple() {
+		return viaShimple;
+	}
+
+	public void setViaShimple(boolean viaShimple) {
+		this.viaShimple = viaShimple;
+	}
+
 	/**
 	 * The main entry of optimisation.
 	 *
@@ -59,7 +67,7 @@ public class SingleClassOptimizer {
 
 	private void runBodyPacks(SootClass c) {
 		boolean produceJimple = true;
-		boolean produceBaf = false;
+		boolean produceBaf = true;
 		boolean produceShimple = false;
 
 		switch (format) {
@@ -151,10 +159,9 @@ public class SingleClassOptimizer {
 	}
 
     private byte[] writeClass(SootClass c) {
-    	ByteArrayOutputStream streamOut = new ByteArrayOutputStream();
+    	ByteArrayOutputStream bout = new ByteArrayOutputStream();
         String fileName = SourceLocator.v().getFileNameFor(c, format);
-
-        streamOut = new JasminOutputStream(streamOut);
+        JasminOutputStream streamOut = new JasminOutputStream(bout);
         PrintWriter writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
 
         if (c.containsBafBody())
@@ -165,7 +172,7 @@ public class SingleClassOptimizer {
         try {
             writerOut.flush();
             streamOut.close();
-            return streamOut.toByteArray();
+            return bout.toByteArray();
         } catch (IOException e) {
             throw new CompilationDeathException("Cannot close output file " + fileName);
         }
