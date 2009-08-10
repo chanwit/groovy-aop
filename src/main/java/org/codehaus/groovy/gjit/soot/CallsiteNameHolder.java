@@ -4,11 +4,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import soot.SootClass;
 
-public class CallsiteNameHolder extends ConcurrentHashMap<SootClass, String[]> {
+public class CallsiteNameHolder extends ConcurrentHashMap<String, String[]> {
 
 	private static CallsiteNameHolder instance;
 
-	public static ConcurrentHashMap<SootClass, String[]> v() {
+	public static ConcurrentHashMap<String, String[]> v() {
 		if(instance == null)
 			instance = new CallsiteNameHolder();
 

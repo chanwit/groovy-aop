@@ -38,7 +38,7 @@ public class CallsiteNameCollector extends BodyTransformer {
         }
 
         if (callsitenames != null) {
-            CallsiteNameHolder.v().put(b.getMethod().getDeclaringClass(), callsitenames);
+            CallsiteNameHolder.v().put(b.getMethod().getDeclaringClass().getName(), callsitenames);
         }
     }
 }
