@@ -4,4 +4,8 @@ package org.codehaus.groovy.gjit.soot
 	def hello() {
 		println "hello"
 	}
+
+	def add(i, j) {
+		return i + j
+	}
 }

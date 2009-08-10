@@ -8,7 +8,7 @@ class TypingTests extends GroovyAOPTestCase {
     static targetCode ='''
 class Target {
 
-    int method(i) {
+    def method(i) {
         return i
     }
 
@@ -21,7 +21,7 @@ class TypingAspect {
   static aspect = {
     def pc = pcall('Target.method') & args(i)
     typing(pc) {
-      i >> int.class
+      i >> int
     }
   }
 
@@ -31,9 +31,6 @@ class TypingAspect {
     void testTyping() {
         setupAspect(aspectCode)
         def target = gcl.parseClass(targetCode).newInstance()
-        println target.method(1).class.toString()
-        // assert target.method(1).class.toString() == "class int"
-        int i = 10
-        println i.class.toString()
+        assert target.method(1).class.toString() == "class int"
     }
 }
