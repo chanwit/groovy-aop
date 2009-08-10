@@ -38,7 +38,7 @@ import org.codehaus.groovy.gjit.soot.transformer.CallSiteNameCollector;
 			def c = Subject.class
 			byte[] bytes = new SingleClassOptimizer(
 				viaShimple:   true,
-				transformers: [CallsiteNameCollector]
+				transformers: [CallSiteNameCollector]
 			).optimize(c)
 			String[] names = CallSiteNameHolder.v().get(c.name)
 			assert names[0] == "println"
@@ -48,7 +48,7 @@ import org.codehaus.groovy.gjit.soot.transformer.CallSiteNameCollector;
 			i.redefineClasses(new ClassDefinition(c, bytes))
 			assert new Subject().add(10, 20) == 30
 		} finally {
-			CallsiteNameHolder.v().clear()
+			CallSiteNameHolder.v().clear()
 		}
 	}
 

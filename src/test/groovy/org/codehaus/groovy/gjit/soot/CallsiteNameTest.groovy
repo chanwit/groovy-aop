@@ -35,12 +35,12 @@ class Test {
 		try {
 			def sc = Scene.v().loadClassAndSupport(Subject.class.name)
 			assert sc != null
-			new SingleClassOptimizer(transformers:[CallsiteNameCollector]).optimize(Subject.class)
+			new SingleClassOptimizer(transformers:[CallSiteNameCollector]).optimize(Subject.class)
 			def callsiteNames = CallSiteNameHolder.v().get(Subject.class.name)
 			assert callsiteNames != null
 			assert callsiteNames[0] == "println"
 		} finally {
-			CallsiteNameHolder.v().clear()
+			CallSiteNameHolder.v().clear()
 		}
 	}
 }
