@@ -7,6 +7,16 @@ import soot.BodyTransformer;
 
 public class AspectAwareTransformer extends BodyTransformer {
 
+	private Class<?>[] argTypes;
+
+	public  Class<?>[] getArgTypes() {
+		return argTypes;
+	}
+
+	public void setArgTypes(Class<?>[] argTypes) {
+		this.argTypes = argTypes;
+	}
+
 	@Override
 	protected void internalTransform(Body body, String phase, Map option) {
 		// do type matching
