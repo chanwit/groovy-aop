@@ -29,8 +29,8 @@ import soot.util.JasminOutputStream;
 
 /**
  *
- * This class is preparing a Jimple output.
- * Setting via_shimple to get an SSA form.
+ * This class is preparing a Jimple output. Setting via_shimple to get an SSA
+ * form.
  *
  * @author chanwit
  *
@@ -39,11 +39,45 @@ public class SingleClassOptimizer {
 
 	private int format = Options.output_format_class;
 
+	private boolean produceJimple = true;
+	private boolean produceBaf = true;
+	private boolean produceShimple = false;
+	private List<SootMethod> methodList = null;
 	//
 	// set this optimisation to go via shimple to get SSA form
 	//
 	private boolean viaShimple = false;
 	private List<BodyTransformer> transformers = null;
+
+	public enum Phase {
+		SHIMPLE,
+		JIMPLE,
+		ALL
+	}
+
+	public boolean isProduceJimple() {
+		return produceJimple;
+	}
+
+	public void setProduceJimple(boolean produceJimple) {
+		this.produceJimple = produceJimple;
+	}
+
+	public boolean isProduceBaf() {
+		return produceBaf;
+	}
+
+	public void setProduceBaf(boolean produceBaf) {
+		this.produceBaf = produceBaf;
+	}
+
+	public boolean isProduceShimple() {
+		return produceShimple;
+	}
+
+	public void setProduceShimple(boolean produceShimple) {
+		this.produceShimple = produceShimple;
+	}
 
 	public List getTransformers() {
 		return transformers;
@@ -53,11 +87,11 @@ public class SingleClassOptimizer {
 		this.transformers = new ArrayList<BodyTransformer>();
 		for (Iterator<?> iterator = transformers.iterator(); iterator.hasNext();) {
 			Object object = iterator.next();
-			if(object instanceof Class<?>) {
-				Class<?> c = (Class<?>)object;
-				this.transformers.add((BodyTransformer)c.newInstance());
-			} else if(object instanceof BodyTransformer) {
-				this.transformers.add((BodyTransformer)object);
+			if (object instanceof Class<?>) {
+				Class<?> c = (Class<?>) object;
+				this.transformers.add((BodyTransformer) c.newInstance());
+			} else if (object instanceof BodyTransformer) {
+				this.transformers.add((BodyTransformer) object);
 			}
 		}
 	}
@@ -73,63 +107,103 @@ public class SingleClassOptimizer {
 	/**
 	 * The main entry of optimisation.
 	 *
-	 * @param c a class. Actually this method uses only its name to
-	 * perform optimization.
+	 * @param c
+	 *            a class. Actually this method uses only its name to perform
+	 *            optimization.
 	 * @return a byte array containing optimized class
 	 */
 	public byte[] optimize(Class<?> c) {
+		return optimize(c, Phase.ALL);
+	}
+
+	public byte[] optimize(Class<?> c, Phase toPhase) {
 		SootClass sc = Scene.v().loadClassAndSupport(c.getName());
 		try {
-			runBodyPacks(sc);
+			//
+			// CK:
+			// re-sorting all methods to get <cinit> and <init> become first.
+			//
+			methodList = sc.getMethods();
+			Collections.sort(methodList, new Comparator<SootMethod>() {
+				public int compare(SootMethod m1, SootMethod m2) {
+					return m1.getName().compareTo(m2.getName());
+				}
+			});
+
+			runBodyPacks(sc, toPhase);
 			return writeClass(sc);
 		} finally {
 			Scene.v().removeClass(sc);
 		}
 	}
 
-	private void runBodyPacks(SootClass c) {
-		boolean produceJimple = true;
-		boolean produceBaf = true;
-		boolean produceShimple = false;
-
+	private void runBodyPacks(SootClass c, Phase stopPhase) {
 		switch (format) {
-			case Options.output_format_none:
-			case Options.output_format_xml:
-			case Options.output_format_jimple:
-			case Options.output_format_jimp:
-				break;
-			case Options.output_format_shimp:
-			case Options.output_format_shimple:
-				produceShimple = true;
-				// FLIP produceJimple
-				produceJimple = false;
-				break;
-			case Options.output_format_baf:
-			case Options.output_format_b:
-				produceBaf = true;
-				break;
-			case Options.output_format_jasmin:
-			case Options.output_format_class:
-				produceBaf = true;
-				break;
-			default:
-				throw new RuntimeException();
+		case Options.output_format_none:
+		case Options.output_format_xml:
+		case Options.output_format_jimple:
+		case Options.output_format_jimp:
+			break;
+		case Options.output_format_shimp:
+		case Options.output_format_shimple:
+			produceShimple = true;
+			// FLIP produceJimple
+			produceJimple = false;
+			break;
+		case Options.output_format_baf:
+		case Options.output_format_b:
+			produceBaf = true;
+			break;
+		case Options.output_format_jasmin:
+		case Options.output_format_class:
+			produceBaf = true;
+			break;
+		default:
+			throw new RuntimeException();
 		}
 
 		if (this.viaShimple)
 			produceShimple = true;
 
-		//
-		// CK:
-		// re-sorting all methods to get <cinit> and <init> become first.
-		//
-		List<SootMethod> methodList = c.getMethods();
-		Collections.sort(methodList, new Comparator<SootMethod>() {
-			public int compare(SootMethod m1, SootMethod m2) {
-				return m1.getName().compareTo(m2.getName());
-			}
-		});
+		shimplePhase();
+		if(stopPhase == Phase.SHIMPLE) return;
+		jimplePhase();
+		if(stopPhase == Phase.JIMPLE) return;
+		bafPhase();
+	}
 
+	private void bafPhase() {
+		Iterator<SootMethod> methodIt = methodList.iterator();
+		if (!produceBaf) return;
+		while (methodIt.hasNext()) {
+			SootMethod m = (SootMethod) methodIt.next();
+			m.setActiveBody(Baf.v().newBody(
+				(JimpleBody) m.getActiveBody())
+			);
+			PackManager.v().getPack("bop").apply(m.getActiveBody());
+			PackManager.v().getPack("tag").apply(m.getActiveBody());
+		}
+	}
+
+	private void jimplePhase() {
+		Iterator<SootMethod> methodIt = methodList.iterator();
+		if (!produceJimple) return;
+		while (methodIt.hasNext()) {
+			SootMethod m = (SootMethod) methodIt.next();
+			JimpleBody body = (JimpleBody) m.retrieveActiveBody();
+			PackManager.v().getPack("jtp").apply(body);
+			if (transformers != null) {
+				for (Iterator<BodyTransformer> iterator = transformers.iterator(); iterator.hasNext();) {
+					BodyTransformer t = iterator.next();
+					t.transform(body);
+				}
+			}
+			PackManager.v().getPack("jop").apply(body);
+			PackManager.v().getPack("jap").apply(body);
+		}
+	}
+
+	private void shimplePhase() {
 		Iterator<SootMethod> methodIt = methodList.iterator();
 		while (methodIt.hasNext()) {
 			SootMethod m = (SootMethod) methodIt.next();
@@ -159,67 +233,42 @@ public class SingleClassOptimizer {
 				if (produceJimple)
 					m.setActiveBody(sBody.toJimpleBody());
 			}
-
-			if (produceJimple) {
-				JimpleBody body = (JimpleBody) m.retrieveActiveBody();
-				PackManager.v().getPack("jtp").apply(body);
-				if(transformers != null) {
-					for (Iterator<BodyTransformer> iterator = transformers.iterator();
-						 iterator.hasNext();) {
-						BodyTransformer t = iterator.next();
-						t.transform(body);
-					}
-				}
-
-				PackManager.v().getPack("jop").apply(body);
-				PackManager.v().getPack("jap").apply(body);
-			}
-
-			if (produceBaf) {
-				m.setActiveBody(Baf.v().newBody(
-					(JimpleBody) m.getActiveBody()
-				));
-				PackManager.v().getPack("bop").apply(m.getActiveBody());
-				PackManager.v().getPack("tag").apply(m.getActiveBody());
-			}
 		}
 	}
 
-    private byte[] writeClass(SootClass c) {
-    	ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        String fileName = SourceLocator.v().getFileNameFor(c, format);
-        JasminOutputStream streamOut = new JasminOutputStream(bout);
-        PrintWriter writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
+	private byte[] writeClass(SootClass c) {
+		ByteArrayOutputStream bout = new ByteArrayOutputStream();
+		String fileName = SourceLocator.v().getFileNameFor(c, format);
+		JasminOutputStream streamOut = new JasminOutputStream(bout);
+		PrintWriter writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
 
-        if (c.containsBafBody())
-            new soot.baf.JasminClass(c).print(writerOut);
-        else
-            new soot.jimple.JasminClass(c).print(writerOut);
+		if (c.containsBafBody())
+			new soot.baf.JasminClass(c).print(writerOut);
+		else
+			new soot.jimple.JasminClass(c).print(writerOut);
 
-        try {
-            writerOut.flush();
-            streamOut.close();
-            return bout.toByteArray();
-        } catch (IOException e) {
-            throw new CompilationDeathException("Cannot close output file " + fileName);
-        }
-    }
+		try {
+			writerOut.flush();
+			streamOut.close();
+			return bout.toByteArray();
+		} catch (IOException e) {
+			throw new CompilationDeathException("Cannot close output file " + fileName);
+		}
+	}
 
-    private static void initClasses() {
-        String classes[] = {
-            "groovy.lang.Closure",
-            "org.codehaus.groovy.grails.web.metaclass.RenderDynamicMethod"
-        };
+	private static void initClasses() {
+		String classes[] = { "groovy.lang.Closure",
+				"org.codehaus.groovy.grails.web.metaclass.RenderDynamicMethod" };
 
-        for (int i = 0; i < classes.length; i++) {
-            Scene.v().addBasicClass(classes[i], SootClass.SIGNATURES);
-        }
-    }
+		for (int i = 0; i < classes.length; i++) {
+			Scene.v().addBasicClass(classes[i], SootClass.SIGNATURES);
+		}
+	}
 
-    static {
-        Scene.v().setPhantomRefs(true);
-        initClasses();
-        Scene.v().loadBasicClasses();
-    }
+	static {
+		Scene.v().setPhantomRefs(true);
+		initClasses();
+		Scene.v().loadBasicClasses();
+	}
 
 }
