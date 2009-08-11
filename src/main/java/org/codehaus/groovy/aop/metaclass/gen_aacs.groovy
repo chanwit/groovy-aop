@@ -123,9 +123,9 @@ def text = """
             $create_jp
             matcher.matchPerClass(effectiveAdviceCodes, jp);
             if(effectiveAdviceCodes.containsTypeAdvice()) {
-        		performTypeAdvice(effectiveAdviceCodes, sender, jp);
-        	}
-        	if(effectiveAdviceCodes.isEmpty() == false) { // matched and get some advice codes to perform
+                performTypeAdvice(effectiveAdviceCodes, sender, jp);
+            }
+            if(effectiveAdviceCodes.isEmpty() == false) { // matched and get some advice codes to perform
                 InvocationContext context = new InvocationContext();
                 context.setBinding(jp.getBinding());
                 adviceInvoker = new AdviceInvoker(delegate, effectiveAdviceCodes, context, ${callIndex});
@@ -178,30 +178,37 @@ def text = """
 }
 
 def footer = '''
-	private void performTypeAdvice(EffectiveAdvices effectiveAdviceCodes,
-			Class<?> sender, Joinpoint jp) throws Throwable {
-		// create typing-invocation-context
-		TypingInvocationContext tic = new TypingInvocationContext();
-		tic.setBinding(jp.getBinding());
-		// execute type advice closure to obtain type intervention
-		Closure[] typing = effectiveAdviceCodes.getTypeAdviceClosureArray();
-		for (int i = 0; i < typing.length; i++) {
-			typing[i].setDelegate(tic);
-			typing[i].setResolveStrategy(Closure.DELEGATE_ONLY);
-			typing[i].call(tic);
-		}
-		// do transformation
-		SingleClassOptimizer sco = new SingleClassOptimizer();
-		sco.setViaShimple(true);
-		AspectAwareTransformer aatf = new AspectAwareTransformer();
-		aatf.setArgTypes(tic.getArgTypeOfBinding());
-		sco.setTransformers(new BodyTransformer[]{aatf});
-		byte[] bytes = sco.optimize(sender);
-		Instrumentation i = Agent.getInstrumentation();
-		if(i != null) {
-			i.redefineClasses(new ClassDefinition(sender, bytes));
-		}
-	}
+    private void performTypeAdvice(EffectiveAdvices effectiveAdviceCodes,
+            Class<?> sender, Joinpoint jp) throws Throwable {
+        // create typing-invocation-context
+        TypingInvocationContext tic = new TypingInvocationContext();
+        tic.setBinding(jp.getBinding());
+        // execute type advice closure to obtain type intervention
+        Closure[] typing = effectiveAdviceCodes.getTypeAdviceClosureArray();
+        for (int i = 0; i < typing.length; i++) {
+            typing[i].setDelegate(tic);
+            typing[i].setResolveStrategy(Closure.DELEGATE_ONLY);
+            typing[i].call(tic);
+        }
+        StackTraceElement[] sea = Thread.currentThread().getStackTrace();
+        for (int i = 2; i < sea.length; i++) {
+            if(sea[i].getClassName().endsWith("CallSiteArray")) continue;
+            if(sea[i].getClassName().endsWith("CallSite")) continue;
+            System.out.println(sea[i]);
+            break;
+        }
+        // do transformation
+        SingleClassOptimizer sco = new SingleClassOptimizer();
+        sco.setViaShimple(false);
+        AspectAwareTransformer aatf = new AspectAwareTransformer();
+        aatf.setArgTypes(tic.getArgTypeOfBinding());
+        sco.setTransformers(new BodyTransformer[]{aatf});
+        byte[] bytes = sco.optimize(sender);
+        Instrumentation i = Agent.getInstrumentation();
+        if(i != null) {
+            i.redefineClasses(new ClassDefinition(sender, bytes));
+        }
+    }
 
     @Override
     public CallSiteArray getArray() {

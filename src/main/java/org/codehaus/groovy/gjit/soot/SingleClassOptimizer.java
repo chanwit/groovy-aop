@@ -146,27 +146,27 @@ public class SingleClassOptimizer {
 
 	private void runBodyPacks(SootClass c, Phase stopPhase) {
 		switch (format) {
-		case Options.output_format_none:
-		case Options.output_format_xml:
-		case Options.output_format_jimple:
-		case Options.output_format_jimp:
-			break;
-		case Options.output_format_shimp:
-		case Options.output_format_shimple:
-			produceShimple = true;
-			// FLIP produceJimple
-			produceJimple = false;
-			break;
-		case Options.output_format_baf:
-		case Options.output_format_b:
-			produceBaf = true;
-			break;
-		case Options.output_format_jasmin:
-		case Options.output_format_class:
-			produceBaf = true;
-			break;
-		default:
-			throw new RuntimeException();
+			case Options.output_format_none:
+			case Options.output_format_xml:
+			case Options.output_format_jimple:
+			case Options.output_format_jimp:
+				break;
+			case Options.output_format_shimp:
+			case Options.output_format_shimple:
+				produceShimple = true;
+				// FLIP produceJimple
+				produceJimple = false;
+				break;
+			case Options.output_format_baf:
+			case Options.output_format_b:
+				produceBaf = true;
+				break;
+			case Options.output_format_jasmin:
+			case Options.output_format_class:
+				produceBaf = true;
+				break;
+			default:
+				throw new RuntimeException();
 		}
 
 		if (this.viaShimple)
@@ -264,8 +264,10 @@ public class SingleClassOptimizer {
 	}
 
 	private static void initClasses() {
-		String classes[] = { "groovy.lang.Closure",
-				"org.codehaus.groovy.grails.web.metaclass.RenderDynamicMethod" };
+		String classes[] = {
+			"groovy.lang.Closure",
+			"org.codehaus.groovy.grails.web.metaclass.RenderDynamicMethod"
+		};
 
 		for (int i = 0; i < classes.length; i++) {
 			Scene.v().addBasicClass(classes[i], SootClass.SIGNATURES);

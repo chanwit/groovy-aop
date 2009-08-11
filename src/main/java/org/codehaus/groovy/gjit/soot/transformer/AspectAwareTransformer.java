@@ -11,11 +11,6 @@ import soot.Unit;
 public class AspectAwareTransformer extends BodyTransformer {
 
 	private Class<?>[] argTypes;
-
-	public  Class<?>[] getArgTypes() {
-		return argTypes;
-	}
-
 	public void setArgTypes(Class<?>[] argTypes) {
 		this.argTypes = argTypes;
 	}
@@ -29,12 +24,19 @@ public class AspectAwareTransformer extends BodyTransformer {
 		// but *before* invocation
 		// this this should be triggered in EMC
 
-		PatchingChain<Unit> u = b.getUnits();
-		Iterator<Unit> stmts = u.snapshotIterator();
-		while (stmts.hasNext()) {
-			Unit s = stmts.next();
-			System.out.println(s);
+		// PatchingChain<Unit> u = b.getUnits();
+		// Iterator<Unit> stmts = u.snapshotIterator();
+		// while (stmts.hasNext()) {
+		//	Unit s = stmts.next();
+		//	System.out.println(s);
+		// }
+		System.out.println("========================");
+		System.out.println("argTypes: " + argTypes);
+		for (int i = 0; i < argTypes.length; i++) {
+			System.out.println("arg[" + i + "]: " + argTypes[i]);
 		}
+		System.out.println(b.getMethod());
+		System.out.println("========================");
 	}
 
 }
