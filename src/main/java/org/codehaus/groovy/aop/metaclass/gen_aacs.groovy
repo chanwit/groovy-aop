@@ -123,7 +123,7 @@ def text = """
             $create_jp
             matcher.matchPerClass(effectiveAdviceCodes, jp);
             if(effectiveAdviceCodes.containsTypeAdvice()) {
-                performTypeAdvice(effectiveAdviceCodes, sender, jp);
+                performTypeAdvice(effectiveAdviceCodes, delegate, jp);
             }
             if(effectiveAdviceCodes.isEmpty() == false) { // matched and get some advice codes to perform
                 InvocationContext context = new InvocationContext();
@@ -178,8 +178,9 @@ def text = """
 }
 
 def footer = '''
-    private void performTypeAdvice(EffectiveAdvices effectiveAdviceCodes,
-            Class<?> sender, Joinpoint jp) throws Throwable {
+    private void performTypeAdvice(EffectiveAdvices effectiveAdviceCodes, 
+            CallSite callSite, Joinpoint jp) throws Throwable {
+        Class<?> sender = callSite.getArray().owner;
         // create typing-invocation-context
         TypingInvocationContext tic = new TypingInvocationContext();
         tic.setBinding(jp.getBinding());
@@ -200,10 +201,12 @@ def footer = '''
         }
         // do transformation
         SingleClassOptimizer sco = new SingleClassOptimizer();
-        sco.setViaShimple(false);
+        sco.setViaShimple(true);
         AspectAwareTransformer aatf = new AspectAwareTransformer();
         aatf.setCallSiteArgTypes(tic.getArgTypeOfBinding());
-        aatf.setMethodName(withInMethodName);
+        aatf.setWithInMethodName(withInMethodName);
+        aatf.setCallSiteName(callSite.getName());
+        aatf.setCallSiteIndex(callSite.getIndex());
         sco.setTransformers(new BodyTransformer[]{aatf});
         byte[] bytes = sco.optimize(sender);
         Instrumentation i = Agent.getInstrumentation();
