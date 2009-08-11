@@ -190,18 +190,20 @@ def footer = '''
             typing[i].setResolveStrategy(Closure.DELEGATE_ONLY);
             typing[i].call(tic);
         }
+        String withInMethodName=null;
         StackTraceElement[] sea = Thread.currentThread().getStackTrace();
         for (int i = 2; i < sea.length; i++) {
             if(sea[i].getClassName().endsWith("CallSiteArray")) continue;
             if(sea[i].getClassName().endsWith("CallSite")) continue;
-            System.out.println(sea[i]);
+            withInMethodName = sea[i].getMethodName();
             break;
         }
         // do transformation
         SingleClassOptimizer sco = new SingleClassOptimizer();
         sco.setViaShimple(false);
         AspectAwareTransformer aatf = new AspectAwareTransformer();
-        aatf.setArgTypes(tic.getArgTypeOfBinding());
+        aatf.setCallSiteArgTypes(tic.getArgTypeOfBinding());
+        aatf.setMethodName(withInMethodName);
         sco.setTransformers(new BodyTransformer[]{aatf});
         byte[] bytes = sco.optimize(sender);
         Instrumentation i = Agent.getInstrumentation();

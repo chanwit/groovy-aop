@@ -10,9 +10,15 @@ import soot.Unit;
 
 public class AspectAwareTransformer extends BodyTransformer {
 
-	private Class<?>[] argTypes;
-	public void setArgTypes(Class<?>[] argTypes) {
-		this.argTypes = argTypes;
+	private Class<?>[] callSiteArgTypes;
+	private String withInMethodName;
+
+	public void setCallSiteArgTypes(Class<?>[] argTypes) {
+		this.callSiteArgTypes = argTypes;
+	}
+
+	public void setMethodName(String withInMethodName) {
+		this.withInMethodName = withInMethodName;
 	}
 
 	@Override
@@ -30,13 +36,17 @@ public class AspectAwareTransformer extends BodyTransformer {
 		//	Unit s = stmts.next();
 		//	System.out.println(s);
 		// }
-		System.out.println("========================");
-		System.out.println("argTypes: " + argTypes);
-		for (int i = 0; i < argTypes.length; i++) {
-			System.out.println("arg[" + i + "]: " + argTypes[i]);
+		if(b.getMethod().getName().equals(withInMethodName)) {
+			System.out.println("========================");
+			System.out.println("argTypes: " + callSiteArgTypes);
+			for (int i = 0; i < callSiteArgTypes.length; i++) {
+				System.out.println("arg[" + i + "]: " + callSiteArgTypes[i]);
+			}
+
+			System.out.println(b.getMethod());
+			System.out.println("withInMethodName: " + withInMethodName);
+			System.out.println("========================");
 		}
-		System.out.println(b.getMethod());
-		System.out.println("========================");
 	}
 
 }
