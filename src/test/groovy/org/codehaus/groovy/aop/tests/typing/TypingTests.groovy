@@ -12,6 +12,7 @@ class TypingAspect {
     def pc = pcall('org.codehaus.groovy.aop.tests.typing.Target.method') & args(i)
     typing(pc) {
       i >> int
+  	  return int
     }
   }
 

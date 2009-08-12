@@ -186,10 +186,12 @@ def footer = '''
         tic.setBinding(jp.getBinding());
         // execute type advice closure to obtain type intervention
         Closure[] typing = effectiveAdviceCodes.getTypeAdviceClosureArray();
+        Class<?>  returnType = null;
         for (int i = 0; i < typing.length; i++) {
             typing[i].setDelegate(tic);
             typing[i].setResolveStrategy(Closure.DELEGATE_ONLY);
-            typing[i].call(tic);
+            Object result = typing[i].call(tic);
+            if(result instanceof Class) { returnType = (Class<?>)result; } 
         }
         String withInMethodName=null;
         StackTraceElement[] sea = Thread.currentThread().getStackTrace();
@@ -204,6 +206,7 @@ def footer = '''
         sco.setViaShimple(true);
         AspectAwareTransformer aatf = new AspectAwareTransformer();
         aatf.setAdvisedTypes(tic.getArgTypeOfBinding());
+        aatf.setAdvisedReturnType(returnType);
         aatf.setCallSite(callSite);
         aatf.setWithInMethodName(withInMethodName);
         sco.setTransformers(new BodyTransformer[]{aatf});

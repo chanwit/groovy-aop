@@ -50,8 +50,13 @@ public class AspectAwareTransformer extends BodyTransformer {
 
 	private String withInMethodName;
 
+	private Class<?> advisedReturnType;
 	private Class<?>[] advisedTypes;
 	private CallSite callSite;
+
+	public void setAdvisedReturnType(Class<?> advisedReturnType) {
+		this.advisedReturnType = advisedReturnType;
+	}
 
 	public void setAdvisedTypes(Class<?>[] argTypes) {
 		this.advisedTypes = argTypes;
@@ -141,7 +146,7 @@ public class AspectAwareTransformer extends BodyTransformer {
 
 
 //			System.out.println(targetSm.getSubSignature());
-			typePropagate(callSite, advisedTypes);
+			typePropagate(callSite);
 			replaceCallSite(invokeStatement);
 //			System.out.println("========================");
 		}
@@ -151,7 +156,7 @@ public class AspectAwareTransformer extends BodyTransformer {
 		// TODO Auto-generated method stub
 	}
 
-	private void typePropagate(CallSite callSite, Class<?>[] advisedTypes) {
+	private void typePropagate(CallSite callSite) {
 		String[] targetNames = callSite.getClass().getName().split("\\$");
 		SootClass targetSc = Scene.v().loadClass(targetNames[0], SootClass.BODIES);
 		//
@@ -196,6 +201,14 @@ public class AspectAwareTransformer extends BodyTransformer {
 				typeList.add(RefType.v(cls.getName()));
 			}
 		}
+		Type returnType = targetSm.getReturnType();
+		if(advisedReturnType != null) {
+			if(advisedReturnType.isPrimitive()) {
+				returnType = Utils.v().primitive(advisedReturnType);
+			} else {
+				returnType = RefType.v(advisedReturnType.getName());
+			}
+		}
 
 		PatchingChain<Unit> units = jBody.getUnits();
 		Iterator<Unit> stmt = units.iterator();
@@ -223,7 +236,7 @@ public class AspectAwareTransformer extends BodyTransformer {
 			System.out.println(s);
 		}
 
-		SootMethod newMethod = new SootMethod(targetSm.getName(), typeList, IntType.v());
+		SootMethod newMethod = new SootMethod(targetSm.getName(), typeList, returnType);
 		newMethod.setModifiers(Modifier.STATIC + Modifier.PUBLIC);
 		newMethod.setDeclaringClass(newSc);
 		newSc.addMethod(newMethod);
