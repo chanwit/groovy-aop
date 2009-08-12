@@ -1,17 +1,28 @@
 package org.codehaus.groovy.gjit.soot.transformer;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.util.Iterator;
+import java.util.List;
+
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
+import soot.CompilationDeathException;
 import soot.DoubleType;
 import soot.FloatType;
 import soot.IntType;
 import soot.LongType;
+import soot.RefType;
 import soot.Scene;
 import soot.ShortType;
 import soot.SootClass;
+import soot.SootMethod;
 import soot.SootMethodRef;
 import soot.Type;
+import soot.util.JasminOutputStream;
 
 public class Utils {
 
@@ -65,6 +76,73 @@ public class Utils {
 		if(cls == double.class)  return DoubleType.v();
 		if(cls == float.class)   return FloatType.v();
 		if(cls == short.class)   return ShortType.v();
+		return null;
+	}
+
+	public Type classToSootType(Class<?> cls) {
+		if(cls.isPrimitive()) {
+			return primitive(cls);
+		} else {
+			return RefType.v(cls.getName());
+		}
+	}
+
+	public Class<?> defineClass(String className, byte[] bytes) {
+		Class<?> clazz = null;
+		try {
+			ClassLoader loader = ClassLoader.getSystemClassLoader();
+			Class<?> cls = Class.forName("java.lang.ClassLoader");
+			java.lang.reflect.Method method = cls.getDeclaredMethod( "defineClass",
+				new Class[] { String.class, byte[].class, int.class, int.class });
+
+			// protected method invocaton
+			method.setAccessible(true);
+			try {
+				Object[] args = new Object[]{ className, bytes, 0, bytes.length };
+				clazz = (Class<?>) method.invoke(loader, args);
+			} finally {
+				method.setAccessible(false);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return clazz;
+	}
+
+	public byte[] writeClass(SootClass sc) {
+		List<SootMethod> methods = sc.getMethods();
+		for (Iterator<SootMethod> i = methods.iterator(); i.hasNext();) {
+			SootMethod sm = i.next();
+			sm.retrieveActiveBody();
+		}
+
+		ByteArrayOutputStream bout   = new ByteArrayOutputStream();
+		JasminOutputStream streamOut = new JasminOutputStream(bout);
+		PrintWriter writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
+
+		if (sc.containsBafBody())
+			new soot.baf.JasminClass(sc).print(writerOut);
+		else
+			new soot.jimple.JasminClass(sc).print(writerOut);
+
+		try {
+			writerOut.flush();
+			streamOut.close();
+			return bout.toByteArray();
+		} catch (IOException e) {
+			throw new CompilationDeathException("Cannot close output file ");
+		}
+	}
+
+	public RefType getWrapperType(Type toType) {
+		if(toType == IntType.v())     return RefType.v("java.lang.Integer");
+		if(toType == LongType.v())    return RefType.v("java.lang.Long");
+		if(toType == DoubleType.v())  return RefType.v("java.lang.Double");
+		if(toType == FloatType.v())   return RefType.v("java.lang.Float");
+		if(toType == ByteType.v())    return RefType.v("java.lang.Byte");
+		if(toType == BooleanType.v()) return RefType.v("java.lang.Boolean");
+		if(toType == CharType.v())    return RefType.v("java.lang.Character");
+		if(toType == ShortType.v())   return RefType.v("java.lang.Short");
 		return null;
 	}
 

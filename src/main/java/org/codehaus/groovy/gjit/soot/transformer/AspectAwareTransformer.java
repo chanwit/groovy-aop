@@ -1,11 +1,9 @@
 package org.codehaus.groovy.gjit.soot.transformer;
 
-import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -16,10 +14,10 @@ import org.codehaus.groovy.runtime.callsite.CallSite;
 import soot.ArrayType;
 import soot.Body;
 import soot.BodyTransformer;
-import soot.CompilationDeathException;
 import soot.Local;
 import soot.Modifier;
 import soot.PatchingChain;
+import soot.PrimType;
 import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
@@ -29,6 +27,7 @@ import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.AssignStmt;
+import soot.jimple.CastExpr;
 import soot.jimple.IdentityStmt;
 import soot.jimple.IntConstant;
 import soot.jimple.InvokeExpr;
@@ -41,7 +40,6 @@ import soot.jimple.ThisRef;
 import soot.jimple.internal.JIdentityStmt;
 import soot.shimple.Shimple;
 import soot.shimple.ShimpleBody;
-import soot.util.JasminOutputStream;
 
 public class AspectAwareTransformer extends BodyTransformer {
 
@@ -50,6 +48,10 @@ public class AspectAwareTransformer extends BodyTransformer {
 	private Class<?> advisedReturnType;
 	private Class<?>[] advisedTypes;
 	private CallSite callSite;
+
+	private PatchingChain<Unit> units;
+
+	private Body body;
 
 	public void setAdvisedReturnType(Class<?> advisedReturnType) {
 		this.advisedReturnType = advisedReturnType;
@@ -113,21 +115,19 @@ public class AspectAwareTransformer extends BodyTransformer {
 
 	@Override
 	protected void internalTransform(Body b, String phase, Map options) {
+		//
 		// do type matching
 		// if match, do tranformation for matched call
 		// this transformation just occurs right before invocation
 		// NOT after weaving
 		// but *before* invocation
 		// this this should be triggered in EMC
+		//
 
-		// PatchingChain<Unit> u = b.getUnits();
-		// Iterator<Unit> stmts = u.snapshotIterator();
-		// while (stmts.hasNext()) {
-		//	Unit s = stmts.next();
-		//	System.out.println(s);
-		// }
 		if(b.getMethod().getName().equals(withInMethodName)) {
-			Value acallsite = findCallSiteArray(b.getUnits());
+			body = b;
+			units = b.getUnits();
+			Value acallsite = findCallSiteArray(units);
 			Unit invokeStatement = locateCallSiteByIndex(b.getUnits(), acallsite, callSite.getIndex());
 			SootMethod newTargetMethod = typePropagate(callSite);
 			replaceCallSite(invokeStatement, newTargetMethod);
@@ -157,7 +157,13 @@ public class AspectAwareTransformer extends BodyTransformer {
 			);
 			stmt.setInvokeExpr(expr);
 		}
-		System.out.println(invokeStatement);
+
+		//
+		// do autoboxing around the call
+		//
+		autoboxArguments(invokeStatement);
+		autoboxReturn(invokeStatement);
+
 		//
 		// What to do here,
 		// 1. creating a newSC class
@@ -174,6 +180,76 @@ public class AspectAwareTransformer extends BodyTransformer {
 //		} catch (UnmodifiableClassException e) {
 //			throw new RuntimeException(e);
 //		}
+	}
+
+	private void autoboxArguments(Unit invokeStatement) {
+		final Jimple j = Jimple.v();
+		InvokeExpr expr=null;
+		if(invokeStatement instanceof AssignStmt) {
+			AssignStmt stmt = (AssignStmt)invokeStatement;
+			expr = stmt.getInvokeExpr();
+		} else if(invokeStatement instanceof InvokeStmt) {
+			InvokeStmt stmt = (InvokeStmt)invokeStatement;
+			expr = stmt.getInvokeExpr();
+		}
+
+		//
+		// i starts from 1
+		// Skip the first one, which is simulated "this"
+		//
+		for(int i = 1; i < expr.getArgCount(); i++) {
+			if(advisedTypes[i-1] == null) continue;
+			Value arg = expr.getArg(i);
+			Type fromType = arg.getType();
+			Type toType = Utils.v().classToSootType(advisedTypes[i-1]);
+			if(toType.equals(fromType)) continue;
+
+			System.out.println("from : " + fromType);
+			System.out.println("to   : " + toType);
+			if(toType instanceof PrimType) {
+				String name = toType.toString();
+				RefType wrapperType = Utils.v().getWrapperType(toType);
+
+				Local castLocal = null;
+				ArrayList<Unit> list = new ArrayList<Unit>();
+				if(fromType != wrapperType) { // need cast
+					castLocal = j.newLocal(((Local)arg).getName() + "_x0", wrapperType);
+					CastExpr cast   = j.newCastExpr(arg, wrapperType);
+					AssignStmt s0   = j.newAssignStmt(castLocal, cast);
+					body.getLocals().add(castLocal);
+					list.add(s0);
+				}
+
+				SootClass wrapperSc = wrapperType.getSootClass();
+				SootMethod method   = wrapperSc.getMethod(name + " " + name + "Value()");
+				Local newArg        = j.newLocal(((Local)arg).getName() + "_x1", toType);
+				body.getLocals().add(newArg);
+				InvokeExpr invoke   = null;
+				if(castLocal == null) {
+					invoke = j.newVirtualInvokeExpr((Local)arg, method.makeRef());
+				} else {
+					invoke = j.newVirtualInvokeExpr(castLocal, method.makeRef());
+				}
+				AssignStmt s1 = j.newAssignStmt(newArg, invoke);
+				list.add(s1);
+
+				expr.setArg(i, newArg);
+				units.insertBefore(list, invokeStatement);
+
+				// TODO: for D E B U G G I N G
+				System.out.println("done");
+				for (Iterator<Unit> iterator = list.iterator(); iterator.hasNext();) {
+					System.out.println(iterator.next());
+				}
+				System.out.println(invokeStatement);
+				// for D E B U G G I N G
+			}
+		}
+	}
+
+	private void autoboxReturn(Unit invokeStatement) {
+		// TODO Auto-generated method stub
+
 	}
 
 	private SootMethod typePropagate(CallSite callSite) {
@@ -216,25 +292,17 @@ public class AspectAwareTransformer extends BodyTransformer {
 		typeList.add(targetSc.getType());
 		for (int i = 0; i < advisedTypes.length; i++) {
 			Class<?> cls = advisedTypes[i];
-			if(cls.isPrimitive()) {
-				typeList.add(Utils.v().primitive(cls));
-			} else {
-				typeList.add(RefType.v(cls.getName()));
-			}
+			typeList.add(Utils.v().classToSootType(cls));
 		}
 		Type returnType = targetSm.getReturnType();
 		if(advisedReturnType != null) {
-			if(advisedReturnType.isPrimitive()) {
-				returnType = Utils.v().primitive(advisedReturnType);
-			} else {
-				returnType = RefType.v(advisedReturnType.getName());
-			}
+			returnType = Utils.v().classToSootType(advisedReturnType);
 		}
 
 		PatchingChain<Unit> units = jBody.getUnits();
-		Iterator<Unit> stmt = units.iterator();
-		while(stmt.hasNext()) {
-			Unit s = stmt.next();
+		Iterator<Unit> stmts = units.iterator();
+		while(stmts.hasNext()) {
+			Unit s = stmts.next();
 			if(s instanceof IdentityStmt) {
 				JIdentityStmt a = (JIdentityStmt)s;
 				Value right = a.getRightOp();
@@ -263,14 +331,15 @@ public class AspectAwareTransformer extends BodyTransformer {
 		newMethod.setDeclaringClass(newSc);
 		newSc.addMethod(newMethod);
 		newMethod.setActiveBody(jBody);
-		byte[] bytes = writeClass(newSc);
-		defineClass(newClassName, bytes);
+		byte[] bytes = Utils.v().writeClass(newSc);
+		Utils.v().defineClass(newClassName, bytes);
 
 		//
 		// TODO: for D E B U G G I N G
 		//
 		FileOutputStream fos;
 		try {
+			new File("Dump_03.class").delete();
 			fos = new FileOutputStream("Dump_03.class");
 			fos.write(bytes);
 			fos.flush();
@@ -282,54 +351,6 @@ public class AspectAwareTransformer extends BodyTransformer {
 		}
 
 		return newMethod;
-	}
-
-	private byte[] writeClass(SootClass c) {
-		List<SootMethod> m = c.getMethods();
-		for (Iterator iterator = m.iterator(); iterator.hasNext();) {
-			SootMethod sootMethod = (SootMethod) iterator.next();
-			sootMethod.retrieveActiveBody();
-		}
-
-		ByteArrayOutputStream bout = new ByteArrayOutputStream();
-		//String fileName = SourceLocator.v().getFileNameFor(c, format);
-		JasminOutputStream streamOut = new JasminOutputStream(bout);
-		PrintWriter writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
-
-		if (c.containsBafBody())
-			new soot.baf.JasminClass(c).print(writerOut);
-		else
-			new soot.jimple.JasminClass(c).print(writerOut);
-
-		try {
-			writerOut.flush();
-			streamOut.close();
-			return bout.toByteArray();
-		} catch (IOException e) {
-			throw new CompilationDeathException("Cannot close output file ");
-		}
-	}
-
-	private Class<?> defineClass(String className, byte[] b) {
-		Class<?> clazz = null;
-		try {
-			ClassLoader loader = ClassLoader.getSystemClassLoader();
-			Class<?> cls = Class.forName("java.lang.ClassLoader");
-			java.lang.reflect.Method method = cls.getDeclaredMethod( "defineClass",
-				new Class[] { String.class, byte[].class, int.class, int.class });
-
-			// protected method invocaton
-			method.setAccessible(true);
-			try {
-				Object[] args = new Object[]{ className, b, 0, b.length };
-				clazz = (Class<?>) method.invoke(loader, args);
-			} finally {
-				method.setAccessible(false);
-			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-		return clazz;
 	}
 
 }
