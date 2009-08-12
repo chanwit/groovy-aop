@@ -6,25 +6,20 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.lang.instrument.ClassDefinition;
-import java.lang.instrument.UnmodifiableClassException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.groovy.gjit.agent.Agent;
 import org.codehaus.groovy.runtime.callsite.CallSite;
 
 import soot.ArrayType;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.CompilationDeathException;
-import soot.IntType;
 import soot.Local;
 import soot.Modifier;
 import soot.PatchingChain;
-import soot.PrimType;
 import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
@@ -46,7 +41,6 @@ import soot.jimple.ThisRef;
 import soot.jimple.internal.JIdentityStmt;
 import soot.shimple.Shimple;
 import soot.shimple.ShimpleBody;
-import soot.util.Chain;
 import soot.util.JasminOutputStream;
 
 public class AspectAwareTransformer extends BodyTransformer {
@@ -135,24 +129,8 @@ public class AspectAwareTransformer extends BodyTransformer {
 		if(b.getMethod().getName().equals(withInMethodName)) {
 			Value acallsite = findCallSiteArray(b.getUnits());
 			Unit invokeStatement = locateCallSiteByIndex(b.getUnits(), acallsite, callSite.getIndex());
-//			 System.out.println(invokeStatement);
-//			 System.out.println("argTypes: " + advisedTypes);
-//			 for (int i = 0; i < advisedTypes.length; i++) {
-//			   System.out.println("arg[" + i + "]: " + advisedTypes[i]);
-//			 }
-
-//			System.out.println(b.getMethod());
-//			System.out.println("withInMethodName: " + withInMethodName);
-//
-//			System.out.println("calling to " + callSite.getName());
-//			System.out.println(callSite);
-
-
-//			System.out.println(targetSm.getSubSignature());
-
 			SootMethod newTargetMethod = typePropagate(callSite);
 			replaceCallSite(invokeStatement, newTargetMethod);
-//			System.out.println("========================");
 		}
 	}
 
@@ -201,8 +179,9 @@ public class AspectAwareTransformer extends BodyTransformer {
 	private SootMethod typePropagate(CallSite callSite) {
 		String[] targetNames = callSite.getClass().getName().split("\\$");
 		SootClass targetSc = Scene.v().loadClass(targetNames[0], SootClass.BODIES);
+
 		//
-		// This should be
+		// TODO: This should be
 		// SootMethod  targetSm = targetSc.getMethod("sub signature");
 		//
 		SootMethod targetSm = targetSc.getMethodByName(targetNames[1]);
@@ -214,9 +193,8 @@ public class AspectAwareTransformer extends BodyTransformer {
 		Body body = targetSm.retrieveActiveBody();
 		ShimpleBody sBody;
 		if (body instanceof ShimpleBody) {
-			sBody = (ShimpleBody) body;
-			if (!sBody.isSSA())
-				sBody.rebuild();
+			sBody = (ShimpleBody)body;
+			if (!sBody.isSSA()) sBody.rebuild();
 		} else {
 			sBody = Shimple.v().newBody(body);
 		}
@@ -231,7 +209,7 @@ public class AspectAwareTransformer extends BodyTransformer {
 		SootClass newSc = new SootClass(newClassName, Modifier.PUBLIC);
 
 		//
-		// need a magic super type for bypassing security check
+		// Need a magic super type for bypassing security check
 		//
 		newSc.setSuperclass(RefType.v("sun.reflect.GroovyAOPMagic").getSootClass());
 		ArrayList<Type> typeList = new ArrayList<Type>();
@@ -272,11 +250,12 @@ public class AspectAwareTransformer extends BodyTransformer {
 							p.getIndex() + 1
 						)
 					);
+					//
 					// $r_i.type = typeof(rhs)
+					//
 					((Local)a.getLeftOp()).setType(a.getRightOp().getType());
 				}
 			}
-			System.out.println(s);
 		}
 
 		SootMethod newMethod = new SootMethod(targetSm.getName(), typeList, returnType);
@@ -285,7 +264,7 @@ public class AspectAwareTransformer extends BodyTransformer {
 		newSc.addMethod(newMethod);
 		newMethod.setActiveBody(jBody);
 		byte[] bytes = writeClass(newSc);
-		// System.out.println(bytes.length);
+		defineClass(newClassName, bytes);
 
 		//
 		// TODO: for D E B U G G I N G
@@ -301,8 +280,6 @@ public class AspectAwareTransformer extends BodyTransformer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		loadClass(newClassName, bytes);
 
 		return newMethod;
 	}
@@ -333,7 +310,7 @@ public class AspectAwareTransformer extends BodyTransformer {
 		}
 	}
 
-	private Class<?> loadClass(String className, byte[] b) {
+	private Class<?> defineClass(String className, byte[] b) {
 		Class<?> clazz = null;
 		try {
 			ClassLoader loader = ClassLoader.getSystemClassLoader();
