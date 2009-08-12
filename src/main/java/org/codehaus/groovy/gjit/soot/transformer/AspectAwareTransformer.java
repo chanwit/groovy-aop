@@ -125,7 +125,7 @@ public class AspectAwareTransformer extends BodyTransformer {
 		//
 
 		if(b.getMethod().getName().equals(withInMethodName)) {
-			body = b;
+			body  = b;
 			units = b.getUnits();
 			Value acallsite = findCallSiteArray(units);
 			Unit invokeStatement = locateCallSiteByIndex(b.getUnits(), acallsite, callSite.getIndex());
@@ -136,12 +136,12 @@ public class AspectAwareTransformer extends BodyTransformer {
 
 	private void replaceCallSite(Unit invokeStatement, SootMethod newTargetMethod) {
 		// 2 cases
-		// 1. AssignStmt
-		// 2. InvokeStmt
+		//  1. AssignStmt
+		//  2. InvokeStmt
 		System.out.println(invokeStatement);
 		System.out.println(newTargetMethod);
-		// always static
 
+		// always static
 		if(invokeStatement instanceof AssignStmt) {
 			AssignStmt stmt = (AssignStmt)invokeStatement;
 			InvokeExpr e = stmt.getInvokeExpr();
@@ -210,12 +210,12 @@ public class AspectAwareTransformer extends BodyTransformer {
 				String name = toType.toString();
 				RefType wrapperType = Utils.v().getWrapperType(toType);
 
-				Local castLocal = null;
 				ArrayList<Unit> list = new ArrayList<Unit>();
+				Local castLocal = null;
 				if(fromType != wrapperType) { // need cast
-					castLocal = j.newLocal(((Local)arg).getName() + "_x0", wrapperType);
-					CastExpr cast   = j.newCastExpr(arg, wrapperType);
-					AssignStmt s0   = j.newAssignStmt(castLocal, cast);
+					castLocal     = j.newLocal(((Local)arg).getName() + "_x0", wrapperType);
+					CastExpr cast = j.newCastExpr(arg, wrapperType);
+					AssignStmt s0 = j.newAssignStmt(castLocal, cast);
 					body.getLocals().add(castLocal);
 					list.add(s0);
 				}
@@ -224,6 +224,7 @@ public class AspectAwareTransformer extends BodyTransformer {
 				SootMethod method   = wrapperSc.getMethod(name + " " + name + "Value()");
 				Local newArg        = j.newLocal(((Local)arg).getName() + "_x1", toType);
 				body.getLocals().add(newArg);
+
 				InvokeExpr invoke   = null;
 				if(castLocal == null) {
 					invoke = j.newVirtualInvokeExpr((Local)arg, method.makeRef());
