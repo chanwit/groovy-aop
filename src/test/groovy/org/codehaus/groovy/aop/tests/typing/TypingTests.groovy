@@ -21,7 +21,7 @@ class TypingAspect {
 
     void testTyping() {
         setupAspect(aspectCode)
-        5.times {
+        1000.times {
         	println "=== $it ==="
         	new Caller().realTest()
         }

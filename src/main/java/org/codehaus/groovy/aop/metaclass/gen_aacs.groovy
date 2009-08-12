@@ -178,43 +178,56 @@ def text = """
 }
 
 def footer = '''
-    private void performTypeAdvice(EffectiveAdvices effectiveAdviceCodes, 
-            CallSite callSite, Joinpoint jp) throws Throwable {
-        Class<?> sender = callSite.getArray().owner;
+    private void performTypeAdvice(EffectiveAdvices effectiveAdviceCodes,
+            final CallSite callSite, Joinpoint jp) throws Throwable {
+        final Class<?> sender = callSite.getArray().owner;
         // create typing-invocation-context
-        TypingInvocationContext tic = new TypingInvocationContext();
+        final TypingInvocationContext tic = new TypingInvocationContext();
         tic.setBinding(jp.getBinding());
         // execute type advice closure to obtain type intervention
         Closure[] typing = effectiveAdviceCodes.getTypeAdviceClosureArray();
-        Class<?>  returnType = null;
+        Class<?> returnTypeTemp=null;
         for (int i = 0; i < typing.length; i++) {
             typing[i].setDelegate(tic);
             typing[i].setResolveStrategy(Closure.DELEGATE_ONLY);
             Object result = typing[i].call(tic);
-            if(result instanceof Class) { returnType = (Class<?>)result; } 
+            if(result instanceof Class) { returnTypeTemp = (Class<?>)result; }
         }
-        String withInMethodName=null;
+        final Class<?> returnType = returnTypeTemp;
+
+        String withInMethodNameTemp=null;
         StackTraceElement[] sea = Thread.currentThread().getStackTrace();
         for (int i = 2; i < sea.length; i++) {
             if(sea[i].getClassName().endsWith("CallSiteArray")) continue;
             if(sea[i].getClassName().endsWith("CallSite")) continue;
-            withInMethodName = sea[i].getMethodName();
+            withInMethodNameTemp = sea[i].getMethodName();
             break;
         }
+        final String withInMethodName=withInMethodNameTemp;
+
         // do transformation
-        SingleClassOptimizer sco = new SingleClassOptimizer();
-        sco.setViaShimple(true);
-        AspectAwareTransformer aatf = new AspectAwareTransformer();
-        aatf.setAdvisedTypes(tic.getArgTypeOfBinding());
-        aatf.setAdvisedReturnType(returnType);
-        aatf.setCallSite(callSite);
-        aatf.setWithInMethodName(withInMethodName);
-        sco.setTransformers(new BodyTransformer[]{aatf});
-        byte[] bytes = sco.optimize(sender);
-        Instrumentation i = Agent.getInstrumentation();
-        if(i != null) {
-            i.redefineClasses(new ClassDefinition(sender, bytes));
-        }
+        new Thread() {
+			@Override
+			public void run() {
+		        SingleClassOptimizer sco = new SingleClassOptimizer();
+		        sco.setViaShimple(true);
+		        AspectAwareTransformer aatf = new AspectAwareTransformer();
+		        aatf.setAdvisedTypes(tic.getArgTypeOfBinding());
+		        aatf.setAdvisedReturnType(returnType);
+		        aatf.setCallSite(callSite);
+		        aatf.setWithInMethodName(withInMethodName);
+		        try {
+					sco.setTransformers(new BodyTransformer[]{aatf});
+			        byte[] bytes = sco.optimize(sender);
+			        Instrumentation i = Agent.getInstrumentation();
+			        if(i != null) {
+			            i.redefineClasses(new ClassDefinition(sender, bytes));
+			        }
+				} catch (Throwable e) {
+					e.printStackTrace();
+				}
+			}
+        }.start();
     }
 
     @Override
