@@ -1,6 +1,8 @@
 package org.codehaus.groovy.gjit.soot.transformer;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -128,9 +130,25 @@ public class Utils {
 		try {
 			writerOut.flush();
 			streamOut.close();
-			return bout.toByteArray();
+			byte[] bytes = bout.toByteArray();
+
+			dumpToFile(bytes, "Dump" + System.currentTimeMillis() + ".class");
+
+			return bytes;
 		} catch (IOException e) {
 			throw new CompilationDeathException("Cannot close output file ");
+		}
+	}
+
+	private void dumpToFile(byte[] bytes, String string) {
+		FileOutputStream f;
+		try {
+			f = new FileOutputStream(string);
+			f.write(bytes);
+			f.flush();
+			f.close();
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
 		}
 	}
 

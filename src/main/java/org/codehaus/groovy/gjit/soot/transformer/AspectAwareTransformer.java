@@ -193,6 +193,14 @@ public class AspectAwareTransformer extends BodyTransformer {
 			expr = stmt.getInvokeExpr();
 		}
 
+		ArrayList<Unit> list = new ArrayList<Unit>();
+		//
+		// cast object to simulated "this"
+		//
+		Local sim_this = (Local)expr.getArg(0);
+		CastExpr cast0 = j.newCastExpr(sim_this, expr.getMethod().getParameterType(0));
+		list.add(j.newAssignStmt(sim_this, cast0)); // not SSA
+
 		//
 		// i starts from 1
 		// Skip the first one, which is simulated "this"
@@ -200,6 +208,8 @@ public class AspectAwareTransformer extends BodyTransformer {
 		for(int i = 1; i < expr.getArgCount(); i++) {
 			if(advisedTypes[i-1] == null) continue;
 			Value arg = expr.getArg(i);
+			String argName = ((Local)arg).getName();
+
 			Type fromType = arg.getType();
 			Type toType = Utils.v().classToSootType(advisedTypes[i-1]);
 			if(toType.equals(fromType)) continue;
@@ -210,10 +220,9 @@ public class AspectAwareTransformer extends BodyTransformer {
 				String name = toType.toString();
 				RefType wrapperType = Utils.v().getWrapperType(toType);
 
-				ArrayList<Unit> list = new ArrayList<Unit>();
 				Local castLocal = null;
 				if(fromType != wrapperType) { // need cast
-					castLocal     = j.newLocal(((Local)arg).getName() + "_x0", wrapperType);
+					castLocal     = j.newLocal(argName + "_x0", wrapperType);
 					CastExpr cast = j.newCastExpr(arg, wrapperType);
 					AssignStmt s0 = j.newAssignStmt(castLocal, cast);
 					body.getLocals().add(castLocal);
@@ -222,7 +231,7 @@ public class AspectAwareTransformer extends BodyTransformer {
 
 				SootClass wrapperSc = wrapperType.getSootClass();
 				SootMethod method   = wrapperSc.getMethod(name + " " + name + "Value()");
-				Local newArg        = j.newLocal(((Local)arg).getName() + "_x1", toType);
+				Local newArg        = j.newLocal(argName + "_x1", toType);
 				body.getLocals().add(newArg);
 
 				InvokeExpr invoke   = null;
@@ -249,8 +258,33 @@ public class AspectAwareTransformer extends BodyTransformer {
 	}
 
 	private void autoboxReturn(Unit invokeStatement) {
-		// TODO Auto-generated method stub
+		if(invokeStatement instanceof AssignStmt) {
+			AssignStmt a = (AssignStmt)invokeStatement;
+			Local left = (Local)a.getLeftOp();
+			Type fromType = Utils.v().classToSootType(advisedReturnType);
+			Type toType = left.getType();
+			if(toType.equals(fromType)) return;
 
+			System.out.println("return fromType :" + fromType);
+			System.out.println("return toType   :" + toType);
+			if(fromType instanceof PrimType) {
+				Local newReturn = Jimple.v().newLocal(left.getName() + "_x0",	fromType);
+				a.setLeftOp(newReturn);
+				body.getLocals().add(newReturn);
+
+				final RefType wrapper     = Utils.v().getWrapperType(fromType);
+				final SootClass wrapperSc = wrapper.getSootClass();
+				final String name = fromType.toString();
+
+				//
+				// create calling of java.lang.Integer valueOf(int)
+				//
+				SootMethod method = wrapperSc.getMethod(wrapper.getClassName() + " valueOf(" + name + ")");
+				StaticInvokeExpr unbox = Jimple.v().newStaticInvokeExpr(method.makeRef(), newReturn);
+				AssignStmt s0 = Jimple.v().newAssignStmt(left, unbox);
+				units.insertAfter(s0, invokeStatement);
+			}
+		}
 	}
 
 	private SootMethod typePropagate(CallSite callSite) {

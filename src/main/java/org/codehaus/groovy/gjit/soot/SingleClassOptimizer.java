@@ -1,6 +1,7 @@
 package org.codehaus.groovy.gjit.soot;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -257,11 +258,27 @@ public class SingleClassOptimizer {
 		try {
 			writerOut.flush();
 			streamOut.close();
-			return bout.toByteArray();
+			byte[] bytes = bout.toByteArray();
+			dumpToFile(bytes, "SCODump" + System.currentTimeMillis() + ".class");
+			return bytes;
 		} catch (IOException e) {
 			throw new CompilationDeathException("Cannot close output file " + fileName);
 		}
 	}
+
+
+	private void dumpToFile(byte[] bytes, String string) {
+		FileOutputStream f;
+		try {
+			f = new FileOutputStream(string);
+			f.write(bytes);
+			f.flush();
+			f.close();
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 
 	private static void initClasses() {
 		String classes[] = {

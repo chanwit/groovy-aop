@@ -21,7 +21,9 @@ class TypingAspect {
 
     void testTyping() {
         setupAspect(aspectCode)
-        def target = new Target()
-        assert target.method(1).class.toString() == "class int"
+        5.times {
+        	println "=== $it ==="
+        	new Caller().realTest()
+        }
     }
 }
