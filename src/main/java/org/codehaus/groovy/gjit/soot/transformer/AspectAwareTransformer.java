@@ -20,9 +20,11 @@ import soot.ArrayType;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.CompilationDeathException;
+import soot.IntType;
 import soot.Local;
 import soot.Modifier;
 import soot.PatchingChain;
+import soot.PrimType;
 import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
@@ -125,31 +127,44 @@ public class AspectAwareTransformer extends BodyTransformer {
 		if(b.getMethod().getName().equals(withInMethodName)) {
 			Value acallsite = findCallSiteArray(b.getUnits());
 			Unit invokeStatement = locateCallSiteByIndex(b.getUnits(), acallsite, callSite.getIndex());
-			System.out.println(invokeStatement);
+//			 System.out.println(invokeStatement);
+//			 System.out.println("argTypes: " + advisedTypes);
+//			 for (int i = 0; i < advisedTypes.length; i++) {
+//			   System.out.println("arg[" + i + "]: " + advisedTypes[i]);
+//			 }
 
-			System.out.println("argTypes: " + advisedTypes);
-			for (int i = 0; i < advisedTypes.length; i++) {
-				System.out.println("arg[" + i + "]: " + advisedTypes[i]);
-			}
-
-			System.out.println(b.getMethod());
-			System.out.println("withInMethodName: " + withInMethodName);
-
-			System.out.println("calling to " + callSite.getName());
-			System.out.println(callSite);
+//			System.out.println(b.getMethod());
+//			System.out.println("withInMethodName: " + withInMethodName);
+//
+//			System.out.println("calling to " + callSite.getName());
+//			System.out.println(callSite);
 
 
-			String[] targetNames = callSite.getClass().getName().split("\\$");
-			SootClass   targetSc = Scene.v().loadClass(targetNames[0], SootClass.BODIES);
-			SootMethod  targetSm = targetSc.getMethodByName(targetNames[1]);
-			System.out.println(targetSm.getSubSignature());
-			typePropagate(targetSc, targetSm, advisedTypes, callSite);
-			System.out.println("========================");
+//			System.out.println(targetSm.getSubSignature());
+			typePropagate(callSite, advisedTypes);
+			replaceCallSite(invokeStatement);
+//			System.out.println("========================");
 		}
 	}
 
-	private void typePropagate(SootClass sc, SootMethod targetMethod, Class<?>[] advisedTypes, CallSite callSite) {
-		Body body = targetMethod.retrieveActiveBody();
+	private void replaceCallSite(Unit invokeStatement) {
+		// TODO Auto-generated method stub
+	}
+
+	private void typePropagate(CallSite callSite, Class<?>[] advisedTypes) {
+		String[] targetNames = callSite.getClass().getName().split("\\$");
+		SootClass targetSc = Scene.v().loadClass(targetNames[0], SootClass.BODIES);
+		//
+		// This should be
+		// SootMethod  targetSm = targetSc.getMethod("sub signature");
+		//
+		SootMethod targetSm = targetSc.getMethodByName(targetNames[1]);
+
+		//
+		// Retrieve body from the original target method.
+		// We need a jimple body.
+		//
+		Body body = targetSm.retrieveActiveBody();
 		ShimpleBody sBody;
 		if (body instanceof ShimpleBody) {
 			sBody = (ShimpleBody) body;
@@ -160,19 +175,34 @@ public class AspectAwareTransformer extends BodyTransformer {
 		}
 		JimpleBody jBody = sBody.toJimpleBody();
 
-		Chain<Local> locals = jBody.getLocals();
-		for (Iterator<Local> i = locals.iterator(); i.hasNext();) {
-			Local local = i.next();
-			System.out.println(local);
+		//
+		// Create a new class using the same name with "$x".
+		// CallSite in groovy is created using the pattern Class$method.
+		// We append $x to it.
+		//
+		SootClass newSc = new SootClass(callSite.getClass().getName() + "$x", Modifier.PUBLIC);
+
+		//
+		// need a magic super type for bypassing security check
+		//
+		newSc.setSuperclass(RefType.v("sun.reflect.GroovyAOPMagic").getSootClass());
+		ArrayList<Type> typeList = new ArrayList<Type>();
+		typeList.add(targetSc.getType());
+		for (int i = 0; i < advisedTypes.length; i++) {
+			Class<?> cls = advisedTypes[i];
+			if(cls.isPrimitive()) {
+				typeList.add(Utils.v().primitive(cls));
+			} else {
+				typeList.add(RefType.v(cls.getName()));
+			}
 		}
+
 		PatchingChain<Unit> units = jBody.getUnits();
 		Iterator<Unit> stmt = units.iterator();
 		while(stmt.hasNext()) {
 			Unit s = stmt.next();
 			if(s instanceof IdentityStmt) {
 				JIdentityStmt a = (JIdentityStmt)s;
-				// System.out.println(a.getRightOp());
-				// System.out.println(a.getRightOp().getClass());
 				Value right = a.getRightOp();
 				if(right instanceof ThisRef) {
 					a.setRightOp(
@@ -180,17 +210,20 @@ public class AspectAwareTransformer extends BodyTransformer {
 					);
 				} else if(right instanceof ParameterRef) {
 					ParameterRef p = (ParameterRef)right;
-					p.setIndex(p.getIndex() + 1);
+					a.setRightOp(
+						Jimple.v().newParameterRef(
+							typeList.get(p.getIndex() + 1),
+							p.getIndex() + 1
+						)
+					);
+					// $r_i.type = typeof(rhs)
+					((Local)a.getLeftOp()).setType(a.getRightOp().getType());
 				}
 			}
+			System.out.println(s);
 		}
 
-		SootClass newSc = new SootClass(callSite.getClass().getName() + "$x", Modifier.PUBLIC);
-		newSc.setSuperclass(RefType.v("sun.reflect.GroovyAOPMagic").getSootClass());
-		ArrayList<Type> typeList = new ArrayList<Type>();
-		typeList.add(sc.getType());
-		typeList.add(RefType.v("java.lang.Object"));
-		SootMethod newMethod = new SootMethod(targetMethod.getName()+"_x", typeList, RefType.v("java.lang.Object"));
+		SootMethod newMethod = new SootMethod(targetSm.getName(), typeList, IntType.v());
 		newMethod.setModifiers(Modifier.STATIC + Modifier.PUBLIC);
 		newMethod.setDeclaringClass(newSc);
 		newSc.addMethod(newMethod);
@@ -198,9 +231,12 @@ public class AspectAwareTransformer extends BodyTransformer {
 		byte[] bytes = writeClass(newSc);
 		System.out.println(bytes.length);
 
+		//
+		// TODO: for D E B U G G I N G
+		//
 		FileOutputStream fos;
 		try {
-			fos = new FileOutputStream("Dump.class");
+			fos = new FileOutputStream("Dump_03.class");
 			fos.write(bytes);
 			fos.flush();
 			fos.close();
@@ -209,6 +245,13 @@ public class AspectAwareTransformer extends BodyTransformer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		//
+		// What to do here,
+		// 1. creating a newSC class
+		// 2. replace a call site object with the direct call to newSC class
+		// and "redefine" the caller class.
+		//
 
 //		try {
 //			Agent.getInstrumentation().redefineClasses(

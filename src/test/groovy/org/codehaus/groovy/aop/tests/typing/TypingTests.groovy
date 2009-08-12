@@ -5,21 +5,11 @@ import org.codehaus.groovy.aop.GroovyAOPTestCase
 
 class TypingTests extends GroovyAOPTestCase {
 
-    static targetCode ='''
-class Target {
-
-    def method(i) {
-        return i
-    }
-
-}
-'''
-
     static aspectCode ='''
 class TypingAspect {
 
   static aspect = {
-    def pc = pcall('Target.method') & args(i)
+    def pc = pcall('org.codehaus.groovy.aop.tests.typing.Target.method') & args(i)
     typing(pc) {
       i >> int
     }
@@ -30,7 +20,7 @@ class TypingAspect {
 
     void testTyping() {
         setupAspect(aspectCode)
-        def target = gcl.parseClass(targetCode).newInstance()
+        def target = new Target()
         assert target.method(1).class.toString() == "class int"
     }
 }
