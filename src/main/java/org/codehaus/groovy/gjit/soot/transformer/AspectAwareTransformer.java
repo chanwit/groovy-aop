@@ -36,9 +36,12 @@ import soot.ValueBox;
 import soot.jimple.AssignStmt;
 import soot.jimple.IdentityStmt;
 import soot.jimple.IntConstant;
+import soot.jimple.InvokeExpr;
+import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.jimple.ParameterRef;
+import soot.jimple.StaticInvokeExpr;
 import soot.jimple.ThisRef;
 import soot.jimple.internal.JIdentityStmt;
 import soot.shimple.Shimple;
@@ -146,17 +149,56 @@ public class AspectAwareTransformer extends BodyTransformer {
 
 
 //			System.out.println(targetSm.getSubSignature());
-			typePropagate(callSite);
-			replaceCallSite(invokeStatement);
+
+			SootMethod newTargetMethod = typePropagate(callSite);
+			replaceCallSite(invokeStatement, newTargetMethod);
 //			System.out.println("========================");
 		}
 	}
 
-	private void replaceCallSite(Unit invokeStatement) {
-		// TODO Auto-generated method stub
+	private void replaceCallSite(Unit invokeStatement, SootMethod newTargetMethod) {
+		// 2 cases
+		// 1. AssignStmt
+		// 2. InvokeStmt
+		System.out.println(invokeStatement);
+		System.out.println(newTargetMethod);
+		// always static
+
+		if(invokeStatement instanceof AssignStmt) {
+			AssignStmt stmt = (AssignStmt)invokeStatement;
+			InvokeExpr e = stmt.getInvokeExpr();
+			StaticInvokeExpr expr = Jimple.v().newStaticInvokeExpr(
+				newTargetMethod.makeRef(), e.getArgs()
+			);
+			stmt.setRightOp(expr);
+		} else if(invokeStatement instanceof InvokeStmt) {
+			InvokeStmt stmt = (InvokeStmt)invokeStatement;
+			InvokeExpr e = stmt.getInvokeExpr();
+			StaticInvokeExpr expr = Jimple.v().newStaticInvokeExpr(
+				newTargetMethod.makeRef(), e.getArgs()
+			);
+			stmt.setInvokeExpr(expr);
+		}
+		System.out.println(invokeStatement);
+		//
+		// What to do here,
+		// 1. creating a newSC class
+		// 2. replace a call site object with the direct call to newSC class
+		// and "redefine" the caller class.
+		//
+
+//		try {
+//			Agent.getInstrumentation().redefineClasses(
+//				new ClassDefinition(Class.forName(newSc.getName()), bytes)
+//			);
+//		} catch (ClassNotFoundException e) {
+//			throw new RuntimeException(e);
+//		} catch (UnmodifiableClassException e) {
+//			throw new RuntimeException(e);
+//		}
 	}
 
-	private void typePropagate(CallSite callSite) {
+	private SootMethod typePropagate(CallSite callSite) {
 		String[] targetNames = callSite.getClass().getName().split("\\$");
 		SootClass targetSc = Scene.v().loadClass(targetNames[0], SootClass.BODIES);
 		//
@@ -185,7 +227,8 @@ public class AspectAwareTransformer extends BodyTransformer {
 		// CallSite in groovy is created using the pattern Class$method.
 		// We append $x to it.
 		//
-		SootClass newSc = new SootClass(callSite.getClass().getName() + "$x", Modifier.PUBLIC);
+		String newClassName = callSite.getClass().getName() + "$x";
+		SootClass newSc = new SootClass(newClassName, Modifier.PUBLIC);
 
 		//
 		// need a magic super type for bypassing security check
@@ -242,7 +285,7 @@ public class AspectAwareTransformer extends BodyTransformer {
 		newSc.addMethod(newMethod);
 		newMethod.setActiveBody(jBody);
 		byte[] bytes = writeClass(newSc);
-		System.out.println(bytes.length);
+		// System.out.println(bytes.length);
 
 		//
 		// TODO: for D E B U G G I N G
@@ -259,23 +302,9 @@ public class AspectAwareTransformer extends BodyTransformer {
 			e.printStackTrace();
 		}
 
-		//
-		// What to do here,
-		// 1. creating a newSC class
-		// 2. replace a call site object with the direct call to newSC class
-		// and "redefine" the caller class.
-		//
+		loadClass(newClassName, bytes);
 
-//		try {
-//			Agent.getInstrumentation().redefineClasses(
-//				new ClassDefinition(Class.forName(newSc.getName()), bytes)
-//			);
-//		} catch (ClassNotFoundException e) {
-//			throw new RuntimeException(e);
-//		} catch (UnmodifiableClassException e) {
-//			throw new RuntimeException(e);
-//		}
-
+		return newMethod;
 	}
 
 	private byte[] writeClass(SootClass c) {
@@ -302,6 +331,28 @@ public class AspectAwareTransformer extends BodyTransformer {
 		} catch (IOException e) {
 			throw new CompilationDeathException("Cannot close output file ");
 		}
+	}
+
+	private Class<?> loadClass(String className, byte[] b) {
+		Class<?> clazz = null;
+		try {
+			ClassLoader loader = ClassLoader.getSystemClassLoader();
+			Class<?> cls = Class.forName("java.lang.ClassLoader");
+			java.lang.reflect.Method method = cls.getDeclaredMethod( "defineClass",
+				new Class[] { String.class, byte[].class, int.class, int.class });
+
+			// protected method invocaton
+			method.setAccessible(true);
+			try {
+				Object[] args = new Object[]{ className, b, 0, b.length };
+				clazz = (Class<?>) method.invoke(loader, args);
+			} finally {
+				method.setAccessible(false);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return clazz;
 	}
 
 }
