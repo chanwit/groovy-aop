@@ -203,10 +203,9 @@ def footer = '''
         SingleClassOptimizer sco = new SingleClassOptimizer();
         sco.setViaShimple(true);
         AspectAwareTransformer aatf = new AspectAwareTransformer();
-        aatf.setCallSiteArgTypes(tic.getArgTypeOfBinding());
+        aatf.setAdvisedTypes(tic.getArgTypeOfBinding());
+        aatf.setCallSite(callSite);
         aatf.setWithInMethodName(withInMethodName);
-        aatf.setCallSiteName(callSite.getName());
-        aatf.setCallSiteIndex(callSite.getIndex());
         sco.setTransformers(new BodyTransformer[]{aatf});
         byte[] bytes = sco.optimize(sender);
         Instrumentation i = Agent.getInstrumentation();

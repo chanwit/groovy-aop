@@ -266,7 +266,8 @@ public class SingleClassOptimizer {
 	private static void initClasses() {
 		String classes[] = {
 			"groovy.lang.Closure",
-			"org.codehaus.groovy.grails.web.metaclass.RenderDynamicMethod"
+			"org.codehaus.groovy.grails.web.metaclass.RenderDynamicMethod",
+			"sun.reflect.GroovyAOPMagic"
 		};
 
 		for (int i = 0; i < classes.length; i++) {
