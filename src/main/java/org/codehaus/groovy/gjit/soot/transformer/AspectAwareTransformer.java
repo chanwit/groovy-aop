@@ -72,49 +72,64 @@ public class AspectAwareTransformer extends BodyTransformer {
 	private Value findCallSiteArray(PatchingChain<Unit> u) {
 		Iterator<Unit> stmts = u.iterator();
 		while(stmts.hasNext()) {
+
 			Unit s = stmts.next();
 			List<ValueBox> defBoxes = s.getDefBoxes();
-			if(defBoxes.size()!=1) continue;
+			if(defBoxes.size() != 1) continue;
+
+			//
 			// check if it's CallSite[]
+			//
 			Value v = defBoxes.get(0).getValue();
 			if(v.getType() instanceof ArrayType == false) continue;
 			ArrayType at = (ArrayType)v.getType();
-			if(at.getArrayElementType().equals(Utils.v().getCallSiteType())==false) continue;
-			return v;
+			if( at.getArrayElementType().equals(Utils.v().getCallSiteType()) )
+				return v;
 		}
 		return null;
 	}
 
 	private Unit locateCallSiteByIndex(PatchingChain<Unit> units,
-			Value acallsite, int callSiteIndex) {
+									   Value callSiteArray,
+									   int   callSiteIndex) {
 		Iterator<Unit> stmts = units.iterator();
 		Unit found = null;
+
+		//
+		// find a Unit containing the call site base
+		// by checking the index in use boxes
+		//
 		while(stmts.hasNext()) {
 			Unit s = stmts.next();
 			List<ValueBox> useBoxes = s.getUseBoxes();
-			if(useBoxes.size()!=3) continue;
-			if(useBoxes.get(0).getValue().equivTo(acallsite)==false) continue;
+			if(useBoxes.size() != 3) continue;
+			if(useBoxes.get(0).getValue().equivTo(callSiteArray)==false) continue;
 			int index = ((IntConstant)useBoxes.get(1).getValue()).value;
 			if(index != callSiteIndex) continue;
 			found = s;
 			break;
 		}
-
 		if(found == null) return null;
+
+        //
+        // the next Unit to the call site base is
+        // an invoke instruction we've been finding
+        //
 		Value callSiteBase = found.getDefBoxes().get(0).getValue();
 		Unit s = found;
 		while(true) {
 			s = units.getSuccOf(s);
+			if(s==null) break;
 			if(s.getUseBoxes().get(0).getValue().equivTo(callSiteBase)) {
 				return s;
 			}
-			if(s==null) break;
 		}
 		return null;
 	}
 
 	@Override
 	protected void internalTransform(Body b, String phase, Map options) {
+
 		//
 		// do type matching
 		// if match, do tranformation for matched call
@@ -123,7 +138,6 @@ public class AspectAwareTransformer extends BodyTransformer {
 		// but *before* invocation
 		// this this should be triggered in EMC
 		//
-
 		if(b.getMethod().getName().equals(withInMethodName)) {
 			body  = b;
 			units = b.getUnits();
@@ -135,13 +149,18 @@ public class AspectAwareTransformer extends BodyTransformer {
 	}
 
 	private void replaceCallSite(Unit invokeStatement, SootMethod newTargetMethod) {
+
+	    //
 		// 2 cases
 		//  1. AssignStmt
 		//  2. InvokeStmt
-		System.out.println(invokeStatement);
-		System.out.println(newTargetMethod);
+		//
 
 		// always static
+
+        //
+		// case #1: AssignStmt
+		//
 		if(invokeStatement instanceof AssignStmt) {
 			AssignStmt stmt = (AssignStmt)invokeStatement;
 			InvokeExpr e = stmt.getInvokeExpr();
@@ -149,7 +168,12 @@ public class AspectAwareTransformer extends BodyTransformer {
 				newTargetMethod.makeRef(), e.getArgs()
 			);
 			stmt.setRightOp(expr);
-		} else if(invokeStatement instanceof InvokeStmt) {
+		}
+
+		//
+        // case #2: InvokeStmt
+        //
+		else if(invokeStatement instanceof InvokeStmt) {
 			InvokeStmt stmt = (InvokeStmt)invokeStatement;
 			InvokeExpr e = stmt.getInvokeExpr();
 			StaticInvokeExpr expr = Jimple.v().newStaticInvokeExpr(
@@ -194,8 +218,9 @@ public class AspectAwareTransformer extends BodyTransformer {
 		}
 
 		ArrayList<Unit> list = new ArrayList<Unit>();
+
 		//
-		// cast object to simulated "this"
+		// cast object to simulate "this"
 		//
 		Local sim_this = (Local)expr.getArg(0);
 		CastExpr cast0 = j.newCastExpr(sim_this, expr.getMethod().getParameterType(0));
@@ -203,7 +228,7 @@ public class AspectAwareTransformer extends BodyTransformer {
 
 		//
 		// i starts from 1
-		// Skip the first one, which is simulated "this"
+		// Skip the first one, which simulates "this"
 		//
 		for(int i = 1; i < expr.getArgCount(); i++) {
 			if(advisedTypes[i-1] == null) continue;
@@ -265,8 +290,10 @@ public class AspectAwareTransformer extends BodyTransformer {
 			Type toType = left.getType();
 			if(toType.equals(fromType)) return;
 
-			System.out.println("return fromType :" + fromType);
-			System.out.println("return toType   :" + toType);
+			// TODO: for D E B U G G I N G
+			// System.out.println("return fromType :" + fromType);
+			// System.out.println("return toType   :" + toType);
+			// for D E B U G G I N G
 			if(fromType instanceof PrimType) {
 				Local newReturn = Jimple.v().newLocal(left.getName() + "_x0",	fromType);
 				a.setLeftOp(newReturn);
@@ -277,7 +304,9 @@ public class AspectAwareTransformer extends BodyTransformer {
 				final String name = fromType.toString();
 
 				//
-				// create calling of java.lang.Integer valueOf(int)
+				// create a call of valueOf:
+				//   for example, java.lang.Integer valueOf(int)
+				//                java.lang.Long    valueOf(long)
 				//
 				SootMethod method = wrapperSc.getMethod(wrapper.getClassName() + " valueOf(" + name + ")");
 				StaticInvokeExpr unbox = Jimple.v().newStaticInvokeExpr(method.makeRef(), newReturn);

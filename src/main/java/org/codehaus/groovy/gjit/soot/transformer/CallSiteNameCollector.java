@@ -17,28 +17,30 @@ public class CallSiteNameCollector extends BodyTransformer {
 
     @Override
     protected void internalTransform(Body b, String phaseName, Map options) {
+
         if (b.getMethod().getName().equals("$createCallSiteArray") == false) return;
 
-        String[] callsitenames = null;
+        String[] callSiteNames = null;
         for (Unit u : b.getUnits()) {
             if (u instanceof AssignStmt == false) continue;
 
             AssignStmt a = (AssignStmt) u;
             if (a.getRightOp() instanceof NewArrayExpr) {
                 NewArrayExpr right = (NewArrayExpr) a.getRightOp();
-                callsitenames = new String[((IntConstant) right.getSize()).value];
-            } else if ((a.getLeftOp() instanceof ArrayRef) &&
-                    (a.getRightOp() instanceof StringConstant)) {
+                callSiteNames = new String[((IntConstant) right.getSize()).value];
+            } else if ((a.getLeftOp()  instanceof ArrayRef) &&
+                       (a.getRightOp() instanceof StringConstant)
+            ) {
                 ArrayRef left = (ArrayRef) a.getLeftOp();
                 StringConstant right = (StringConstant) a.getRightOp();
                 int index = ((IntConstant) left.getIndex()).value;
-                callsitenames[index] = right.value;
+                callSiteNames[index] = right.value;
             }
 
         }
 
-        if (callsitenames != null) {
-            CallSiteNameHolder.v().put(b.getMethod().getDeclaringClass().getName(), callsitenames);
-        }
+        if (callSiteNames != null)
+            CallSiteNameHolder.v().put(b.getMethod().getDeclaringClass().getName(), callSiteNames);
+
     }
 }
