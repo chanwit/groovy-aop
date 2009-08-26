@@ -50,13 +50,14 @@ import soot.jimple.internal.JimpleLocal;
 
 public class GroovyJimpleBody {
 
-	private static final RefType JAVA_LANG_CHARACTER = RefType.v("java.lang.Character");
+	private static final RefType JAVA_LANG_BOOLEAN   = RefType.v("java.lang.Boolean");
 	private static final RefType JAVA_LANG_BYTE      = RefType.v("java.lang.Byte");
-	private static final RefType JAVA_LANG_SHORT     = RefType.v("java.lang.Short");
+	private static final RefType JAVA_LANG_CHARACTER = RefType.v("java.lang.Character");
 	private static final RefType JAVA_LANG_DOUBLE    = RefType.v("java.lang.Double");
 	private static final RefType JAVA_LANG_FLOAT     = RefType.v("java.lang.Float");
-	private static final RefType JAVA_LANG_LONG      = RefType.v("java.lang.Long");
 	private static final RefType JAVA_LANG_INTEGER   = RefType.v("java.lang.Integer");
+	private static final RefType JAVA_LANG_LONG      = RefType.v("java.lang.Long");
+	private static final RefType JAVA_LANG_SHORT     = RefType.v("java.lang.Short");
 
 	private Body body;
 	private PatchingChain<Unit> units;
@@ -225,13 +226,14 @@ public class GroovyJimpleBody {
 
 	private PrimType getPrimitiveType(RefType refType) {
 		PrimType primType=null;
-		if(refType.equals(JAVA_LANG_INTEGER))   primType = IntType.v(); else
-		if(refType.equals(JAVA_LANG_LONG))      primType = LongType.v(); else
-		if(refType.equals(JAVA_LANG_FLOAT))     primType = FloatType.v(); else
-		if(refType.equals(JAVA_LANG_DOUBLE))    primType = DoubleType.v(); else
-		if(refType.equals(JAVA_LANG_SHORT))     primType = ShortType.v(); else
-		if(refType.equals(JAVA_LANG_BYTE))      primType = ByteType.v(); else
-		if(refType.equals(JAVA_LANG_CHARACTER)) primType = CharType.v();
+		if(refType.equals(JAVA_LANG_BOOLEAN))   primType = BooleanType.v(); else
+		if(refType.equals(JAVA_LANG_BYTE))      primType = ByteType.v();    else
+        if(refType.equals(JAVA_LANG_CHARACTER)) primType = CharType.v();    else
+		if(refType.equals(JAVA_LANG_DOUBLE))    primType = DoubleType.v();  else
+		if(refType.equals(JAVA_LANG_FLOAT))     primType = FloatType.v();   else
+		if(refType.equals(JAVA_LANG_INTEGER))   primType = IntType.v();     else
+		if(refType.equals(JAVA_LANG_LONG))      primType = LongType.v();    else
+		if(refType.equals(JAVA_LANG_SHORT))     primType = ShortType.v();
 		return primType;
 	}
 
@@ -657,12 +659,15 @@ public class GroovyJimpleBody {
 //	}
 //
 	private Type inferReturnType(Type recv, Type arg) {
+	    //
 		// if it's the same type, no problem
+		//
 		if(recv.equals(arg)) return recv;
+		
 		if(recv.equals(DoubleType.v()) || arg.equals(DoubleType.v())) return DoubleType.v();
-		if(recv.equals(FloatType.v()) || arg.equals(FloatType.v())) return FloatType.v();
-		if(recv.equals(LongType.v()) || arg.equals(LongType.v())) return LongType.v();
-		if(recv.equals(IntType.v()) || arg.equals(IntType.v())) return IntType.v();
+		if(recv.equals(FloatType.v())  || arg.equals(FloatType.v()))  return FloatType.v();
+		if(recv.equals(LongType.v())   || arg.equals(LongType.v()))   return LongType.v();
+		if(recv.equals(IntType.v())    || arg.equals(IntType.v()))    return IntType.v();
 		return IntType.v();
 	}
 

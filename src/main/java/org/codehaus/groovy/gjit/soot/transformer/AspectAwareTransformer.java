@@ -14,6 +14,7 @@ import org.codehaus.groovy.runtime.callsite.CallSite;
 import soot.ArrayType;
 import soot.Body;
 import soot.BodyTransformer;
+import soot.IntType;
 import soot.Local;
 import soot.Modifier;
 import soot.PatchingChain;
@@ -111,10 +112,10 @@ public class AspectAwareTransformer extends BodyTransformer {
 		}
 		if(found == null) return null;
 
-        //
-        // the next Unit to the call site base is
-        // an invoke instruction we've been finding
-        //
+		//
+		// the next Unit to the call site base is
+		// an invoke instruction we've been finding
+		//
 		Value callSiteBase = found.getDefBoxes().get(0).getValue();
 		Unit s = found;
 		while(true) {
@@ -138,6 +139,10 @@ public class AspectAwareTransformer extends BodyTransformer {
 		// but *before* invocation
 		// this this should be triggered in EMC
 		//
+		
+		//
+		// TODO check the correct semantic of "withInMethodName"
+		//
 		if(b.getMethod().getName().equals(withInMethodName)) {
 			body  = b;
 			units = b.getUnits();
@@ -150,15 +155,13 @@ public class AspectAwareTransformer extends BodyTransformer {
 
 	private void replaceCallSite(Unit invokeStatement, SootMethod newTargetMethod) {
 
-	    //
-		// 2 cases
+		//
+		// There are 2 cases:
 		//  1. AssignStmt
 		//  2. InvokeStmt
 		//
 
-		// always static
-
-        //
+		//
 		// case #1: AssignStmt
 		//
 		if(invokeStatement instanceof AssignStmt) {
@@ -171,8 +174,8 @@ public class AspectAwareTransformer extends BodyTransformer {
 		}
 
 		//
-        // case #2: InvokeStmt
-        //
+		// case #2: InvokeStmt
+		//
 		else if(invokeStatement instanceof InvokeStmt) {
 			InvokeStmt stmt = (InvokeStmt)invokeStatement;
 			InvokeExpr e = stmt.getInvokeExpr();
@@ -317,6 +320,12 @@ public class AspectAwareTransformer extends BodyTransformer {
 	}
 
 	private SootMethod typePropagate(CallSite callSite) {
+		//
+		// the name of call site class is in this format:
+		//   Class$method
+		// so that it.split('$') will be resulting into:
+		//   [Class, method]
+		//
 		String[] targetNames = callSite.getClass().getName().split("\\$");
 		SootClass targetSc = Scene.v().loadClass(targetNames[0], SootClass.BODIES);
 
@@ -342,8 +351,11 @@ public class AspectAwareTransformer extends BodyTransformer {
 
 		//
 		// Create a new class using the same name with "$x".
-		// CallSite in groovy is created using the pattern Class$method.
+		// CallSite in groovy is created using the pattern:
+		//   Class$method.
 		// We append $x to it.
+		// So a new class will be named:
+		//   Class$method$x.
 		//
 		String newClassName = callSite.getClass().getName() + "$x";
 		SootClass newSc = new SootClass(newClassName, Modifier.PUBLIC);
@@ -352,41 +364,71 @@ public class AspectAwareTransformer extends BodyTransformer {
 		// Need a magic super type for bypassing security check
 		//
 		newSc.setSuperclass(RefType.v("sun.reflect.GroovyAOPMagic").getSootClass());
+
 		ArrayList<Type> typeList = new ArrayList<Type>();
+
+		//
+		// targetSc is the target class obtained from targetNames[0]
+		// it is added to be the first argument to simulate "this".
+		//
 		typeList.add(targetSc.getType());
+
+		//
+		// Then advised types are added to the list
+		// for preparing the signature for newMethod
+		//
 		for (int i = 0; i < advisedTypes.length; i++) {
-			Class<?> cls = advisedTypes[i];
-			typeList.add(Utils.v().classToSootType(cls));
+			Class<?> advisedParamType = advisedTypes[i];
+			if(advisedParamType == null)
+			    typeList.add( targetSm.getParameterType(i) );
+			else
+			    typeList.add( Utils.v().classToSootType(advisedParamType) );
 		}
+
+		//
+		// Advise return type, if available
+		//
 		Type returnType = targetSm.getReturnType();
 		if(advisedReturnType != null) {
 			returnType = Utils.v().classToSootType(advisedReturnType);
 		}
 
+		//
+		// Doing type propagation through the method's body
+		//
 		PatchingChain<Unit> units = jBody.getUnits();
 		Iterator<Unit> stmts = units.iterator();
 		while(stmts.hasNext()) {
 			Unit s = stmts.next();
-			if(s instanceof IdentityStmt) {
-				JIdentityStmt a = (JIdentityStmt)s;
-				Value right = a.getRightOp();
-				if(right instanceof ThisRef) {
-					a.setRightOp(
-						Jimple.v().newParameterRef(right.getType(), 0)
-					);
-				} else if(right instanceof ParameterRef) {
-					ParameterRef p = (ParameterRef)right;
-					a.setRightOp(
-						Jimple.v().newParameterRef(
-							typeList.get(p.getIndex() + 1),
-							p.getIndex() + 1
-						)
-					);
-					//
-					// $r_i.type = typeof(rhs)
-					//
-					((Local)a.getLeftOp()).setType(a.getRightOp().getType());
-				}
+			if(s instanceof IdentityStmt) continue;
+
+			JIdentityStmt a = (JIdentityStmt)s;
+			Value right = a.getRightOp();
+			//
+			// If found "this", change it to parameter:0
+			// for this simulation.
+			//
+			if(right instanceof ThisRef) {
+				a.setRightOp(
+					Jimple.v().newParameterRef(right.getType(), 0)
+				);
+			}
+			//
+			// Shifting every variable index to be + 1
+			// Because we add the simulated this to parameter:0
+			//
+			else if(right instanceof ParameterRef) {
+				ParameterRef p = (ParameterRef)right;
+				a.setRightOp(
+					Jimple.v().newParameterRef(
+						typeList.get(p.getIndex() + 1),
+						p.getIndex() + 1
+					)
+				);
+				//
+				// $r_i.type = typeof(rhs)
+				//
+				((Local)a.getLeftOp()).setType(a.getRightOp().getType());
 			}
 		}
 
