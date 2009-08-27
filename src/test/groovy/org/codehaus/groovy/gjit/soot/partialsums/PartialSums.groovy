@@ -23,17 +23,17 @@ package org.codehaus.groovy.gjit.soot.partialsums
 		   def k3 = k2 * k
 		   def sk = Math.sin(k)
 		   def ck = Math.cos(k)
-		   alt = -alt
+		   alt    = -alt
 
-		   a1 += twothirds**(k-1.0)
-		   a2 += 1.0 / Math.sqrt(k)
-		   a3 += 1.0 / (k*(k+1.0))
-		   a4 += 1.0 / (k3*sk*sk)
-		   a5 += 1.0 / (k3*ck*ck)
-		   a6 += 1.0 / k
-		   a7 += 1.0 / k2
-		   a8 += alt / k
-		   a9 += alt / (2.0*k - 1.0)
+		   a1 += twothirds ** (k - 1.0)
+		   a2 += 1.0/Math.sqrt(k)
+		   a3 += 1.0/(k * (k+1.0))
+		   a4 += 1.0/(k3 * sk * sk)
+		   a5 += 1.0/(k3 * ck * ck)
+		   a6 += 1.0/k
+		   a7 += 1.0/k2
+		   a8 += alt/k
+		   a9 += alt/(2.0*k - 1.0)
 
 		   k += 1.0
 		}

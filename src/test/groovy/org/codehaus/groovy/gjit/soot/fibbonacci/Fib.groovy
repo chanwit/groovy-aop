@@ -9,7 +9,7 @@ package org.codehaus.groovy.gjit.soot.fibbonacci;
 	}
 
 	static void main(args) {
-		println Fib.fib(5)
+		println Fib.fib(40)
 	}
 
 }
