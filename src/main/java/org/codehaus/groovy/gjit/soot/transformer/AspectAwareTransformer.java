@@ -14,7 +14,6 @@ import org.codehaus.groovy.runtime.callsite.CallSite;
 import soot.ArrayType;
 import soot.Body;
 import soot.BodyTransformer;
-import soot.IntType;
 import soot.Local;
 import soot.Modifier;
 import soot.PatchingChain;
@@ -139,7 +138,7 @@ public class AspectAwareTransformer extends BodyTransformer {
 		// but *before* invocation
 		// this this should be triggered in EMC
 		//
-		
+
 		//
 		// TODO check the correct semantic of "withInMethodName"
 		//

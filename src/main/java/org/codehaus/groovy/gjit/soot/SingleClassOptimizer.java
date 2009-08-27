@@ -11,6 +11,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+import org.codehaus.groovy.gjit.soot.cache.MethodBodyCache;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.CompilationDeathException;
@@ -49,6 +51,8 @@ public class SingleClassOptimizer {
 	//
 	private boolean viaShimple = false;
 	private List<BodyTransformer> transformers = null;
+
+	private MethodBodyCache mCache = MethodBodyCache.instance();
 
 	public enum Phase {
 		SHIMPLE,
@@ -198,7 +202,19 @@ public class SingleClassOptimizer {
 		if (!produceJimple) return;
 		while (methodIt.hasNext()) {
 			SootMethod m = (SootMethod) methodIt.next();
-			JimpleBody body = (JimpleBody) m.retrieveActiveBody();
+			JimpleBody body = null;
+			String methodSignature = m.toString();
+
+			//
+			// retrieve from cache, if available
+			// if not, get directly from the method body
+			//
+			if(mCache.containsKey(methodSignature)) {
+				body = (JimpleBody) mCache.get(methodSignature);
+			} else {
+				body = (JimpleBody) m.retrieveActiveBody();
+			}
+
 			PackManager.v().getPack("jtp").apply(body);
 			if (transformers != null) {
 				for (Iterator<BodyTransformer> iterator = transformers.iterator(); iterator.hasNext();) {
@@ -208,6 +224,11 @@ public class SingleClassOptimizer {
 			}
 			PackManager.v().getPack("jop").apply(body);
 			PackManager.v().getPack("jap").apply(body);
+
+			//
+			// update cache
+			//
+			mCache.put(methodSignature, body);
 		}
 	}
 
@@ -215,31 +236,40 @@ public class SingleClassOptimizer {
 		Iterator<SootMethod> methodIt = methodList.iterator();
 		while (methodIt.hasNext()) {
 			SootMethod m = (SootMethod) methodIt.next();
-
 			if (!m.isConcrete())
 				continue;
 
 			if (produceShimple) {
 				ShimpleBody sBody = null;
-				// whole shimple or not?
-				{
-					Body body = m.retrieveActiveBody();
 
-					if (body instanceof ShimpleBody) {
-						sBody = (ShimpleBody) body;
-						if (!sBody.isSSA())
-							sBody.rebuild();
-					} else {
-						sBody = Shimple.v().newBody(body);
-					}
+				String methodSignature = m.toString();
+
+				Body body = null;
+				if(mCache.containsKey(methodSignature)) {
+					body = mCache.get(methodSignature);
+				} else {
+					body = m.retrieveActiveBody();
+				}
+				if (body instanceof ShimpleBody) {
+					sBody = (ShimpleBody) body;
+					if (!sBody.isSSA())
+						sBody.rebuild();
+				} else {
+					sBody = Shimple.v().newBody(body);
 				}
 
 				m.setActiveBody(sBody);
 				PackManager.v().getPack("stp").apply(sBody);
 				PackManager.v().getPack("sop").apply(sBody);
 
-				if (produceJimple)
-					m.setActiveBody(sBody.toJimpleBody());
+				if (produceJimple) {
+					JimpleBody jBody = sBody.toJimpleBody();
+					m.setActiveBody(jBody);
+					mCache.put(methodSignature, jBody);
+				} else {
+					mCache.put(methodSignature, sBody);
+				}
+
 			}
 		}
 	}
