@@ -32,9 +32,12 @@ class Test {
 
 	void testCollectingCallSiteFromClass() {
 		try {
-			def sc = Scene.v().loadClassAndSupport(Subject.class.name)
-			assert sc != null
-			new SingleClassOptimizer(transformers:[CallSiteNameCollector]).optimize(Subject.class)
+			// def sc = Scene.v().loadClassAndSupport(Subject.class.name)
+			// assert sc != null
+			new SingleClassOptimizer(
+				viaShimple: true,
+				transformers:[CallSiteNameCollector]
+            ).optimize(Subject.class)
 			def callsiteNames = CallSiteNameHolder.v().get(Subject.class.name)
 			assert callsiteNames != null
 			assert callsiteNames[0] == "println"

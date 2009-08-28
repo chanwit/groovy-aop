@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.codehaus.groovy.gjit.soot.cache.MethodBodyCache;
+import org.objectweb.asm.Opcodes;
 
 import soot.Body;
 import soot.BodyTransformer;
@@ -189,9 +190,16 @@ public class SingleClassOptimizer {
 		if (!produceBaf) return;
 		while (methodIt.hasNext()) {
 			SootMethod m = (SootMethod) methodIt.next();
-			m.setActiveBody(Baf.v().newBody(
-				(JimpleBody) m.getActiveBody())
-			);
+			String methodSignature = m.toString();
+
+			Body body = null;
+			if(mCache.containsKey(methodSignature)) {
+				body = mCache.get(methodSignature);
+			} else {
+				body = m.getActiveBody();
+			}
+
+			m.setActiveBody(Baf.v().newBody((JimpleBody) body));
 			PackManager.v().getPack("bop").apply(m.getActiveBody());
 			PackManager.v().getPack("tag").apply(m.getActiveBody());
 		}
@@ -211,6 +219,7 @@ public class SingleClassOptimizer {
 			//
 			if(mCache.containsKey(methodSignature)) {
 				body = (JimpleBody) mCache.get(methodSignature);
+				m.setActiveBody(body);
 			} else {
 				body = (JimpleBody) m.retrieveActiveBody();
 			}
