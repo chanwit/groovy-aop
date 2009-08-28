@@ -34,7 +34,7 @@ class Test {
 		try {
 			// def sc = Scene.v().loadClassAndSupport(Subject.class.name)
 			// assert sc != null
-			new SingleClassOptimizer(
+			new SootSingleClassOptimizer(
 				viaShimple: true,
 				transformers:[CallSiteNameCollector]
             ).optimize(Subject.class)

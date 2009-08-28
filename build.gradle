@@ -42,7 +42,7 @@ task generateDoc << {
     }
 }
 
-task gen_aasc << {
+task gen_aacs << {
     def metaClassPackage = 'src/main/java/org/codehaus/groovy/aop/metaclass'
     ['gen_aacs':    'AspectAwareCallSite',
      'gen_adv_inv': 'AdviceInvoker'].each { k, v ->
@@ -56,7 +56,6 @@ task install(dependsOn: libs) << {
     ant.copy( file:"$libsDir/${jar.archiveName}", todir:"C:/groovy/groovy-1.6.4/lib" )
 }
 
-compile.dependsOn gen_aasc
 manifest.mainAttributes(
     "Premain-Class":           "org.codehaus.groovy.gjit.agent.Agent",
     "Can-Redefine-Classes":    "true",

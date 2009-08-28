@@ -24,7 +24,7 @@ import org.codehaus.groovy.gjit.soot.transformer.CallSiteNameCollector;
 	void testSelfTest() {
 		assert i != null
 		def c = Subject.class
-		byte[] bytes = new SingleClassOptimizer(
+		byte[] bytes = new SootSingleClassOptimizer(
 			viaShimple: true
 		).optimize(c)
 		assert bytes.length != 0
@@ -36,7 +36,7 @@ import org.codehaus.groovy.gjit.soot.transformer.CallSiteNameCollector;
 		try {
 			assert i != null
 			def c = Subject.class
-			byte[] bytes = new SingleClassOptimizer(
+			byte[] bytes = new SootSingleClassOptimizer(
 				viaShimple:   true,
 				transformers: [CallSiteNameCollector]
 			).optimize(c)
