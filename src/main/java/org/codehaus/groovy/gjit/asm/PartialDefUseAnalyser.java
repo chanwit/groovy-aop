@@ -1,7 +1,10 @@
 package org.codehaus.groovy.gjit.asm;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import org.objectweb.asm.Opcodes;
@@ -45,14 +48,20 @@ public class PartialDefUseAnalyser implements Opcodes {
 //    INVOKEINTERFACE org/codehaus/groovy/runtime/callsite/CallSite.call(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 
     private Stack<DefValue> stack = new Stack<DefValue>();
-    private Map<AbstractInsnNode, AbstractInsnNode[]> used = new HashMap<AbstractInsnNode, AbstractInsnNode[]>();
-    private AbstractInsnNode start;
+    private Map<AbstractInsnNode, AbstractInsnNode[]> used = new LinkedHashMap<AbstractInsnNode, AbstractInsnNode[]>();
+
+    public Map<AbstractInsnNode, AbstractInsnNode[]> getUsedMap() {
+		return used;
+	}
+
+	private AbstractInsnNode start;
     private AbstractInsnNode stop;
     private int maxStack;
     private InsnList units;
 
     // for debugging
     protected int currentIndex;
+	private int stopOpcode;
 
     public PartialDefUseAnalyser(MethodNode methodNode,
     							 AbstractInsnNode start,
@@ -63,12 +72,43 @@ public class PartialDefUseAnalyser implements Opcodes {
         this.stop = stop;
     }
 
+    public PartialDefUseAnalyser(MethodNode methodNode, AbstractInsnNode start, int opcode){
+    	this(methodNode, start, null);
+    	this.stopOpcode = opcode;
+    }
+
     private static final DefValue NULL_VALUE = new DefValue(null, Type.VOID_TYPE);
 
     private void prepareFakeStack(AbstractInsnNode s0) {
         for(int i = 0; i < maxStack;i++ ) {
             stack.push(NULL_VALUE);
         }
+    }
+
+    public AbstractInsnNode analyse0() {
+        AbstractInsnNode s0 = start;
+        prepareFakeStack(s0);
+        Set<Integer> set = new HashSet<Integer>();
+        set.add(units.indexOf(s0));
+        while(s0 != null) {
+            execute(s0);
+            boolean added = false;
+            AbstractInsnNode[] useds = used.get(s0);
+            if(useds != null) {
+	            for (AbstractInsnNode n : useds) {
+	            	int idx = units.indexOf(n);
+	            	if(set.contains(idx)) {
+	            		set.add(units.indexOf(s0));
+	            		added = true;
+	            		break;
+	            	}
+				}
+            }
+            if(added && s0.getOpcode() == stopOpcode)
+            	return s0;
+            s0 = s0.getNext();
+        }
+        return null;
     }
 
     public Map<AbstractInsnNode, AbstractInsnNode[]> analyse() {

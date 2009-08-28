@@ -74,8 +74,8 @@ public class AsmAspectAwareTransformer implements Transformer, Opcodes {
 
 		if(found == null) return null;
 
-		PartialDefUseAnalyser pdua = new PartialDefUseAnalyser(body, found, ?);
-		Map<AbstractInsnNode, AbstractInsnNode[]> result = pdua.analyse();
+		// PartialDefUseAnalyser pdua = new PartialDefUseAnalyser(body, found, ?);
+		// Map<AbstractInsnNode, AbstractInsnNode[]> result = pdua.analyse();
 
 		return null;
 	}
