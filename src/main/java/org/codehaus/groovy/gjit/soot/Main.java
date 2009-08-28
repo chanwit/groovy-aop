@@ -11,7 +11,7 @@ import soot.Transform;
 public class Main {
 
     public static void main(String[] args) {
-        byte[] bytes = new SingleClassOptimizer().optimize(Closure.class);
+        byte[] bytes = new SootSingleClassOptimizer().optimize(Closure.class);
         System.out.println(bytes.length);
     }
 

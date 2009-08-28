@@ -11,19 +11,17 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+import org.codehaus.groovy.gjit.SingleClassOptimizer;
 import org.codehaus.groovy.gjit.soot.cache.MethodBodyCache;
-import org.objectweb.asm.Opcodes;
 
 import soot.Body;
 import soot.BodyTransformer;
 import soot.CompilationDeathException;
-import soot.Pack;
 import soot.PackManager;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.SourceLocator;
-import soot.Transform;
 import soot.baf.Baf;
 import soot.jimple.JimpleBody;
 import soot.options.Options;
@@ -39,7 +37,7 @@ import soot.util.JasminOutputStream;
  * @author chanwit
  *
  */
-public class SingleClassOptimizer {
+public class SootSingleClassOptimizer implements SingleClassOptimizer {
 
 	private int format = Options.output_format_class;
 
@@ -117,13 +115,8 @@ public class SingleClassOptimizer {
 		this.viaShimple = viaShimple;
 	}
 
-	/**
-	 * The main entry of optimisation.
-	 *
-	 * @param c
-	 *            a class. Actually this method uses only its name to perform
-	 *            optimization.
-	 * @return a byte array containing optimized class
+	/* (non-Javadoc)
+	 * @see org.codehaus.groovy.gjit.soot.SingleClassOptimizer#optimize(java.lang.Class)
 	 */
 	public byte[] optimize(Class<?> c) {
 		return optimize(c, Phase.ALL);

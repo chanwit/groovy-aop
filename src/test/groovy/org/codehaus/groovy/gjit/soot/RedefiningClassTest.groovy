@@ -1,6 +1,6 @@
 package org.codehaus.groovy.gjit.soot
 
-import org.codehaus.groovy.gjit.soot.SingleClassOptimizer
+import org.codehaus.groovy.gjit.soot.SootSingleClassOptimizer
 
 import soot.Scene;
 import java.lang.instrument.Instrumentation
