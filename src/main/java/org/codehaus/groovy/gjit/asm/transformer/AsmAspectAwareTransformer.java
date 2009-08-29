@@ -1,5 +1,6 @@
 package org.codehaus.groovy.gjit.asm.transformer;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -28,8 +29,8 @@ public class AsmAspectAwareTransformer implements Transformer, Opcodes {
     private InsnList units;
     private CallSite callSite;
 
-	private Class<?> advisedReturnType;
-	private Class<?>[] advisedTypes;
+    private Class<?> advisedReturnType;
+    private Class<?>[] advisedTypes;
 
     @Override
     public void internalTransform(MethodNode body) {
@@ -52,25 +53,25 @@ public class AsmAspectAwareTransformer implements Transformer, Opcodes {
     }
 
     private MethodNode findMethod(ClassNode targetCN, String name) {
-    	List<MethodNode> methods = targetCN.methods;
-    	for (Iterator<MethodNode> iterator = methods.iterator(); iterator.hasNext();) {
-			MethodNode methodNode = iterator.next();
-			if(methodNode.name.equals(name))
-				return methodNode;
-		}
-    	return null;
+        List<MethodNode> methods = targetCN.methods;
+        for (Iterator<MethodNode> iterator = methods.iterator(); iterator.hasNext();) {
+            MethodNode methodNode = iterator.next();
+            if(methodNode.name.equals(name))
+                return methodNode;
+        }
+        return null;
     }
 
     private MethodNode findMethod(ClassNode targetCN, String name, String desc) {
-    	List<MethodNode> methods = targetCN.methods;
-    	for (Iterator<MethodNode> iterator = methods.iterator(); iterator.hasNext();) {
-			MethodNode methodNode = iterator.next();
-			if((name + desc).equals(methodNode.name + methodNode.desc)) {
-				return methodNode;
-			}
-		}
-    	return null;
-	}
+        List<MethodNode> methods = targetCN.methods;
+        for (Iterator<MethodNode> iterator = methods.iterator(); iterator.hasNext();) {
+            MethodNode methodNode = iterator.next();
+            if((name + desc).equals(methodNode.name + methodNode.desc)) {
+                return methodNode;
+            }
+        }
+        return null;
+    }
 
     private MethodNode typePropagate(CallSite callSite) {
         //
@@ -80,9 +81,15 @@ public class AsmAspectAwareTransformer implements Transformer, Opcodes {
         //   [Class, method]
         //
         String[] targetNames = callSite.getClass().getName().split("\\$");
-        ClassReader cr = new ClassReader(targetNames[0]);
+        ClassReader cr;
         ClassNode targetCN = new ClassNode();
-        cr.accept(targetCN, 0);
+        try {
+            cr = new ClassReader(targetNames[0]);
+            cr.accept(targetCN, 0);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         // TODO use desc to exactly find target method
         // MethodNode targetMN = findMethod(targetCN, targetNames[1], desc);
@@ -90,46 +97,46 @@ public class AsmAspectAwareTransformer implements Transformer, Opcodes {
         MethodNode targetMN = findMethod(targetCN, targetNames[1]);
         ArrayList<Type> typeList = new ArrayList<Type>();
 
-		//
-		// targetCN is the target class obtained from targetNames[0]
-		// it is added to be the first argument to simulate "this".
-		//
+        //
+        // targetCN is the target class obtained from targetNames[0]
+        // it is added to be the first argument to simulate "this".
+        //
         Type[] targetMN_types = Type.getArgumentTypes(targetMN.desc);
         typeList.add(Type.getType("L" + targetCN.name + ";"));
-		for (int i = 0; i < advisedTypes.length; i++) {
-			Class<?> advisedParamType = advisedTypes[i];
-			if(advisedParamType == null)
-			    typeList.add( targetMN_types[i] );
-			else
-			    typeList.add( Type.getType(advisedParamType) );
-		}
+        for (int i = 0; i < advisedTypes.length; i++) {
+            Class<?> advisedParamType = advisedTypes[i];
+            if(advisedParamType == null)
+                typeList.add( targetMN_types[i] );
+            else
+                typeList.add( Type.getType(advisedParamType) );
+        }
 
-		//
-		// Advise return type, if available
-		//
-		Type returnType = Type.getReturnType(targetMN.desc);
-		if(advisedReturnType != null) {
-			returnType = Type.getType(advisedReturnType);
-		}
+        //
+        // Advise return type, if available
+        //
+        Type returnType = Type.getReturnType(targetMN.desc);
+        if(advisedReturnType != null) {
+            returnType = Type.getType(advisedReturnType);
+        }
 
         String newClassName = Type.getInternalName(callSite.getClass()) + "$x";
 
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-        cw.visit(Opcodes.V1_5, Opcodes.ACC_PUBLIC, newClassName, null, "sun/reflect/GroovyAOPMagic", null);
-
+        cw.visit(Opcodes.V1_5, Opcodes.ACC_PUBLIC,
+                 newClassName, null, "sun/reflect/GroovyAOPMagic", null);
 
         //
         //Type.getMethodDescriptor(returnType, argumentTypes)
 
-        desc =
-        MethodVisitor mv = cw.visitMethod(
-            Opcodes.ACC_PUBLIC, body.name,
-            desc, null, body.exceptions);
-        cw.visitEnd();
+//        desc =
+//        MethodVisitor mv = cw.visitMethod(
+//            Opcodes.ACC_PUBLIC, body.name,
+//            desc, null, body.exceptions);
+//        cw.visitEnd();
         return null;
     }
 
-	private AbstractInsnNode locateCallSiteByIndex(InsnList units,
+    private AbstractInsnNode locateCallSiteByIndex(InsnList units,
             VarInsnNode acallsite, int callSiteIndex) {
         //
         // finding this pattern

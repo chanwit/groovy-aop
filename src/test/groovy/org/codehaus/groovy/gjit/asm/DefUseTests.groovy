@@ -13,17 +13,6 @@ import groovy.util.GroovyTestCase
 
 class DefUseTests extends GroovyTestCase {
 
-// วิเคราะห์ไฟล์ class Subject ด้วย PartialDefUseAnalyser
-// PartialDefUseAnalysisBehaviours
-// ก่อน "การรัน spec กำหนดให้" {
-//   cr = new ClassReader("org.codehaus.groovy.gjit.soot.Subject")
-// }
-//
-// วัตถุ "ควรทำการวิเคราะห์คลาส Subject เริ่มที่ตำแหน่ง 5 แล้วไปจบที่ตำแหน่ง 15" {
-//   def p = new PartialDefUseAnalyser(two, aload, Opcodes.INVOKEINTERFACE)
-//   result.should == invoke
-// }
-
     void testAnalysisOnSubject() {
         def cr = new ClassReader("org.codehaus.groovy.gjit.soot.Subject");
         def cn = new ClassNode()
