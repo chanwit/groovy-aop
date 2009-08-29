@@ -13,26 +13,39 @@ import groovy.util.GroovyTestCase
 
 class DefUseTests extends GroovyTestCase {
 
-	void testAnalysisOnSubject() {
-		def cr = new ClassReader("org.codehaus.groovy.gjit.soot.Subject");
-		def cn = new ClassNode()
-		cr.accept cn, 0
-		assert cn.name == "org/codehaus/groovy/gjit/soot/Subject"
+// วิเคราะห์ไฟล์ class Subject ด้วย PartialDefUseAnalyser
+// PartialDefUseAnalysisBehaviours
+// ก่อน "การรัน spec กำหนดให้" {
+//   cr = new ClassReader("org.codehaus.groovy.gjit.soot.Subject")
+// }
+//
+// วัตถุ "ควรทำการวิเคราะห์คลาส Subject เริ่มที่ตำแหน่ง 5 แล้วไปจบที่ตำแหน่ง 15" {
+//   def p = new PartialDefUseAnalyser(two, aload, Opcodes.INVOKEINTERFACE)
+//   result.should == invoke
+// }
 
-		def two = cn.@methods.find { it.name == "two" }
-		def ins = two.instructions
-		def aload  = ins.get(5)
-		def invoke = ins.get(15)
-//		two.instructions.eachWithIndex { it, i ->
-//			println "$i\t: ${AbstractVisitor.OPCODES[it.opcode]}"
-//		}
-		assert aload.opcode == Opcodes.ALOAD
-		def p = new PartialDefUseAnalyser(two, aload, Opcodes.INVOKEINTERFACE)
-		def result = p.analyse0()
-		assert result == invoke
-//		result.each { k, v ->
-//			println "${ins.indexOf(k)}\t: ${AbstractVisitor.OPCODES[k.opcode]}: ${v.collect{ ins.indexOf(it) }.join(',')}"
-//		}
-	}
+    void testAnalysisOnSubject() {
+        def cr = new ClassReader("org.codehaus.groovy.gjit.soot.Subject");
+        def cn = new ClassNode()
+        cr.accept cn, 0
+        assert cn.name == "org/codehaus/groovy/gjit/soot/Subject"
+
+        def two = cn.@methods.find { it.name == "two" }
+        def ins = two.instructions
+        def aload  = ins.get(5)
+        def invoke = ins.get(15)
+        //	two.instructions.eachWithIndex { it, i ->
+        //		println "$i\t: ${AbstractVisitor.OPCODES[it.opcode]}"
+        //	}
+        assert aload.opcode == Opcodes.ALOAD
+        def p = new PartialDefUseAnalyser(two, aload, Opcodes.INVOKEINTERFACE)
+        def result = p.analyse0()
+        assert result == invoke
+        //	result.each { k, v ->
+        //		print   "${ins.indexOf(k)}\t:"
+        // 		print   "${AbstractVisitor.OPCODES[k.opcode]}:"
+        //      println "${v.collect{ ins.indexOf(it) }.join(',')}"
+        //	}
+    }
 
 }

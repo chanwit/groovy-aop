@@ -1,5 +1,6 @@
 usePlugin 'groovy'
 usePlugin 'eclipse'
+// usePlugin 'tspec''
 
 version = '0.5.4'
 

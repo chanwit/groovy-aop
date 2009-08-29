@@ -4,6 +4,7 @@
 	<classpathentry kind="src" path="src/main/groovy"/>
 	<classpathentry kind="src" output="build/test-classes" path="src/test/java"/>
 	<classpathentry kind="src" output="build/test-classes" path="src/test/groovy"/>
+	<classpathentry kind="src" path="src/tspec/groovy"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/Documents and Settings/chanwit/.gradle/cache/antlr/antlr/jars/antlr-2.7.7.jar"/>
 	<classpathentry kind="lib" path="C:/Documents and Settings/chanwit/.gradle/cache/asm/asm-all/jars/asm-all-3.1.jar" sourcepath="lib/asm-3.1.zip"/>
