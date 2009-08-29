@@ -207,26 +207,26 @@ def footer = '''
 
         // do transformation
         new Thread() {
-			@Override
-			public void run() {
-		        SootSingleClassOptimizer sco = new SootSingleClassOptimizer();
-		        sco.setViaShimple(true);
-		        AspectAwareTransformer aatf = new AspectAwareTransformer();
-		        aatf.setAdvisedTypes(tic.getArgTypeOfBinding());
-		        aatf.setAdvisedReturnType(returnType);
-		        aatf.setCallSite(callSite);
-		        aatf.setWithInMethodName(withInMethodName);
-		        try {
-					sco.setTransformers(new BodyTransformer[]{aatf});
-			        byte[] bytes = sco.optimize(sender);
-			        Instrumentation i = Agent.getInstrumentation();
-			        if(i != null) {
-			            i.redefineClasses(new ClassDefinition(sender, bytes));
-			        }
-				} catch (Throwable e) {
-					e.printStackTrace();
-				}
-			}
+            @Override
+            public void run() {
+                SootSingleClassOptimizer sco = new SootSingleClassOptimizer();
+                sco.setViaShimple(true);
+                AspectAwareTransformer aatf = new AspectAwareTransformer();
+                aatf.setAdvisedTypes(tic.getArgTypeOfBinding());
+                aatf.setAdvisedReturnType(returnType);
+                aatf.setCallSite(callSite);
+                aatf.setWithInMethodName(withInMethodName);
+                try {
+                    sco.setTransformers(new BodyTransformer[]{aatf});
+                    byte[] bytes = sco.optimize(sender);
+                    Instrumentation i = Agent.getInstrumentation();
+                    if(i != null) {
+                        i.redefineClasses(new ClassDefinition(sender, bytes));
+                    }
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
+            }
         }.start();
     }
 
