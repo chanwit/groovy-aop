@@ -136,11 +136,17 @@ public class AsmTypePropagation implements Opcodes {
                 VarInsnNode v = (VarInsnNode)s;
                 Class<?> type;
                 if(staticMethod) {
-                    if(v.var >= advisedTypes.length) continue;
+                    if(v.var >= advisedTypes.length) {
+                        s = s.getNext();
+                        continue;
+                    }
                     type = advisedTypes[v.var];
                 }
                 else {
-                    if(v.var-1 >= advisedTypes.length) continue;
+                    if(v.var-1 >= advisedTypes.length) {
+                        s = s.getNext();
+                        continue;
+                    }
                     type = advisedTypes[v.var - 1];
                 }
                 if(type != null && type.isPrimitive()) {
