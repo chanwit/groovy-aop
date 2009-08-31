@@ -119,11 +119,11 @@ class TypePropagationTests extends GroovyTestCase implements Opcodes {
 
 
     void testPropagate() {
-        def tp = new AsmTypePropagation(
+        def tp = new AsmTypeAdvisedClassGenerator(
             advisedTypes: [int] as Class[],
             advisedReturnType: int
         )
-        def result = tp.typePropagate(new Fib$fib())
+        def result = tp.perform(new Fib$fib())
         println result.methodSignature
         println result.body.length
         def os = new File('debug/Fib$fib$x.class').newOutputStream()

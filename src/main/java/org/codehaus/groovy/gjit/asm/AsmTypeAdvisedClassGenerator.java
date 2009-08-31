@@ -15,11 +15,13 @@ import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
-public class AsmTypePropagation implements Opcodes {
+public class AsmTypeAdvisedClassGenerator implements Opcodes {
 
     private Class<?>   advisedReturnType;
     private Class<?>[] advisedTypes;
@@ -71,7 +73,7 @@ public class AsmTypePropagation implements Opcodes {
         return null;
     }
 
-    public Result typePropagate(CallSite callSite) {
+    public Result perform(CallSite callSite) {
         String[] targetNames = callSite.getClass().getName().split("\\$");
         ClassReader cr;
         ClassNode targetCN = new ClassNode();
@@ -112,7 +114,11 @@ public class AsmTypePropagation implements Opcodes {
             returnType = Type.getType(advisedReturnType);
         }
 
-        transform(targetMN);
+        //
+        // Perform a set of transformation
+        //
+        typePropagate(targetMN);
+        optimiseBinaryOperators(targetMN);
 
         String newClassName = Type.getInternalName(callSite.getClass()) + "$x";
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
@@ -127,7 +133,7 @@ public class AsmTypePropagation implements Opcodes {
         return new Result(newClassName + "." + targetMN.name + methodDescriptor, cw.toByteArray());
     }
 
-    private void transform(MethodNode m) {
+    private void typePropagate(MethodNode m) {
         final boolean staticMethod = (m.access & ACC_STATIC) != 0;
         InsnList units = m.instructions;
         AbstractInsnNode s = units.getFirst();
@@ -151,10 +157,10 @@ public class AsmTypePropagation implements Opcodes {
                 }
                 if(type != null && type.isPrimitive()) {
                     int offset = 4;
-                    if(type == int.class)   offset = 4; else
-                    if(type == long.class)  offset = 3; else
-                    if(type == float.class) offset = 2; else
-                    if(type == double.class)offset = 1;
+                    if(type == int.class)    offset = 4; else
+                    if(type == long.class)   offset = 3; else
+                    if(type == float.class)  offset = 2; else
+                    if(type == double.class) offset = 1;
                     VarInsnNode newS = new VarInsnNode(v.getOpcode()-offset, v.var);
                     units.set(s, newS);
                     units.insert(newS, getBoxNode(type));
@@ -163,22 +169,67 @@ public class AsmTypePropagation implements Opcodes {
                 } else if(type != null) {
                     throw new RuntimeException("NYI");
                 }
+            } else if (s.getOpcode() == ARETURN) {
+                if(advisedReturnType != null && advisedReturnType.isPrimitive()) {
+                    int offset = 4;
+                    if(advisedReturnType == int.class)    offset = 4; else
+                    if(advisedReturnType == long.class)   offset = 3; else
+                    if(advisedReturnType == float.class)  offset = 2; else
+                    if(advisedReturnType == double.class) offset = 1;
+                    InsnNode newS = new InsnNode(ARETURN - offset);
+                    units.set(s, newS);
+                    units.insertBefore(newS, getUnboxNodes(advisedReturnType));
+                    s = newS.getNext();
+                    continue;
+                } else if (advisedReturnType != null) {
+                    throw new RuntimeException("NYI");
+                }
             }
             s = s.getNext();
         }
     }
 
+    /**
+     * Check if there is a bytecode pattern that use typed local variable.
+     * If so, tranform it with heuristic rules to be native xADD etc.
+     *
+     * @param m
+     */
+    private void optimiseBinaryOperators(MethodNode m) {
+
+    }
+
     private MethodInsnNode getBoxNode(Class<?> type) {
         String name=null;
-        if(type == int.class)     name = "Integer"; else
-        if(type == long.class)    name = "Long";    else
-        if(type == byte.class)    name = "Byte";    else
-        if(type == boolean.class) name = "Boolean"; else
-        if(type == short.class)   name = "Short";   else
-        if(type == double.class)  name = "Double";  else
-        if(type == float.class)   name = "Float";   else
-        if(type == char.class)    name = "Character";
+        String desc=null;
+        if(type == int.class)     {name = "Integer";  desc = "I"; } else
+        if(type == long.class)    {name = "Long";     desc = "J"; } else
+        if(type == byte.class)    {name = "Byte";     desc = "B"; } else
+        if(type == boolean.class) {name = "Boolean";  desc = "Z"; } else
+        if(type == short.class)   {name = "Short";    desc = "S"; } else
+        if(type == double.class)  {name = "Double";   desc = "D"; } else
+        if(type == float.class)   {name = "Float";    desc = "F"; } else
+        if(type == char.class)    {name = "Character";desc = "C"; }
         if(name == null) throw new RuntimeException("No box for " + type);
-        return new MethodInsnNode(INVOKESTATIC, "java/lang/" + name, "valueOf", "(I)Ljava/lang/" + name + ";");
+        return new MethodInsnNode(INVOKESTATIC, "java/lang/" + name, "valueOf", "(" + desc + ")Ljava/lang/" + name + ";");
+    }
+
+    private InsnList getUnboxNodes(Class<?> type) {
+        InsnList result = new InsnList();
+        String name=null;
+        String shortName = type.getName();
+        String desc=null;
+        if(type == int.class)     {name = "Integer";  desc = "I"; } else
+        if(type == long.class)    {name = "Long";     desc = "J"; } else
+        if(type == byte.class)    {name = "Byte";     desc = "B"; } else
+        if(type == boolean.class) {name = "Boolean";  desc = "Z"; } else
+        if(type == short.class)   {name = "Short";    desc = "S"; } else
+        if(type == double.class)  {name = "Double";   desc = "D"; } else
+        if(type == float.class)   {name = "Float";    desc = "F"; } else
+        if(type == char.class)    {name = "Character";desc = "C"; }
+        if(name == null) throw new RuntimeException("No unbox for " + type);
+        result.add(new TypeInsnNode(CHECKCAST, "java/lang/" + name));
+        result.add(new MethodInsnNode(INVOKEVIRTUAL, "java/lang/" + name, shortName + "Value", "()" + desc));
+        return result;
     }
 }
