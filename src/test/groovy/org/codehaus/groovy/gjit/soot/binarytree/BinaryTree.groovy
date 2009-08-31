@@ -15,7 +15,7 @@ class BinaryTree {
                           right: bottomUpTree(2*item,   depth-1),
                           item:  item)
        } else {
-           new BinaryTree(item:item)
+           new BinaryTree(item:  item)
        }
     }
 
@@ -36,15 +36,15 @@ class BinaryTree {
         def check = (BinaryTree.bottomUpTree(0,stretchDepth)).itemCheck()
         println "stretch tree of depth ${stretchDepth}\t check: ${check}"
 
-        def longLivedTree = BinaryTree.bottomUpTree(0,maxDepth)
+        def longLivedTree = BinaryTree.bottomUpTree(0, maxDepth)
 
         def depth = minDepth
         while (depth<=maxDepth) {
             def iterations = 1 << (maxDepth - depth + minDepth)
             check = 0
             for (i in 1..iterations) {
-                check += (BinaryTree.bottomUpTree(i,depth)).itemCheck()
-                check += (BinaryTree.bottomUpTree(-i,depth)).itemCheck()
+                check += (BinaryTree.bottomUpTree( i, depth)).itemCheck()
+                check += (BinaryTree.bottomUpTree(-i, depth)).itemCheck()
             }
 
             println "${iterations*2}\t trees of depth ${depth}\t check: ${check}"
