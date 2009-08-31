@@ -5,10 +5,11 @@ import org.objectweb.asm.tree.*
 import org.objectweb.asm.util.AbstractVisitor
 
 import groovy.util.GroovyTestCase
+import org.codehaus.groovy.gjit.soot.fibbonacci.*;
 
 class TypePropagationTests extends GroovyTestCase implements Opcodes {
 
-    void testSomething() {
+    void _testSomething() {
         def cr = new ClassReader("org.codehaus.groovy.gjit.soot.Subject");
         def cn = new ClassNode()
         cr.accept cn, 0
@@ -116,4 +117,18 @@ class TypePropagationTests extends GroovyTestCase implements Opcodes {
         //
     }
 
+
+    void testPropagate() {
+        def tp = new AsmTypePropagation(
+            advisedTypes: [int] as Class[],
+            advisedReturnType: int
+        )
+        def result = tp.typePropagate(new Fib$fib())
+        println result.methodSignature
+        println result.body.length
+        def os = new File('debug/Fib$fib$x.class').newOutputStream()
+        os.write(result.body)
+        os.flush()
+        os.close()
+    }
 }
