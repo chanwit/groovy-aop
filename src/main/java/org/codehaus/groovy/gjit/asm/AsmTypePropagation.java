@@ -135,10 +135,14 @@ public class AsmTypePropagation implements Opcodes {
             if(s.getOpcode() == ALOAD || s.getOpcode() == ASTORE) {
                 VarInsnNode v = (VarInsnNode)s;
                 Class<?> type;
-                if(staticMethod)
+                if(staticMethod) {
+                    if(v.var >= advisedTypes.length) continue;
                     type = advisedTypes[v.var];
-                else
+                }
+                else {
+                    if(v.var-1 >= advisedTypes.length) continue;
                     type = advisedTypes[v.var - 1];
+                }
                 if(type != null && type.isPrimitive()) {
                     int offset = 4;
                     if(type == int.class)   offset = 4; else
