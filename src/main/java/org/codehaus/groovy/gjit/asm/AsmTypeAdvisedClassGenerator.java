@@ -1,7 +1,6 @@
 package org.codehaus.groovy.gjit.asm;
 
 import java.io.IOException;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -52,6 +51,7 @@ public class AsmTypeAdvisedClassGenerator implements Opcodes {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private MethodNode findMethod(ClassNode targetCN, String name) {
         List<MethodNode> methods = targetCN.methods;
         for (Iterator<MethodNode> iterator = methods.iterator(); iterator.hasNext();) {
@@ -62,6 +62,7 @@ public class AsmTypeAdvisedClassGenerator implements Opcodes {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     private MethodNode findMethod(ClassNode targetCN, String name, String desc) {
         List<MethodNode> methods = targetCN.methods;
         for (Iterator<MethodNode> iterator = methods.iterator(); iterator.hasNext();) {
