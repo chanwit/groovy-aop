@@ -160,8 +160,6 @@ class TypePropagationTests extends GroovyTestCase implements Opcodes {
 //  	    CHECKCAST java/lang/Integer
 //  	    INVOKEVIRTUAL java/lang/Integer.intValue()I
 //  	    IRETURN
-//          * here's pattern is very clear to be eliminated*
-//          * thus, valueOf INT -> checkcast INT -> intValue can be eliminated
 //  	    GOTO L4
 //  	   L2
 //  	    LINENUMBER 9 L2
