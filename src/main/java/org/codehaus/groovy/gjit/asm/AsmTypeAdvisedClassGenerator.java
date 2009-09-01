@@ -96,6 +96,9 @@ public class AsmTypeAdvisedClassGenerator implements Opcodes {
         // it is added to be the first argument to simulate "this".
         //
         Type[] targetMN_types = Type.getArgumentTypes(targetMN.desc);
+        //
+        // if it's not a static method, adding simulated "this"
+        //
         if((targetMN.access & ACC_STATIC) == 0) {
             typeList.add(Type.getType("L" + targetCN.name + ";"));
         }
