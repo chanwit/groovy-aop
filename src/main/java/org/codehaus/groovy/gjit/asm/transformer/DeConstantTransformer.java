@@ -49,13 +49,13 @@ public class DeConstantTransformer implements Transformer, Opcodes {
         Type t = Type.getType(desc);
         t.getInternalName();
         if(desc.equals("Ljava/lang/Integer;"))   { primitive = "I"; } else
-        if(desc.equals("Ljava/lang/Long;"))      { primitive = "I"; } else
-        if(desc.equals("Ljava/lang/Byte;"))      { primitive = "I"; } else
-        if(desc.equals("Ljava/lang/Boolean;"))   { primitive = "I"; } else
-        if(desc.equals("Ljava/lang/Short;"))     { primitive = "I"; } else
-        if(desc.equals("Ljava/lang/Double;"))    { primitive = "I"; } else
-        if(desc.equals("Ljava/lang/Float;"))     { primitive = "I"; } else
-        if(desc.equals("Ljava/lang/Character;")) { primitive = "I"; }
+        if(desc.equals("Ljava/lang/Long;"))      { primitive = "L"; } else
+        if(desc.equals("Ljava/lang/Byte;"))      { primitive = "B"; } else
+        if(desc.equals("Ljava/lang/Boolean;"))   { primitive = "Z"; } else
+        if(desc.equals("Ljava/lang/Short;"))     { primitive = "S"; } else
+        if(desc.equals("Ljava/lang/Double;"))    { primitive = "D"; } else
+        if(desc.equals("Ljava/lang/Float;"))     { primitive = "F"; } else
+        if(desc.equals("Ljava/lang/Character;")) { primitive = "C"; }
         if(primitive == null) throw new RuntimeException("No box for " + t);
         return new MethodInsnNode(INVOKESTATIC, t.getInternalName(), "valueOf", "(" + primitive + ")" + desc);
     }
