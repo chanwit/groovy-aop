@@ -50,15 +50,6 @@ public class DeConstantTxTests extends GroovyTestCase implements Opcodes {
         assert mn.instructions.get(2).owner == "java/lang/Integer"
         assert mn.instructions.get(2).name  == "valueOf"
         assert mn.instructions.get(2).desc  == "(I)Ljava/lang/Integer;"
-
-        /*
-        assert ConstantHolder.v().containsKey(FIB_NAME) == true
-        def pack = ConstantHolder.v().get(FIB_NAME)
-
-        assert pack['$const$0'] == 2
-        assert pack['$const$1'] == 1
-        assert pack['$const$2'] == 40
-        */
     }
 
 }
