@@ -117,15 +117,17 @@ public class AsmTypeAdvisedClassGenerator implements Opcodes {
         }
 
         //
+        // Prepare required information and
         // Perform a set of transformation
         //
         Map<String, Object> options = new HashMap<String, Object>();
-        options.put("advisedTypes", advisedTypes);
+        options.put("advisedTypes",      advisedTypes);
         options.put("advisedReturnType", advisedReturnType);
 
         new TypePropagateTransformer().internalTransform(targetMN, options);
         optimiseBinaryOperators(targetMN);
 
+        // generate a new class
         String newClassName = Type.getInternalName(callSite.getClass()) + "$x";
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         cw.visit(V1_5, ACC_PUBLIC + ACC_SYNTHETIC,

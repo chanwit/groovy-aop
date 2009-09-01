@@ -124,8 +124,15 @@ class TypePropagationTests extends GroovyTestCase implements Opcodes {
             advisedReturnType: int
         )
         def result = tp.perform(new Fib$fib())
-        println result.methodSignature
-        println result.body.length
+
+        assert result.methodSignature ==
+            'org/codehaus/groovy/gjit/soot/fibbonacci/Fib$fib$x.fib(I)I'
+        assert result.body.length != 0
+
+        //
+        //  TODO write test by picking out some instructions
+        //  to determine bytecode patterns
+        //
         def os = new File('debug/Fib$fib$x.class').newOutputStream()
         os.write(result.body)
         os.flush()
