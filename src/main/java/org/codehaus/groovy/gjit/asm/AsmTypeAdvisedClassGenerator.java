@@ -2,8 +2,10 @@ package org.codehaus.groovy.gjit.asm;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.codehaus.groovy.gjit.asm.transformer.TypePropagateTransformer;
 import org.codehaus.groovy.runtime.callsite.CallSite;
@@ -105,6 +107,7 @@ public class AsmTypeAdvisedClassGenerator implements Opcodes {
                 typeList.add( Type.getType(advisedParamType) );
         }
         Type[] argumentTypes = typeList.toArray(new Type[typeList.size()]);
+
         //
         // Advise return type, if available
         //
@@ -116,7 +119,11 @@ public class AsmTypeAdvisedClassGenerator implements Opcodes {
         //
         // Perform a set of transformation
         //
-        new TypePropagateTransformer(advisedTypes, advisedReturnType).internalTransform(targetMN);
+        Map<String, Object> options = new HashMap<String, Object>();
+        options.put("advisedTypes", advisedTypes);
+        options.put("advisedReturnType", advisedReturnType);
+
+        new TypePropagateTransformer().internalTransform(targetMN, options);
         optimiseBinaryOperators(targetMN);
 
         String newClassName = Type.getInternalName(callSite.getClass()) + "$x";

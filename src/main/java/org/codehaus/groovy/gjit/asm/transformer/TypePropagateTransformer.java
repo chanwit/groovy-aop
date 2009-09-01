@@ -1,5 +1,7 @@
 package org.codehaus.groovy.gjit.asm.transformer;
 
+import java.util.Map;
+
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnList;
@@ -11,17 +13,15 @@ import org.objectweb.asm.tree.VarInsnNode;
 
 public class TypePropagateTransformer implements Transformer, Opcodes {
 
-    final private Class<?>[] advisedTypes;
-    final private Class<?>   advisedReturnType;
-
-    public TypePropagateTransformer(Class<?>[] advisedTypes,
-                                    Class<?> advisedReturnType) {
-        this.advisedTypes = advisedTypes;
-        this.advisedReturnType = advisedReturnType;
+    public TypePropagateTransformer() {
     }
 
     @Override
-    public void internalTransform(MethodNode body) {
+    public void internalTransform(MethodNode body, Map<String, Object> options) {
+
+        final Class<?>[] advisedTypes = (Class<?>[]) options.get("advisedTypes");
+        final Class<?>   advisedReturnType = (Class<?>) options.get("advisedReturnType");
+
         final boolean staticMethod = (body.access & ACC_STATIC) != 0;
         InsnList units = body.instructions;
         AbstractInsnNode s = units.getFirst();

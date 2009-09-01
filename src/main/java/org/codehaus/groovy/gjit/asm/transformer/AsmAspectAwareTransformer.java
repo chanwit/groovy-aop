@@ -33,7 +33,7 @@ public class AsmAspectAwareTransformer implements Transformer, Opcodes {
     private Class<?>[] advisedTypes;
 
     @Override
-    public void internalTransform(MethodNode body) {
+    public void internalTransform(MethodNode body, Map<String, Object> options) {
         String fullname = body.name + body.desc;
         if( withInMethodName == null ||
             fullname.equals(withInMethodName))
@@ -52,6 +52,7 @@ public class AsmAspectAwareTransformer implements Transformer, Opcodes {
     private void replaceCallSite(AbstractInsnNode invokeStatement, MethodNode newTargetMethod) {
     }
 
+    @SuppressWarnings("unchecked")
     private MethodNode findMethod(ClassNode targetCN, String name) {
         List<MethodNode> methods = targetCN.methods;
         for (Iterator<MethodNode> iterator = methods.iterator(); iterator.hasNext();) {
@@ -62,6 +63,7 @@ public class AsmAspectAwareTransformer implements Transformer, Opcodes {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     private MethodNode findMethod(ClassNode targetCN, String name, String desc) {
         List<MethodNode> methods = targetCN.methods;
         for (Iterator<MethodNode> iterator = methods.iterator(); iterator.hasNext();) {

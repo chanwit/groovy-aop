@@ -9,33 +9,34 @@ import org.objectweb.asm.tree.MethodNode;
 
 public class AsmSingleClassOptimizer implements SingleClassOptimizer {
 
-	private List<Transformer> transformers;
-	private ClassNode classNode;
+    private List<Transformer> transformers;
+    private ClassNode classNode;
 
-	@Override
-	public byte[] optimize(Class<?> c) {
-		this.classNode = loadClass(c);
-		applyTransformers();
-		return writeClass(c);
-	}
+    @Override
+    public byte[] optimize(Class<?> c) {
+        this.classNode = loadClass(c);
+        applyTransformers();
+        return writeClass(c);
+    }
 
-	private byte[] writeClass(Class<?> c) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    private byte[] writeClass(Class<?> c) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	private void applyTransformers() {
-		List<MethodNode> methods = this.classNode.methods;
-		for(MethodNode method: methods) {
-			for(Transformer t: transformers) {
-				t.internalTransform(method);
-			}
-		}
-	}
+    @SuppressWarnings("unchecked")
+    private void applyTransformers() {
+        List<MethodNode> methods = this.classNode.methods;
+        for(MethodNode method: methods) {
+            for(Transformer t: transformers) {
+                t.internalTransform(method, null);
+            }
+        }
+    }
 
-	private ClassNode loadClass(Class<?> c) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    private ClassNode loadClass(Class<?> c) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }
