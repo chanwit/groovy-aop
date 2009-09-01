@@ -7,11 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.codehaus.groovy.gjit.asm.PartialDefUseAnalyser;
-import org.codehaus.groovy.gjit.soot.transformer.Utils;
 import org.codehaus.groovy.runtime.callsite.CallSite;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AbstractInsnNode;
