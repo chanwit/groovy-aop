@@ -9,6 +9,8 @@ import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -32,11 +34,22 @@ public class DeConstantTransformer implements Transformer, Opcodes {
             if(f.name.startsWith("$const$")) {
                 ConstantPack pack = ConstantHolder.v().get(f.owner);
                 Object cst = pack.get(f.name);
-                LdcInsnNode ldc    = new LdcInsnNode(cst);
+                AbstractInsnNode newS = new LdcInsnNode(cst);
+                if (cst instanceof Integer) {
+                    int c = (Integer)cst;
+                    if (c >= -1 && c <= 5) {
+                        newS = new InsnNode(ICONST_0 + c);
+                    } else if (c >= -128 && c <= 127) {
+                        newS = new IntInsnNode(BIPUSH, c);
+                    } else if (c >= -32768 && c <= 32767) {
+                        newS = new IntInsnNode(SIPUSH, c);
+                    }
+                }
                 MethodInsnNode box = Utils.getBoxNode(f.desc);
-                units.insert(s,   ldc);
-                units.insert(ldc, box);
+                units.insert(s,   newS);
+                units.insert(newS, box);
                 units.remove(s);
+
                 s = box.getNext();
                 continue;
             }
