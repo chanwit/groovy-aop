@@ -10,15 +10,18 @@ public class DeConstantTxTests extends GroovyTestCase implements Opcodes {
 
     static FIB_NAME = "org/codehaus/groovy/gjit/soot/fibbonacci/Fib"
 
-    void testCollector() {
+    private loadConstantsFromFib() {
         ConstantHolder.v().clear()
         def cr = new ClassReader("org.codehaus.groovy.gjit.soot.fibbonacci.Fib");
         def cn = new ClassNode()
         cr.accept cn, 0
         assert cn.name == FIB_NAME
-
         def clinit = cn.@methods.find { it.name == "<clinit>" }
         new ConstantCollector().internalTransform(clinit, null);
+    }
+
+    void testCollector() {
+        loadConstantsFromFib()
 
         assert ConstantHolder.v().containsKey(FIB_NAME) == true
         def pack = ConstantHolder.v().get(FIB_NAME)
@@ -28,28 +31,58 @@ public class DeConstantTxTests extends GroovyTestCase implements Opcodes {
         assert pack['$const$2'] == 40
     }
 
-    void testDeConsant() {
-        ConstantHolder.v().clear()
-        def cr = new ClassReader("org.codehaus.groovy.gjit.soot.fibbonacci.Fib");
-        def cn = new ClassNode()
-        cr.accept cn, 0
-        assert cn.name == FIB_NAME
-        def clinit = cn.@methods.find { it.name == "<clinit>" }
-        new ConstantCollector().internalTransform(clinit, null)
+    void testDeConsant_Const_0() {
+        loadConstantsFromFib()
 
-        MethodNode mn = new MethodNode()
-        mn.instructions.add(new VarInsnNode(ALOAD, 0))
-        mn.instructions.add(new FieldInsnNode(GETSTATIC,"org/codehaus/groovy/gjit/soot/fibbonacci/Fib", '$const$0', "Ljava/lang/Integer;"))
-        mn.instructions.add(new MethodInsnNode(INVOKESTATIC, "org/codehaus/groovy/runtime/ScriptBytecodeAdapter", "compareLessThan", "(Ljava/lang/Object;Ljava/lang/Object;)Z"))
-        mn.instructions.add(new JumpInsnNode(IFEQ, new LabelNode()))
+        def mn = new MethodNode()
+        def units = mn.instructions
+
+        units.add(new VarInsnNode(ALOAD, 0))
+        units.add(new FieldInsnNode(GETSTATIC,
+                      "org/codehaus/groovy/gjit/soot/fibbonacci/Fib",
+                      '$const$0',
+                      "Ljava/lang/Integer;"))
+        units.add(new MethodInsnNode(INVOKESTATIC,
+                      "org/codehaus/groovy/runtime/ScriptBytecodeAdapter",
+                      "compareLessThan",
+                      "(Ljava/lang/Object;Ljava/lang/Object;)Z"))
+        units.add(new JumpInsnNode(IFEQ, new LabelNode()))
 
         new DeConstantTransformer().internalTransform(mn, null)
 
-        assert mn.instructions.get(1).opcode == LDC
-        assert mn.instructions.get(2).opcode == INVOKESTATIC
-        assert mn.instructions.get(2).owner == "java/lang/Integer"
-        assert mn.instructions.get(2).name  == "valueOf"
-        assert mn.instructions.get(2).desc  == "(I)Ljava/lang/Integer;"
+        assert units.get(1).opcode == ICONST_2
+
+        assert units.get(2).opcode == INVOKESTATIC
+        assert units.get(2).owner == "java/lang/Integer"
+        assert units.get(2).name  == "valueOf"
+        assert units.get(2).desc  == "(I)Ljava/lang/Integer;"
     }
 
+    void testDeConsant_Const_2() {
+        loadConstantsFromFib()
+
+        def mn = new MethodNode()
+        def units = mn.instructions
+
+        units.add(new VarInsnNode(ALOAD, 0))
+        units.add(new FieldInsnNode(GETSTATIC,
+                      "org/codehaus/groovy/gjit/soot/fibbonacci/Fib",
+                      '$const$2',
+                      "Ljava/lang/Integer;"))
+        units.add(new MethodInsnNode(INVOKESTATIC,
+                      "org/codehaus/groovy/runtime/ScriptBytecodeAdapter",
+                      "compareLessThan",
+                      "(Ljava/lang/Object;Ljava/lang/Object;)Z"))
+        units.add(new JumpInsnNode(IFEQ, new LabelNode()))
+
+        new DeConstantTransformer().internalTransform(mn, null)
+
+        assert units.get(1).opcode  == BIPUSH
+        assert units.get(1).operand == 40
+
+        assert units.get(2).opcode  == INVOKESTATIC
+        assert units.get(2).owner   == "java/lang/Integer"
+        assert units.get(2).name    == "valueOf"
+        assert units.get(2).desc    == "(I)Ljava/lang/Integer;"
+    }
 }
