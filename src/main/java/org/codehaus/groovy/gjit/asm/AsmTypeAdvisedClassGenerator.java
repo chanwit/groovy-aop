@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.codehaus.groovy.gjit.asm.transformer.AutoBoxEliminatorTransformer;
 import org.codehaus.groovy.gjit.asm.transformer.TypePropagateTransformer;
+import org.codehaus.groovy.gjit.asm.transformer.UnwrapCompareTransformer;
 import org.codehaus.groovy.runtime.callsite.CallSite;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -126,6 +127,7 @@ public class AsmTypeAdvisedClassGenerator implements Opcodes {
         options.put("advisedReturnType", advisedReturnType);
 
         new TypePropagateTransformer().internalTransform(targetMN, options);
+        new UnwrapCompareTransformer().internalTransform(targetMN, options);
         new AutoBoxEliminatorTransformer().internalTransform(targetMN, options);
         optimiseBinaryOperators(targetMN);
 
