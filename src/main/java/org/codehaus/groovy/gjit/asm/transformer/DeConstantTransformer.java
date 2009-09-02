@@ -33,7 +33,7 @@ public class DeConstantTransformer implements Transformer, Opcodes {
                 ConstantPack pack = ConstantHolder.v().get(f.owner);
                 Object cst = pack.get(f.name);
                 LdcInsnNode ldc    = new LdcInsnNode(cst);
-                MethodInsnNode box = getBoxNode(f.desc);
+                MethodInsnNode box = Utils.getBoxNode(f.desc);
                 units.insert(s,   ldc);
                 units.insert(ldc, box);
                 units.remove(s);
@@ -42,22 +42,6 @@ public class DeConstantTransformer implements Transformer, Opcodes {
             }
             s = s.getNext();
         }
-    }
-
-    private MethodInsnNode getBoxNode(String desc) {
-        String primitive = null;
-        Type t = Type.getType(desc);
-        t.getInternalName();
-        if(desc.equals("Ljava/lang/Integer;"))   { primitive = "I"; } else
-        if(desc.equals("Ljava/lang/Long;"))      { primitive = "L"; } else
-        if(desc.equals("Ljava/lang/Byte;"))      { primitive = "B"; } else
-        if(desc.equals("Ljava/lang/Boolean;"))   { primitive = "Z"; } else
-        if(desc.equals("Ljava/lang/Short;"))     { primitive = "S"; } else
-        if(desc.equals("Ljava/lang/Double;"))    { primitive = "D"; } else
-        if(desc.equals("Ljava/lang/Float;"))     { primitive = "F"; } else
-        if(desc.equals("Ljava/lang/Character;")) { primitive = "C"; }
-        if(primitive == null) throw new RuntimeException("No box for " + t);
-        return new MethodInsnNode(INVOKESTATIC, t.getInternalName(), "valueOf", "(" + primitive + ")" + desc);
     }
 
 }

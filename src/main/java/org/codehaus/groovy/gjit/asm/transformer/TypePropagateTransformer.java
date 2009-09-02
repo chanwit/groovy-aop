@@ -51,7 +51,7 @@ public class TypePropagateTransformer implements Transformer, Opcodes {
                     if(type == double.class) offset = 1;
                     VarInsnNode newS = new VarInsnNode(v.getOpcode()-offset, v.var);
                     units.set(s, newS);
-                    units.insert(newS, getBoxNode(type));
+                    units.insert(newS, Utils.getBoxNode(type));
                     s = newS.getNext().getNext();
                     continue;
                 } else if(type != null) {
@@ -66,7 +66,7 @@ public class TypePropagateTransformer implements Transformer, Opcodes {
                     if(advisedReturnType == double.class) offset = 1;
                     InsnNode newS = new InsnNode(ARETURN - offset);
                     units.set(s, newS);
-                    units.insertBefore(newS, getUnboxNodes(advisedReturnType));
+                    units.insertBefore(newS, Utils.getUnboxNodes(advisedReturnType));
                     s = newS.getNext();
                     continue;
                 } else if (advisedReturnType != null) {
@@ -75,39 +75,5 @@ public class TypePropagateTransformer implements Transformer, Opcodes {
             }
             s = s.getNext();
         }
-    }
-
-    private MethodInsnNode getBoxNode(Class<?> type) {
-        String name=null;
-        String desc=null;
-        if(type == int.class)     {name = "Integer";  desc = "I"; } else
-        if(type == long.class)    {name = "Long";     desc = "J"; } else
-        if(type == byte.class)    {name = "Byte";     desc = "B"; } else
-        if(type == boolean.class) {name = "Boolean";  desc = "Z"; } else
-        if(type == short.class)   {name = "Short";    desc = "S"; } else
-        if(type == double.class)  {name = "Double";   desc = "D"; } else
-        if(type == float.class)   {name = "Float";    desc = "F"; } else
-        if(type == char.class)    {name = "Character";desc = "C"; }
-        if(name == null) throw new RuntimeException("No box for " + type);
-        return new MethodInsnNode(INVOKESTATIC, "java/lang/" + name, "valueOf", "(" + desc + ")Ljava/lang/" + name + ";");
-    }
-
-    private InsnList getUnboxNodes(Class<?> type) {
-        InsnList result = new InsnList();
-        String name=null;
-        String shortName = type.getName();
-        String desc=null;
-        if(type == int.class)     {name = "Integer";  desc = "I"; } else
-        if(type == long.class)    {name = "Long";     desc = "J"; } else
-        if(type == byte.class)    {name = "Byte";     desc = "B"; } else
-        if(type == boolean.class) {name = "Boolean";  desc = "Z"; } else
-        if(type == short.class)   {name = "Short";    desc = "S"; } else
-        if(type == double.class)  {name = "Double";   desc = "D"; } else
-        if(type == float.class)   {name = "Float";    desc = "F"; } else
-        if(type == char.class)    {name = "Character";desc = "C"; }
-        if(name == null) throw new RuntimeException("No unbox for " + type);
-        result.add(new TypeInsnNode(CHECKCAST, "java/lang/" + name));
-        result.add(new MethodInsnNode(INVOKEVIRTUAL, "java/lang/" + name, shortName + "Value", "()" + desc));
-        return result;
     }
 }
