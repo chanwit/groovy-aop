@@ -3,6 +3,7 @@ package org.codehaus.groovy.gjit.asm
 import org.objectweb.asm.*
 import org.objectweb.asm.tree.*
 import org.objectweb.asm.util.AbstractVisitor
+import org.codehaus.groovy.gjit.asm.transformer.*;
 
 import groovy.util.GroovyTestCase
 import org.codehaus.groovy.gjit.soot.fibbonacci.*;
@@ -117,8 +118,19 @@ class TypePropagationTests extends GroovyTestCase implements Opcodes {
         //
     }
 
+    static FIB_NAME = "org/codehaus/groovy/gjit/soot/fibbonacci/Fib"
 
     void testPropagateOnFib() {
+        // collect constant
+        ConstantHolder.v().clear()
+        def cr = new ClassReader("org.codehaus.groovy.gjit.soot.fibbonacci.Fib");
+        def cn = new ClassNode()
+        cr.accept cn, 0
+        assert cn.name == FIB_NAME
+
+        def clinit = cn.@methods.find { it.name == "<clinit>" }
+        new ConstantCollector().internalTransform(clinit, null);
+
         def tp = new AsmTypeAdvisedClassGenerator(
             advisedTypes: [int] as Class[],
             advisedReturnType: int
@@ -133,6 +145,7 @@ class TypePropagationTests extends GroovyTestCase implements Opcodes {
         //  TODO write test by picking out some instructions
         //  to determine bytecode patterns
         //
+        new File('debug/Fib$fib$x.class').delete()
         def os = new File('debug/Fib$fib$x.class').newOutputStream()
         os.write(result.body)
         os.flush()

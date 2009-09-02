@@ -85,19 +85,25 @@ public class UnwrapCompareTransformer implements Transformer, Opcodes {
                     units.insert(array[0], Utils.getUnboxNodes(t0.getDescriptor()));
                     units.insert(array[1], Utils.getUnboxNodes(t1.getDescriptor()));
 
-                    switch(t0.getSort()) {
-                        case Type.INT: {
-                                AbstractInsnNode newS = convertCompareForInt(compare, s);
-                                units.set(s, newS);
-                                s = newS.getNext();
-                            }
-                            continue;
-                        default:
-                            throw new RuntimeException("NYI");
+                    if(t0.getDescriptor().equals("Ljava/lang/Integer;")) {
+                        AbstractInsnNode newS = convertCompareForInt(compare, s);
+                        units.set(s, newS);
+                        AbstractInsnNode oldIf = newS.getNext();
+                        s = oldIf.getNext();
+                        units.remove(oldIf);
+                        continue;
+                    } else
+                        throw new RuntimeException("NYI");
+
+//                    switch(t0.getSort()) {
+//                        case Type.INT: {
+//                            }
+//                            continue;
+//                        default:
+//                            throw new RuntimeException("NYI");
                         // TODO: case Type.LONG:   convertCompare(LCMP, compare, s); break;
                         // TODO: case Type.FLOAT:  convertCompare(FCMPL, compare, s); break;
                         // TODO: case Type.DOUBLE: convertCompare(DCMPL, compare, s); break;
-                    }
                 }
             }
             s = s.getNext();
