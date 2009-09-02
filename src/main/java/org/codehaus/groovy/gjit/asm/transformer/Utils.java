@@ -40,22 +40,42 @@ public class Utils implements Opcodes {
         return new MethodInsnNode(INVOKESTATIC, "java/lang/" + name, "valueOf", "(" + desc + ")Ljava/lang/" + name + ";");
     }
 
+    public static InsnList getUnboxNodes(String desc) {
+        InsnList result = new InsnList();
+        String primitive = null;
+        String shortName = null;
+        Type t = Type.getType(desc);
+        if(desc.equals("Ljava/lang/Integer;"))   { primitive = "I"; shortName = "int";     } else
+        if(desc.equals("Ljava/lang/Long;"))      { primitive = "L"; shortName = "long";    } else
+        if(desc.equals("Ljava/lang/Byte;"))      { primitive = "B"; shortName = "byte";    } else
+        if(desc.equals("Ljava/lang/Boolean;"))   { primitive = "Z"; shortName = "boolean"; } else
+        if(desc.equals("Ljava/lang/Short;"))     { primitive = "S"; shortName = "short";   } else
+        if(desc.equals("Ljava/lang/Double;"))    { primitive = "D"; shortName = "double";  } else
+        if(desc.equals("Ljava/lang/Float;"))     { primitive = "F"; shortName = "float";   } else
+        if(desc.equals("Ljava/lang/Character;")) { primitive = "C"; shortName = "char";    }
+        if(primitive == null) throw new RuntimeException("No unbox for " + t);
+
+        result.add(new TypeInsnNode(CHECKCAST, t.getInternalName()));
+        result.add(new MethodInsnNode(INVOKEVIRTUAL, t.getInternalName(), shortName + "Value", "()" + primitive));
+        return result;
+    }
+
     public static InsnList getUnboxNodes(Class<?> type) {
         InsnList result = new InsnList();
         String name=null;
         String shortName = type.getName();
-        String desc=null;
-        if(type == int.class)     {name = "Integer";  desc = "I"; } else
-        if(type == long.class)    {name = "Long";     desc = "J"; } else
-        if(type == byte.class)    {name = "Byte";     desc = "B"; } else
-        if(type == boolean.class) {name = "Boolean";  desc = "Z"; } else
-        if(type == short.class)   {name = "Short";    desc = "S"; } else
-        if(type == double.class)  {name = "Double";   desc = "D"; } else
-        if(type == float.class)   {name = "Float";    desc = "F"; } else
-        if(type == char.class)    {name = "Character";desc = "C"; }
+        String primitive=null;
+        if(type == int.class)     {name = "Integer";  primitive = "I"; } else
+        if(type == long.class)    {name = "Long";     primitive = "J"; } else
+        if(type == byte.class)    {name = "Byte";     primitive = "B"; } else
+        if(type == boolean.class) {name = "Boolean";  primitive = "Z"; } else
+        if(type == short.class)   {name = "Short";    primitive = "S"; } else
+        if(type == double.class)  {name = "Double";   primitive = "D"; } else
+        if(type == float.class)   {name = "Float";    primitive = "F"; } else
+        if(type == char.class)    {name = "Character";primitive = "C"; }
         if(name == null) throw new RuntimeException("No unbox for " + type);
         result.add(new TypeInsnNode(CHECKCAST, "java/lang/" + name));
-        result.add(new MethodInsnNode(INVOKEVIRTUAL, "java/lang/" + name, shortName + "Value", "()" + desc));
+        result.add(new MethodInsnNode(INVOKEVIRTUAL, "java/lang/" + name, shortName + "Value", "()" + primitive));
         return result;
     }
 
