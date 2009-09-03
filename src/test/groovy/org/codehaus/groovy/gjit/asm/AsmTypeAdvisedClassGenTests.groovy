@@ -6,15 +6,18 @@ import org.objectweb.asm.util.AbstractVisitor
 import org.codehaus.groovy.gjit.asm.transformer.*;
 
 import groovy.util.GroovyTestCase
+
 import org.codehaus.groovy.gjit.soot.fibbonacci.*;
 
-class TypePropagationTests extends GroovyTestCase implements Opcodes {
+class AsmTypeAdvisedClassGenTests extends GroovyTestCase implements Opcodes {
 
     static FIB_NAME = "org/codehaus/groovy/gjit/soot/fibbonacci/Fib"
 
     void testPropagateOnFib() {
         // collect constant
         ConstantHolder.v().clear()
+        CallSiteNameHolder.v().clear()
+
         def cr = new ClassReader("org.codehaus.groovy.gjit.soot.fibbonacci.Fib");
         def cn = new ClassNode()
         cr.accept cn, 0
@@ -22,6 +25,8 @@ class TypePropagationTests extends GroovyTestCase implements Opcodes {
 
         def clinit = cn.@methods.find { it.name == "<clinit>" }
         new ConstantCollector().internalTransform(clinit, null);
+        def ccsa = cn.@methods.find { it.name == '$createCallSiteArray' }
+        new CallSiteNameCollector().internalTransform(ccsa, null);
 
         def tp = new AsmTypeAdvisedClassGenerator(
             advisedTypes: [int] as Class[],
