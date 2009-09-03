@@ -48,15 +48,15 @@ public class UnwrapBinOpTxTests extends GroovyTestCase implements Opcodes {
         MethodNode mn = new MethodNode()
         def u = mn.instructions
         u.append {
-            invokestatic Fib, '$getCallSiteArray',[],CallSite[]
+            invokestatic    Fib, '$getCallSiteArray',[],CallSite[]
             astore 1
-            aload 1
-            ldc 2
+            aload  1
+            ldc    2
             aaload
-            iload 0
-            invokestatic Integer,"valueOf",[int],Integer
+            iload  0
+            invokestatic    Integer,"valueOf",[int],Integer
             iconst_1
-            invokestatic Integer,"valueOf",[int],Integer
+            invokestatic    Integer,"valueOf",[int],Integer
             invokeinterface CallSite,"call",[Object,Object],Object
         }
         assert u.size() == 10

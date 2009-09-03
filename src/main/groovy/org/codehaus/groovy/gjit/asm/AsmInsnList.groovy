@@ -17,7 +17,9 @@ public class AsmInsnList {
             c.call()
             delegate.add( c.delegate.list )
         }
-
+        InsnList.metaClass.getAt = { i ->
+            delegate.get(i)
+        }
         Class.metaClass.getDesc = { ->
             Type.getDescriptor(delegate)
         }
