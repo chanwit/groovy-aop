@@ -2,6 +2,7 @@ package org.codehaus.groovy.gjit.asm.transformer;
 
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.TypeInsnNode;
@@ -77,6 +78,13 @@ public class Utils implements Opcodes {
         result.add(new TypeInsnNode(CHECKCAST, "java/lang/" + name));
         result.add(new MethodInsnNode(INVOKEVIRTUAL, "java/lang/" + name, shortName + "Value", "()" + primitive));
         return result;
+    }
+
+    public static  Type getType(AbstractInsnNode node) {
+        if(node instanceof MethodInsnNode) {
+            return Type.getReturnType(((MethodInsnNode)node).desc);
+        }
+        throw new RuntimeException("NYI");
     }
 
 }

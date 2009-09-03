@@ -76,10 +76,10 @@ public class UnwrapCompareTransformer implements Transformer, Opcodes {
                 Map<AbstractInsnNode, AbstractInsnNode[]> usedMap = pdua.analyse();
                 AbstractInsnNode[] array = usedMap.get(m);
                 assert array.length == 2;
-                Type t0 = getType(array[0]);
-                Type t1 = getType(array[1]);
-                System.out.println(t0);
-                System.out.println(t1);
+                Type t0 = Utils.getType(array[0]);
+                Type t1 = Utils.getType(array[1]);
+//                System.out.println(t0);
+//                System.out.println(t1);
                 if(t0.equals(t1)){
                     units.insert(array[0], Utils.getUnboxNodes(t0.getDescriptor()));
                     units.insert(array[1], Utils.getUnboxNodes(t1.getDescriptor()));
@@ -107,13 +107,6 @@ public class UnwrapCompareTransformer implements Transformer, Opcodes {
             }
             s = s.getNext();
         }
-    }
-
-    private Type getType(AbstractInsnNode node) {
-        if(node instanceof MethodInsnNode) {
-            return Type.getReturnType(((MethodInsnNode)node).desc);
-        }
-        throw new RuntimeException("NYI");
     }
 
     private JumpInsnNode convertCompareForInt(ComparingMethod compare, AbstractInsnNode s) {
