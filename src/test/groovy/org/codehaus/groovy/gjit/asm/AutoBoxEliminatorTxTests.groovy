@@ -17,16 +17,20 @@ public class AutoBoxEliminatorTxTests extends GroovyTestCase implements Opcodes 
 //  INVOKEVIRTUAL java/lang/Integer.intValue()I
 //  IRETURN
     void testEliminatingInteger() {
-        MethodNode mn = new MethodNode()
-        mn.instructions.add(new VarInsnNode(ILOAD, 0))
-        mn.instructions.add(new MethodInsnNode(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;"))
-        mn.instructions.add(new TypeInsnNode(CHECKCAST, "java/lang/Integer"))
-        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "java/lang/Integer", "intValue","()I"))
-        mn.instructions.add(new InsnNode(IRETURN))
+        AsmInsnList.install()
+        def mn = new MethodNode()
+        def u = mn.instructions
+        u.append {
+            iload 0
+            invokestatic  Integer,"valueOf",[int],Integer
+            checkcast     Integer
+            invokevirtual Integer,"intValue",[],int
+            ireturn
+        }
         new AutoBoxEliminatorTransformer().internalTransform(mn, null);
-        assert mn.instructions.size == 2
-        assert mn.instructions.get(0).opcode == ILOAD
-        assert mn.instructions.get(1).opcode == IRETURN
+        assert u.size() == 2
+        assert u[0].opcode == ILOAD
+        assert u[1].opcode == IRETURN
     }
 
 }
