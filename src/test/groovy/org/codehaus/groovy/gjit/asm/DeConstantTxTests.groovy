@@ -1,7 +1,5 @@
 package org.codehaus.groovy.gjit.asm
 
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.*
 import org.objectweb.asm.*
 import org.codehaus.groovy.gjit.asm.transformer.*;
