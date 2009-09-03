@@ -1,9 +1,11 @@
 package org.codehaus.groovy.gjit.asm;
 
+import org.codehaus.groovy.runtime.callsite.CallSite;
 import org.objectweb.asm.tree.*
 import org.objectweb.asm.*
 import org.codehaus.groovy.gjit.asm.transformer.*;
 import groovy.util.GroovyTestCase;
+import org.codehaus.groovy.gjit.soot.fibbonacci.Fib
 
 public class UnwrapBinOpTxTests extends GroovyTestCase implements Opcodes {
 
@@ -41,26 +43,23 @@ public class UnwrapBinOpTxTests extends GroovyTestCase implements Opcodes {
 //  INVOKEINTERFACE org/codehaus/groovy/runtime/callsite/CallSite.call(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 
     void testUnwrap_Int_Int_BinOp_of_Fib() {
+        AsmInsnList.install()
         loadConstantsFromFib()
         MethodNode mn = new MethodNode()
         def u = mn.instructions
-        u.add(new MethodInsnNode(INVOKESTATIC,
-                  "org/codehaus/groovy/gjit/soot/fibbonacci/Fib",
-                  '$getCallSiteArray',
-                  "()[Lorg/codehaus/groovy/runtime/callsite/CallSite;"))
-        u.add new VarInsnNode(ASTORE, 1)
-        u.add new VarInsnNode(ALOAD, 1)
-        u.add new LdcInsnNode(2)
-        u.add new InsnNode(AALOAD)
-        u.add new VarInsnNode(ILOAD, 0)
-        u.add new MethodInsnNode(INVOKESTATIC,
-                "java/lang/Integer","valueOf","(I)Ljava/lang/Integer;")
-        u.add new InsnNode(ICONST_1)
-        u.add new MethodInsnNode(INVOKESTATIC,
-                "java/lang/Integer","valueOf","(I)Ljava/lang/Integer;")
-        u.add new MethodInsnNode(INVOKEINTERFACE,
-                "org/codehaus/groovy/runtime/callsite/CallSite",
-                "call","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;")
+        u.append {
+            invokestatic Fib, '$getCallSiteArray',[],CallSite[]
+            astore 1
+            aload 1
+            ldc 2
+            aaload
+            iload 0
+            invokestatic Integer,"valueOf",[int],Integer
+            iconst_1
+            invokestatic Integer,"valueOf",[int],Integer
+            invokeinterface CallSite,"call",[Object,Object],Object
+        }
+        assert u.size() == 10
         new UnwrapBinOpTransformer().internalTransform(mn, null)
     }
 
