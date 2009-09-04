@@ -5,7 +5,7 @@ import java.util.List;
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
 
-public class AsmBuilder implements Opcodes {
+public class AsmNodeBuilder implements Opcodes {
 
     private InsnList list = new InsnList();
 
