@@ -139,6 +139,10 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
                 units.set(s, newS);
                 units.insert(newS, Utils.getBoxNode(t1.getDescriptor()));
 
+                //
+                // TODO: clean unused ALOAD, LDC, AALOAD
+                //
+
                 s = newS.getNext();
                 continue;
             }

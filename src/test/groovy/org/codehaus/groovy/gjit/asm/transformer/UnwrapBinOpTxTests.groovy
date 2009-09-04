@@ -48,12 +48,12 @@ public class UnwrapBinOpTxTests extends GroovyTestCase implements Opcodes {
         InsnListHelper.install()
         loadConstantsFromFib()
         MethodNode mn = new MethodNode()
-        def u = mn.instructions
-        u.append {
+        def units = mn.instructions
+        units.append {
             invokestatic    Fib, '$getCallSiteArray',[],CallSite[]
             astore 1
             aload  1
-            ldc    2
+            ldc    2 // call site index: 2 "minus"
             aaload
             iload  0
             invokestatic    Integer,"valueOf",[int],Integer
@@ -61,8 +61,22 @@ public class UnwrapBinOpTxTests extends GroovyTestCase implements Opcodes {
             invokestatic    Integer,"valueOf",[int],Integer
             invokeinterface CallSite,"call",[Object,Object],Object
         }
-        assert u.size() == 10
+        assert units.size() == 10
         new UnwrapBinOpTransformer().internalTransform(mn, null)
+        assertEquals asm {
+            invokestatic    Fib, '$getCallSiteArray',[],CallSite[]
+            astore 1
+            iload  0
+            invokestatic    Integer,"valueOf",[int],Integer
+            checkcast		Integer
+            invokevirtual   Integer,"intValue",[],int
+            iconst_1
+            invokestatic    Integer,"valueOf",[int],Integer
+            checkcast		Integer
+            invokevirtual   Integer,"intValue",[],int
+            isub
+            invokestatic    Integer,"valueOf",[int],Integer
+        }, units
     }
 
 }
