@@ -112,6 +112,11 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
             //}
             Type t1 = Utils.getType(array[1]);
             Type t2 = Utils.getType(array[2]);
+
+            // not doing unwrap on Object
+            if(t1.getDescriptor().equals("Ljava/lang/Object;")) {s = s.getNext(); continue; }
+            if(t2.getDescriptor().equals("Ljava/lang/Object;")) {s = s.getNext(); continue; }
+
             if(t1.equals(t2)){
                 int offset = 0;
                 if(t1.getDescriptor().equals("Ljava/lang/Long;"))   offset = 1;
