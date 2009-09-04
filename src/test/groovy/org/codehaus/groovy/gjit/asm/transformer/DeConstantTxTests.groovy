@@ -4,7 +4,7 @@ import org.objectweb.asm.tree.LabelNode;
 import org.codehaus.groovy.runtime.ScriptBytecodeAdapter as SBA
 import org.objectweb.asm.tree.*
 import org.objectweb.asm.*
-import org.codehaus.groovy.gjit.asm.AsmInsnList;
+import org.codehaus.groovy.gjit.asm.InsnListHelper;
 import org.codehaus.groovy.gjit.asm.transformer.*;
 import org.codehaus.groovy.gjit.soot.fibbonacci.Fib
 
@@ -13,7 +13,7 @@ public class DeConstantTxTests extends GroovyTestCase implements Opcodes {
     static FIB_NAME = "org/codehaus/groovy/gjit/soot/fibbonacci/Fib"
 
     private loadConstantsFromFib() {
-        AsmInsnList.install()
+        InsnListHelper.install()
         ConstantHolder.v().clear()
         def cr = new ClassReader("org.codehaus.groovy.gjit.soot.fibbonacci.Fib");
         def cn = new ClassNode()

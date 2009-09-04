@@ -1,6 +1,6 @@
 package org.codehaus.groovy.gjit.asm.transformer;
 
-import org.codehaus.groovy.gjit.asm.AsmInsnList;
+import org.codehaus.groovy.gjit.asm.InsnListHelper;
 import org.codehaus.groovy.gjit.asm.transformer.AutoBoxEliminatorTransformer;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.InsnNode;
@@ -18,7 +18,7 @@ public class AutoBoxEliminatorTxTests extends GroovyTestCase implements Opcodes 
 //  INVOKEVIRTUAL java/lang/Integer.intValue()I
 //  IRETURN
     void testEliminatingInteger() {
-        AsmInsnList.install()
+        InsnListHelper.install()
         def mn = new MethodNode()
         def u = mn.instructions
         u.append {

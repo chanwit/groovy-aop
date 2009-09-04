@@ -3,7 +3,7 @@ package org.codehaus.groovy.gjit.asm.transformer;
 import org.codehaus.groovy.runtime.callsite.CallSite;
 import org.objectweb.asm.tree.*
 import org.objectweb.asm.*
-import org.codehaus.groovy.gjit.asm.AsmInsnList;
+import org.codehaus.groovy.gjit.asm.InsnListHelper;
 import org.codehaus.groovy.gjit.asm.CallSiteNameHolder;
 import org.codehaus.groovy.gjit.asm.transformer.*;
 import groovy.util.GroovyTestCase;
@@ -45,7 +45,7 @@ public class UnwrapBinOpTxTests extends GroovyTestCase implements Opcodes {
 //  INVOKEINTERFACE org/codehaus/groovy/runtime/callsite/CallSite.call(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 
     void testUnwrap_Int_Int_BinOp_of_Fib() {
-        AsmInsnList.install()
+        InsnListHelper.install()
         loadConstantsFromFib()
         MethodNode mn = new MethodNode()
         def u = mn.instructions

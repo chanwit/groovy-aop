@@ -9,7 +9,7 @@ import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.InsnList
 
-public class AsmInsnList {
+public class InsnListHelper {
 
     static installed = false
 

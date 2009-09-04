@@ -9,7 +9,7 @@ import org.objectweb.asm.tree.LdcInsnNode
 import org.objectweb.asm.tree.LabelNode
 import org.objectweb.asm.Label
 
-import org.codehaus.groovy.gjit.asm.AsmInsnList;
+import org.codehaus.groovy.gjit.asm.InsnListHelper;
 import org.codehaus.groovy.gjit.asm.transformer.UnwrapCompareTransformer;
 
 import groovy.util.GroovyTestCase;
@@ -24,7 +24,7 @@ public class UnwrapCompareTxTests extends GroovyTestCase implements Opcodes {
 //  INVOKESTATIC org/codehaus/groovy/runtime/ScriptBytecodeAdapter.compareLessThan(Ljava/lang/Object;Ljava/lang/Object;)Z
 //  IFEQ L2
     void testUnwrap_CompareLessThan_ForInt() {
-        AsmInsnList.install()
+        InsnListHelper.install()
 
         def mn = new MethodNode();
         def units = mn.instructions
