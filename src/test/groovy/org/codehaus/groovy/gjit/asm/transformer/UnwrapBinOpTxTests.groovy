@@ -14,6 +14,7 @@ public class UnwrapBinOpTxTests extends GroovyTestCase implements Opcodes {
     static FIB_NAME = "org/codehaus/groovy/gjit/soot/fibbonacci/Fib"
 
     private loadConstantsFromFib() {
+        InsnListHelper.install()
         CallSiteNameHolder.v().clear()
         def cr = new ClassReader("org.codehaus.groovy.gjit.soot.fibbonacci.Fib");
         def cn = new ClassNode()
@@ -45,7 +46,6 @@ public class UnwrapBinOpTxTests extends GroovyTestCase implements Opcodes {
 //  INVOKEINTERFACE org/codehaus/groovy/runtime/callsite/CallSite.call(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 
     void testUnwrap_Int_Int_BinOp_of_Fib() {
-        InsnListHelper.install()
         loadConstantsFromFib()
         MethodNode mn = new MethodNode()
         def units = mn.instructions
@@ -64,18 +64,47 @@ public class UnwrapBinOpTxTests extends GroovyTestCase implements Opcodes {
         assert units.size() == 10
         new UnwrapBinOpTransformer().internalTransform(mn, null)
         assertEquals asm {
-            invokestatic    Fib, '$getCallSiteArray',[],CallSite[]
+            invokestatic  Fib, '$getCallSiteArray',[],CallSite[]
             astore 1
             iload  0
+            invokestatic  Integer,"valueOf",[int],Integer
+            checkcast	  Integer
+            invokevirtual Integer,"intValue",[],int
+            iconst_1
+            invokestatic  Integer,"valueOf",[int],Integer
+            checkcast	  Integer
+            invokevirtual Integer,"intValue",[],int
+            isub
+            invokestatic  Integer,"valueOf",[int],Integer
+        }, units
+    }
+
+    void testUnwrap_Int_Int_BinOp_of_Fib_With_Autobox_Elimination() {
+        loadConstantsFromFib()
+        MethodNode mn = new MethodNode()
+        def units = mn.instructions
+        units.append {
+            invokestatic    Fib, '$getCallSiteArray',[],CallSite[]
+            astore 1
+            aload  1
+            ldc    2 // call site index: 2 "minus"
+            aaload
+            iload  0
             invokestatic    Integer,"valueOf",[int],Integer
-            checkcast		Integer
-            invokevirtual   Integer,"intValue",[],int
             iconst_1
             invokestatic    Integer,"valueOf",[int],Integer
-            checkcast		Integer
-            invokevirtual   Integer,"intValue",[],int
+            invokeinterface CallSite,"call",[Object,Object],Object
+        }
+        assert units.size() == 10
+        new UnwrapBinOpTransformer().internalTransform(mn, null)
+        new AutoBoxEliminatorTransformer().internalTransform(mn, null)
+        assertEquals asm {
+            invokestatic Fib, '$getCallSiteArray',[],CallSite[]
+            astore 1
+            iload  0
+            iconst_1
             isub
-            invokestatic    Integer,"valueOf",[int],Integer
+            invokestatic Integer,"valueOf",[int],Integer
         }, units
     }
 
