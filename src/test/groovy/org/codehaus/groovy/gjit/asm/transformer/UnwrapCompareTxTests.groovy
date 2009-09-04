@@ -9,9 +9,11 @@ import org.objectweb.asm.tree.LdcInsnNode
 import org.objectweb.asm.tree.LabelNode
 import org.objectweb.asm.Label
 
+import org.codehaus.groovy.gjit.asm.AsmInsnList;
 import org.codehaus.groovy.gjit.asm.transformer.UnwrapCompareTransformer;
 
 import groovy.util.GroovyTestCase;
+import org.codehaus.groovy.runtime.ScriptBytecodeAdapter as SBA
 
 public class UnwrapCompareTxTests extends GroovyTestCase implements Opcodes {
 
@@ -22,25 +24,19 @@ public class UnwrapCompareTxTests extends GroovyTestCase implements Opcodes {
 //  INVOKESTATIC org/codehaus/groovy/runtime/ScriptBytecodeAdapter.compareLessThan(Ljava/lang/Object;Ljava/lang/Object;)Z
 //  IFEQ L2
     void testUnwrap_CompareLessThan_ForInt() {
+        AsmInsnList.install()
+
         def mn = new MethodNode();
         def units = mn.instructions
-        units.add(new VarInsnNode(ILOAD, 0));
-        units.add(new MethodInsnNode(INVOKESTATIC,
-                      "java/lang/Integer",
-                      "valueOf",
-                      "(I)Ljava/lang/Integer;"))
-        units.add(new LdcInsnNode(new Integer(0)));
-        units.add(new MethodInsnNode(INVOKESTATIC,
-                      "java/lang/Integer",
-                      "valueOf",
-                      "(I)Ljava/lang/Integer;"))
-        units.add(new MethodInsnNode(INVOKESTATIC,
-                      "org/codehaus/groovy/runtime/ScriptBytecodeAdapter",
-                      "compareLessThan",
-                      "(Ljava/lang/Object;Ljava/lang/Object;)Z"))
-        def labelNode = new LabelNode()
-        def label = labelNode.label
-        units.add(new JumpInsnNode(IFEQ, labelNode))
+        units.append {
+            iload 0
+            invokestatic Integer,"valueOf",[int],Integer
+            ldc 0
+            invokestatic Integer,"valueOf",[int],Integer
+            invokestatic SBA,"compareLessThan",[Object,Object],boolean
+            def label_001 = new LabelNode()
+            ifeq label_001
+        }
         def oldSize = units.size()
         new UnwrapCompareTransformer().internalTransform(mn, null)
         assert units.size() == oldSize + 2 + 2 - 1
