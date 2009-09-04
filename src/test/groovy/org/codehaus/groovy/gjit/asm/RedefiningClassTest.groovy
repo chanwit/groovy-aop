@@ -6,6 +6,7 @@ import java.lang.instrument.ClassDefinition
 import org.codehaus.groovy.gjit.agent.Agent
 
 import org.codehaus.groovy.gjit.asm.AsmSingleClassOptimizer
+import org.objectweb.asm.Type;
 import org.codehaus.groovy.gjit.asm.transformer.CallSiteNameCollector;
 
 /**
@@ -29,13 +30,14 @@ import org.codehaus.groovy.gjit.asm.transformer.CallSiteNameCollector;
     }
 
     void testInjectingTransformerForSingleClassOptimizer() {
+        CallSiteNameHolder.v().clear()
         try {
             assert i != null
             def c = Subject.class
             byte[] bytes = new AsmSingleClassOptimizer(
                 transformers: [CallSiteNameCollector]
             ).optimize(c)
-            String[] names = CallSiteNameHolder.v().get(c.name)
+            String[] names = CallSiteNameHolder.v().get(c)
             assert names[0] == "println"
             assert names[1] == "plus"
 

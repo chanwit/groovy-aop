@@ -2,6 +2,8 @@ package org.codehaus.groovy.gjit.asm;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.objectweb.asm.Type;
+
 public class CallSiteNameHolder extends ConcurrentHashMap<String, String[]> {
 
     /**
@@ -15,6 +17,14 @@ public class CallSiteNameHolder extends ConcurrentHashMap<String, String[]> {
             instance = new CallSiteNameHolder();
 
         return instance;
+    }
+
+    @Override
+    public String[] get(Object key) {
+        if(key instanceof Class<?>) {
+            key = Type.getInternalName((Class<?>)key);
+        }
+        return super.get(key);
     }
 
 }
