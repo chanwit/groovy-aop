@@ -221,7 +221,11 @@ def footer = '''
                         i.redefineClasses(new ClassDefinition(sender, bytes));
                     }
                 } catch (Throwable e) {
-                    e.printStackTrace();
+                    //
+                    // TODO if production, should print stack trace and continue
+                    //
+                    // e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
             }
         }.start();
