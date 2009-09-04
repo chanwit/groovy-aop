@@ -1,6 +1,7 @@
 package org.codehaus.groovy.gjit.asm;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.groovy.gjit.SingleClassOptimizer;
@@ -15,7 +16,7 @@ import org.objectweb.asm.tree.MethodNode;
 
 public class AsmSingleClassOptimizer implements SingleClassOptimizer {
 
-    private List<Transformer> transformers;
+    private List<Transformer> transformers = new ArrayList<Transformer>();
     private ClassNode classNode;
 
     @Override
@@ -65,10 +66,19 @@ public class AsmSingleClassOptimizer implements SingleClassOptimizer {
         }
     }
 
-    public void setTransformers(Transformer[] transformers) {
+    public void setTransformers(Object[] transformers) {
         this.transformers.clear();
         for (int i = 0; i < transformers.length; i++) {
-            this.transformers.add(transformers[i]);
+            if(transformers[i] instanceof Transformer) {
+                this.transformers.add((Transformer)transformers[i]);
+            } else if (transformers[i] instanceof Class<?>) {
+                Class<?> c = (Class<?>)transformers[i];
+                try {
+                    this.transformers.add((Transformer)c.newInstance());
+                } catch (Throwable e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
     }
 
