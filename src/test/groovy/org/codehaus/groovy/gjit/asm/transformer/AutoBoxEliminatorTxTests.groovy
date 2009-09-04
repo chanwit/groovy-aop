@@ -1,14 +1,15 @@
-package org.codehaus.groovy.gjit.asm.transformer;
+package org.codehaus.groovy.gjit.asm.transformer
 
-import org.codehaus.groovy.gjit.asm.InsnListHelper;
-import org.codehaus.groovy.gjit.asm.transformer.AutoBoxEliminatorTransformer;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.VarInsnNode;
-import org.objectweb.asm.tree.TypeInsnNode;
-import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.Opcodes;
-import groovy.util.GroovyTestCase;
+import org.codehaus.groovy.gjit.asm.InsnListHelper
+import org.codehaus.groovy.gjit.asm.transformer.AutoBoxEliminatorTransformer
+import org.objectweb.asm.tree.MethodInsnNode
+import org.objectweb.asm.tree.InsnNode
+import org.objectweb.asm.tree.VarInsnNode
+import org.objectweb.asm.tree.TypeInsnNode
+import org.objectweb.asm.tree.MethodNode
+import org.objectweb.asm.Opcodes
+
+import groovy.util.GroovyTestCase
 
 public class AutoBoxEliminatorTxTests extends GroovyTestCase implements Opcodes {
 
