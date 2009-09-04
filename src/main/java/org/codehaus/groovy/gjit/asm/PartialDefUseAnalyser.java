@@ -1,6 +1,5 @@
 package org.codehaus.groovy.gjit.asm;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -51,21 +50,21 @@ public class PartialDefUseAnalyser implements Opcodes {
     private Map<AbstractInsnNode, AbstractInsnNode[]> used = new LinkedHashMap<AbstractInsnNode, AbstractInsnNode[]>();
 
     public Map<AbstractInsnNode, AbstractInsnNode[]> getUsedMap() {
-		return used;
-	}
+        return used;
+    }
 
-	private AbstractInsnNode start;
+    private AbstractInsnNode start;
     private AbstractInsnNode stop;
     private int maxStack;
     private InsnList units;
 
     // for debugging
     protected int currentIndex;
-	private int stopOpcode;
+    private int stopOpcode;
 
     public PartialDefUseAnalyser(MethodNode methodNode,
-    							 AbstractInsnNode start,
-    							 AbstractInsnNode stop) {
+                                 AbstractInsnNode start,
+                                 AbstractInsnNode stop) {
         units = methodNode.instructions;
         maxStack = methodNode.maxStack;
         this.start = start;
@@ -73,8 +72,8 @@ public class PartialDefUseAnalyser implements Opcodes {
     }
 
     public PartialDefUseAnalyser(MethodNode methodNode, AbstractInsnNode start, int opcode){
-    	this(methodNode, start, null);
-    	this.stopOpcode = opcode;
+        this(methodNode, start, null);
+        this.stopOpcode = opcode;
     }
 
     private static final DefValue NULL_VALUE = new DefValue(null, Type.VOID_TYPE);
@@ -95,17 +94,17 @@ public class PartialDefUseAnalyser implements Opcodes {
             boolean added = false;
             AbstractInsnNode[] useds = used.get(s0);
             if(useds != null) {
-	            for (AbstractInsnNode n : useds) {
-	            	int idx = units.indexOf(n);
-	            	if(set.contains(idx)) {
-	            		set.add(units.indexOf(s0));
-	            		added = true;
-	            		break;
-	            	}
-				}
+                for (AbstractInsnNode n : useds) {
+                    int idx = units.indexOf(n);
+                    if(set.contains(idx)) {
+                        set.add(units.indexOf(s0));
+                        added = true;
+                        break;
+                    }
+                }
             }
             if(added && s0.getOpcode() == stopOpcode)
-            	return s0;
+                return s0;
             s0 = s0.getNext();
         }
         return null;
@@ -266,21 +265,21 @@ public class PartialDefUseAnalyser implements Opcodes {
     }
 
     private void execute0(LdcInsnNode insn) {
-    	Type type = null;
-		if(insn.cst instanceof Integer)   type = Type.INT_TYPE;     else
-		if(insn.cst instanceof Long)      type = Type.LONG_TYPE;    else
-		if(insn.cst instanceof Byte)      type = Type.BYTE_TYPE;    else
-		if(insn.cst instanceof Double)    type = Type.DOUBLE_TYPE;  else
-		if(insn.cst instanceof Float)     type = Type.FLOAT_TYPE;   else
-		if(insn.cst instanceof Character) type = Type.CHAR_TYPE;    else
-		if(insn.cst instanceof Short)     type = Type.SHORT_TYPE;   else
-		if(insn.cst instanceof Boolean)   type = Type.BOOLEAN_TYPE; else
-		type = Type.getType(insn.cst.getClass());
-		push(new DefValue(insn, type));
+        Type type = null;
+        if(insn.cst instanceof Integer)   type = Type.INT_TYPE;     else
+        if(insn.cst instanceof Long)      type = Type.LONG_TYPE;    else
+        if(insn.cst instanceof Byte)      type = Type.BYTE_TYPE;    else
+        if(insn.cst instanceof Double)    type = Type.DOUBLE_TYPE;  else
+        if(insn.cst instanceof Float)     type = Type.FLOAT_TYPE;   else
+        if(insn.cst instanceof Character) type = Type.CHAR_TYPE;    else
+        if(insn.cst instanceof Short)     type = Type.SHORT_TYPE;   else
+        if(insn.cst instanceof Boolean)   type = Type.BOOLEAN_TYPE; else
+        type = Type.getType(insn.cst.getClass());
+        push(new DefValue(insn, type));
     }
 
     private void execute0(IincInsnNode insn) {
-    	throw new RuntimeException("not implemented yet: " + AbstractVisitor.OPCODES[insn.getOpcode()]);
+        throw new RuntimeException("not implemented yet: " + AbstractVisitor.OPCODES[insn.getOpcode()]);
     }
 
     private void execute0(VarInsnNode insn) {
