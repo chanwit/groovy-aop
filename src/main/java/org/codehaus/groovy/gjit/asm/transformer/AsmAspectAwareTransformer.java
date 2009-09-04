@@ -13,6 +13,7 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
+import org.objectweb.asm.util.AbstractVisitor;
 
 public class AsmAspectAwareTransformer implements Transformer, Opcodes {
 
@@ -36,12 +37,25 @@ public class AsmAspectAwareTransformer implements Transformer, Opcodes {
             VarInsnNode acallsite = findCallSiteArray(units);
             AbstractInsnNode invokeStmt  = locateCallSiteByIndex(units, acallsite, callSite.getIndex());
             MethodInsnNode newInvokeStmt = typePropagate(callSite);
-            replaceCallSite(invokeStmt, newInvokeStmt);
+            replaceCallSite((MethodInsnNode)invokeStmt, newInvokeStmt);
         }
     }
 
-    private void replaceCallSite(AbstractInsnNode invokeStatement, MethodInsnNode newInvokeStmt) {
-        units.set(invokeStatement, newInvokeStmt);
+    private void replaceCallSite(MethodInsnNode invokeStmt, MethodInsnNode newInvokeStmt) {
+        //
+        // match old and new arguments
+        //
+        System.out.println("old");
+        System.out.println(AbstractVisitor.OPCODES[invokeStmt.getOpcode()]);
+        System.out.println(invokeStmt.owner);
+        System.out.println(invokeStmt.name);
+        System.out.println(invokeStmt.desc);
+        System.out.println("new");
+        System.out.println(AbstractVisitor.OPCODES[newInvokeStmt.getOpcode()]);
+        System.out.println(newInvokeStmt.owner);
+        System.out.println(newInvokeStmt.name);
+        System.out.println(newInvokeStmt.desc);
+        // units.set(invokeStmt, newInvokeStmt);
     }
 
     private MethodInsnNode typePropagate(CallSite callSite) {
@@ -49,6 +63,10 @@ public class AsmAspectAwareTransformer implements Transformer, Opcodes {
         atacg.setAdvisedTypes(advisedTypes);
         atacg.setAdvisedReturnType(advisedReturnType);
         Result result = atacg.perform(callSite);
+        //
+        // do caching the generated class for further optimisation
+        //
+
         Utils.defineClass(result.owner, result.body);
         return new MethodInsnNode(INVOKESTATIC, result.owner, result.name, result.desc);
     }
@@ -79,15 +97,15 @@ public class AsmAspectAwareTransformer implements Transformer, Opcodes {
 
         if(found == null) return null;
 
-        PartialDefUseAnalyser ana = new PartialDefUseAnalyser(
+        PartialDefUseAnalyser pdua = new PartialDefUseAnalyser(
                                             body, found,
                                             INVOKEINTERFACE);
-        AbstractInsnNode invoke = ana.analyse0();
+        AbstractInsnNode invoke = pdua.analyse0();
         //
         // TODO Must find a way to use the "result"
         // for further autoboxing
         //
-        Map<AbstractInsnNode, AbstractInsnNode[]> result = ana.getUsedMap();
+        Map<AbstractInsnNode, AbstractInsnNode[]> result = pdua.getUsedMap();
         return invoke;
     }
 
