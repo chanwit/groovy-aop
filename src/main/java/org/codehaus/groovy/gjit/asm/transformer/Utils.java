@@ -80,11 +80,34 @@ public class Utils implements Opcodes {
         return result;
     }
 
-    public static  Type getType(AbstractInsnNode node) {
+    public static Type getType(AbstractInsnNode node) {
         if(node instanceof MethodInsnNode) {
             return Type.getReturnType(((MethodInsnNode)node).desc);
         }
         throw new RuntimeException("NYI");
     }
+
+    public static Class<?> defineClass(String className, byte[] bytes) {
+        Class<?> clazz = null;
+        try {
+            ClassLoader loader = ClassLoader.getSystemClassLoader();
+            Class<?> cls = Class.forName("java.lang.ClassLoader");
+            java.lang.reflect.Method method = cls.getDeclaredMethod( "defineClass",
+                new Class[] { String.class, byte[].class, int.class, int.class });
+
+            // protected method invocaton
+            method.setAccessible(true);
+            try {
+                Object[] args = new Object[]{ className, bytes, 0, bytes.length };
+                clazz = (Class<?>) method.invoke(loader, args);
+            } finally {
+                method.setAccessible(false);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return clazz;
+    }
+
 
 }
