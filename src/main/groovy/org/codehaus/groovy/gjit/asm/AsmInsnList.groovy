@@ -23,7 +23,7 @@ public class AsmInsnList {
         Class.metaClass.getDesc = { ->
             Type.getDescriptor(delegate)
         }
-        Class.metaClass.getInternal = { ->
+        Class.metaClass.getInternalName = { ->
             Type.getInternalName(delegate)
         }
 

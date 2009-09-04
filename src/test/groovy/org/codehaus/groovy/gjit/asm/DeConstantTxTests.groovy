@@ -1,7 +1,7 @@
 package org.codehaus.groovy.gjit.asm
 
 import org.objectweb.asm.tree.LabelNode;
-import org.codehaus.groovy.runtime.ScriptBytecodeAdapter;
+import org.codehaus.groovy.runtime.ScriptBytecodeAdapter as SBA
 import org.objectweb.asm.tree.*
 import org.objectweb.asm.*
 import org.codehaus.groovy.gjit.asm.transformer.*;
@@ -12,6 +12,7 @@ public class DeConstantTxTests extends GroovyTestCase implements Opcodes {
     static FIB_NAME = "org/codehaus/groovy/gjit/soot/fibbonacci/Fib"
 
     private loadConstantsFromFib() {
+        AsmInsnList.install()
         ConstantHolder.v().clear()
         def cr = new ClassReader("org.codehaus.groovy.gjit.soot.fibbonacci.Fib");
         def cn = new ClassNode()
@@ -33,17 +34,14 @@ public class DeConstantTxTests extends GroovyTestCase implements Opcodes {
     }
 
     void testDeConsant_Const_0() {
-        AsmInsnList.install()
         loadConstantsFromFib()
 
         def mn = new MethodNode()
         def units = mn.instructions
         units.append {
             aload 0
-            getstatic Fib, '$const$0', Integer
-            invokestatic ScriptBytecodeAdapter,
-                         'compareLessThan',
-                         [Object,Object], boolean
+            getstatic    Fib, '$const$0', Integer
+            invokestatic SBA, 'compareLessThan', [Object,Object], boolean
             ifeq new LabelNode()
         }
 
@@ -52,7 +50,7 @@ public class DeConstantTxTests extends GroovyTestCase implements Opcodes {
         assert units[1].opcode == ICONST_2
 
         assert units[2].opcode == INVOKESTATIC
-        assert units[2].owner == "java/lang/Integer"
+        assert units[2].owner == Integer.internalName
         assert units[2].name  == "valueOf"
         assert units[2].desc  == "(I)Ljava/lang/Integer;"
     }
@@ -64,10 +62,8 @@ public class DeConstantTxTests extends GroovyTestCase implements Opcodes {
         def units = mn.instructions
         units.append {
             aload 0
-            getstatic Fib, '$const$2', Integer
-            invokestatic ScriptBytecodeAdapter,
-                         'compareLessThan',
-                         [Object,Object], boolean
+            getstatic    Fib, '$const$2', Integer
+            invokestatic SBA, 'compareLessThan', [Object,Object], boolean
             ifeq new LabelNode()
         }
 
@@ -77,7 +73,7 @@ public class DeConstantTxTests extends GroovyTestCase implements Opcodes {
         assert units[1].operand == 40
 
         assert units[2].opcode  == INVOKESTATIC
-        assert units[2].owner   == "java/lang/Integer"
+        assert units[2].owner   == Integer.internalName
         assert units[2].name    == "valueOf"
         assert units[2].desc    == "(I)Ljava/lang/Integer;"
     }
