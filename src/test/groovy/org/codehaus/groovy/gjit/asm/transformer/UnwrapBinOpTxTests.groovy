@@ -1,8 +1,10 @@
-package org.codehaus.groovy.gjit.asm;
+package org.codehaus.groovy.gjit.asm.transformer;
 
 import org.codehaus.groovy.runtime.callsite.CallSite;
 import org.objectweb.asm.tree.*
 import org.objectweb.asm.*
+import org.codehaus.groovy.gjit.asm.AsmInsnList;
+import org.codehaus.groovy.gjit.asm.CallSiteNameHolder;
 import org.codehaus.groovy.gjit.asm.transformer.*;
 import groovy.util.GroovyTestCase;
 import org.codehaus.groovy.gjit.soot.fibbonacci.Fib

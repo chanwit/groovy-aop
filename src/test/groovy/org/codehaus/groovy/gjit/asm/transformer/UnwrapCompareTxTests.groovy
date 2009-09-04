@@ -1,4 +1,4 @@
-package org.codehaus.groovy.gjit.asm;
+package org.codehaus.groovy.gjit.asm.transformer;
 
 import org.objectweb.asm.tree.VarInsnNode
 import org.objectweb.asm.tree.MethodNode

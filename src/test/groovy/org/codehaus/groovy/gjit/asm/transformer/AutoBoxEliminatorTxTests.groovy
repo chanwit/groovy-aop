@@ -1,5 +1,6 @@
-package org.codehaus.groovy.gjit.asm;
+package org.codehaus.groovy.gjit.asm.transformer;
 
+import org.codehaus.groovy.gjit.asm.AsmInsnList;
 import org.codehaus.groovy.gjit.asm.transformer.AutoBoxEliminatorTransformer;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.InsnNode;
