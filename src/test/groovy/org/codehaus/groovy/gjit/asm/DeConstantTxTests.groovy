@@ -50,9 +50,9 @@ public class DeConstantTxTests extends GroovyTestCase implements Opcodes {
         assert units[1].opcode == ICONST_2
 
         assert units[2].opcode == INVOKESTATIC
-        assert units[2].owner == Integer.internalName
-        assert units[2].name  == "valueOf"
-        assert units[2].desc  == "(I)Ljava/lang/Integer;"
+        assert units[2].owner  == Integer.internalName
+        assert units[2].name   == "valueOf"
+        assert units[2].desc   == "(I)Ljava/lang/Integer;"
     }
 
     void testDeConsant_Const_2() {
@@ -72,9 +72,9 @@ public class DeConstantTxTests extends GroovyTestCase implements Opcodes {
         assert units[1].opcode  == BIPUSH
         assert units[1].operand == 40
 
-        assert units[2].opcode  == INVOKESTATIC
-        assert units[2].owner   == Integer.internalName
-        assert units[2].name    == "valueOf"
-        assert units[2].desc    == "(I)Ljava/lang/Integer;"
+        assert units[2].opcode == INVOKESTATIC
+        assert units[2].owner  == Integer.internalName
+        assert units[2].name   == "valueOf"
+        assert units[2].desc   == "(I)Ljava/lang/Integer;"
     }
 }
