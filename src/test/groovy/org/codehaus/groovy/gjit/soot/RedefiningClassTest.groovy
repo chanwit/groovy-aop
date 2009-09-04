@@ -7,6 +7,7 @@ import java.lang.instrument.Instrumentation
 import groovy.util.GroovyTestCase
 import java.lang.instrument.ClassDefinition
 import org.codehaus.groovy.gjit.agent.Agent
+import org.codehaus.groovy.gjit.asm.Subject;
 
 import org.codehaus.groovy.gjit.soot.transformer.CallSiteNameCollector;
 

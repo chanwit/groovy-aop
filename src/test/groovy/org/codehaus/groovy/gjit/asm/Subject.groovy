@@ -1,4 +1,4 @@
-package org.codehaus.groovy.gjit.soot
+package org.codehaus.groovy.gjit.asm
 class Subject {
 
 	def two() {
