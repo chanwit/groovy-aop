@@ -27,15 +27,13 @@ public class AsmAspectAwareTransformer implements Transformer, Opcodes {
 
     @Override
     public void internalTransform(MethodNode body, Map<String, Object> options) {
-        String fullname = body.name + body.desc;
-        if( withInMethodName == null ||
-            fullname.equals(withInMethodName))
-        {
+        if(body.name.equals(withInMethodName)) {
             this.body  = body;
             this.units = body.instructions;
 
             VarInsnNode acallsite = findCallSiteArray(units);
             AbstractInsnNode invokeStmt  = locateCallSiteByIndex(units, acallsite, callSite.getIndex());
+            if(invokeStmt == null) return;
             MethodInsnNode newInvokeStmt = typePropagate(callSite);
             replaceCallSite((MethodInsnNode)invokeStmt, newInvokeStmt);
         }
@@ -67,7 +65,7 @@ public class AsmAspectAwareTransformer implements Transformer, Opcodes {
         // do caching the generated class for further optimisation
         //
 
-        Utils.defineClass(result.owner, result.body);
+        Utils.defineClass(result.owner.replace('/', '.'), result.body);
         return new MethodInsnNode(INVOKESTATIC, result.owner, result.name, result.desc);
     }
 
@@ -110,7 +108,7 @@ public class AsmAspectAwareTransformer implements Transformer, Opcodes {
     }
 
     private static final String GET_CALL_SITE_ARRAY =
-        "$getCallSiteArray()[Lorg/codehaus/groovy/runtime/callsite/CallSite";
+        "$getCallSiteArray()[Lorg/codehaus/groovy/runtime/callsite/CallSite;";
 
     private VarInsnNode findCallSiteArray(InsnList units) {
 //	    ALOAD 0
