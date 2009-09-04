@@ -41,11 +41,11 @@ public class UnwrapCompareTxTests extends GroovyTestCase implements Opcodes {
         new UnwrapCompareTransformer().internalTransform(mn, null)
         assert units.size() == oldSize + 2 + 2 - 1
         assertEquals units[0], asm { iload 0 }
-        assertEquals units[1], asm { invokestatic Integer,"valueOf",[int],Integer }
+        assertEquals units[1], asm { invokestatic  Integer,"valueOf", [int],Integer }
         assertEquals units[2], asm { checkcast Integer }
         assertEquals units[3], asm { invokevirtual Integer,"intValue",[],int }
         assertEquals units[4], asm { ldc 0 }
-        assertEquals units[5], asm { invokestatic Integer,"valueOf",[int],Integer }
+        assertEquals units[5], asm { invokestatic  Integer,"valueOf", [int],Integer }
         assertEquals units[6], asm { checkcast Integer }
         assertEquals units[7], asm { invokevirtual Integer,"intValue",[],int }
         assert units[8].opcode == IF_ICMPGE
