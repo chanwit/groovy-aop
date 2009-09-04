@@ -20,8 +20,8 @@ public class AutoBoxEliminatorTxTests extends GroovyTestCase implements Opcodes 
     void testEliminatingInteger() {
         InsnListHelper.install()
         def mn = new MethodNode()
-        def u = mn.instructions
-        u.append {
+        def units = mn.instructions
+        units.append {
             iload 0
             invokestatic  Integer,"valueOf",[int],Integer
             checkcast     Integer
@@ -29,9 +29,11 @@ public class AutoBoxEliminatorTxTests extends GroovyTestCase implements Opcodes 
             ireturn
         }
         new AutoBoxEliminatorTransformer().internalTransform(mn, null);
-        assert u.size() == 2
-        assert u[0].opcode == ILOAD
-        assert u[1].opcode == IRETURN
+        assert units.size() == 2
+        assertEquals asm {
+            iload 0
+            ireturn
+        }, units
     }
 
 }
