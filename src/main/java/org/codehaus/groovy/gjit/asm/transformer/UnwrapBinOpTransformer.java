@@ -102,14 +102,14 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
                 op = null;
             }
             if (op == null) {s = s.getNext(); continue; }
-            System.out.println(op.toString() + ": " + callSiteIndex);
+            //System.out.println(op.toString() + ": " + callSiteIndex);
             PartialDefUseAnalyser pdua = new PartialDefUseAnalyser(body, start, m);
             Map<AbstractInsnNode, AbstractInsnNode[]> usedMap = pdua.analyse();
             AbstractInsnNode[] array = usedMap.get(m);
-            System.out.println(array.length);
-            for (int i = 0; i < array.length; i++) {
-                System.out.println(AbstractVisitor.OPCODES[array[i].getOpcode()]);
-            }
+            //System.out.println(array.length);
+            //for (int i = 0; i < array.length; i++) {
+            //    System.out.println(AbstractVisitor.OPCODES[array[i].getOpcode()]);
+            //}
             Type t1 = Utils.getType(array[1]);
             Type t2 = Utils.getType(array[2]);
             if(t1.equals(t2)){
@@ -140,8 +140,11 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
                 units.insert(newS, Utils.getBoxNode(t1.getDescriptor()));
 
                 //
-                // TODO: clean unused ALOAD, LDC, AALOAD
+                // clean unused ALOAD, LDC, AALOAD
                 //
+                units.remove(start.getNext().getNext());
+                units.remove(start.getNext());
+                units.remove(start);
 
                 s = newS.getNext();
                 continue;
