@@ -14,10 +14,10 @@ import groovy.util.GroovyTestCase
 class DefUseTests extends GroovyTestCase {
 
     void testAnalysisOnSubject() {
-        def cr = new ClassReader("org.codehaus.groovy.gjit.soot.Subject");
+        def cr = new ClassReader("org.codehaus.groovy.gjit.asm.Subject");
         def cn = new ClassNode()
         cr.accept cn, 0
-        assert cn.name == "org/codehaus/groovy/gjit/soot/Subject"
+        assert cn.name == "org/codehaus/groovy/gjit/asm/Subject"
 
         def two = cn.@methods.find { it.name == "two" }
         def ins = two.instructions
