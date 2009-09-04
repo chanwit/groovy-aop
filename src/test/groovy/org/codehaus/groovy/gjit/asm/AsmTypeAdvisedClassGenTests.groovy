@@ -25,7 +25,7 @@ class AsmTypeAdvisedClassGenTests extends GroovyTestCase implements Opcodes {
 
         def clinit = cn.@methods.find { it.name == "<clinit>" }
         new ConstantCollector().internalTransform(clinit, null);
-        def ccsa = cn.@methods.find { it.name == '$createCallSiteArray' }
+        def ccsa   = cn.@methods.find { it.name == '$createCallSiteArray' }
         new CallSiteNameCollector().internalTransform(ccsa, null);
 
         def tp = new AsmTypeAdvisedClassGenerator(
