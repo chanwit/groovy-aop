@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.codehaus.groovy.gjit.asm.transformer.AutoBoxEliminatorTransformer;
 import org.codehaus.groovy.gjit.asm.transformer.DeConstantTransformer;
+import org.codehaus.groovy.gjit.asm.transformer.Transformer;
 import org.codehaus.groovy.gjit.asm.transformer.TypePropagateTransformer;
 import org.codehaus.groovy.gjit.asm.transformer.UnwrapBinOpTransformer;
 import org.codehaus.groovy.gjit.asm.transformer.UnwrapCompareTransformer;
@@ -25,6 +26,17 @@ public class AsmTypeAdvisedClassGenerator implements Opcodes {
 
     private Class<?>   advisedReturnType;
     private Class<?>[] advisedTypes;
+    private Transformer[] transformers;
+
+    public AsmTypeAdvisedClassGenerator() {
+        this.transformers = new Transformer[] {
+            new TypePropagateTransformer(),
+            new DeConstantTransformer(),
+            new UnwrapCompareTransformer(),
+            new UnwrapBinOpTransformer(),
+            new AutoBoxEliminatorTransformer()
+        };
+    }
 
     public Class<?> getAdvisedReturnType() {
         return advisedReturnType;
@@ -128,35 +140,23 @@ public class AsmTypeAdvisedClassGenerator implements Opcodes {
         options.put("advisedTypes",      advisedTypes);
         options.put("advisedReturnType", advisedReturnType);
 
-        new TypePropagateTransformer().internalTransform(targetMN, options);
-        new DeConstantTransformer().internalTransform(targetMN, options);
-        new UnwrapCompareTransformer().internalTransform(targetMN, options);
-        new UnwrapBinOpTransformer().internalTransform(targetMN, options);
-        new AutoBoxEliminatorTransformer().internalTransform(targetMN, options);
-        optimiseBinaryOperators(targetMN);
+        for (int i = 0; i < transformers.length; i++) {
+            transformers[i].internalTransform(targetMN, options);
+        }
 
         // generate a new class
         String newClassName = Type.getInternalName(callSite.getClass()) + "$x";
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-        cw.visit(V1_5, ACC_PUBLIC + ACC_SYNTHETIC,
-            newClassName, null, "sun/reflect/GroovyAOPMagic", null);
+        cw.visit(V1_5, ACC_PUBLIC + ACC_SYNTHETIC, newClassName, null,
+            "sun/reflect/GroovyAOPMagic", null);
 
         String methodDescriptor = Type.getMethodDescriptor(returnType, argumentTypes);
         MethodVisitor mv = cw.visitMethod( ACC_PUBLIC + ACC_STATIC + ACC_SYNTHETIC ,
-            targetMN.name, methodDescriptor, null, new String[]{"java/lang/Throwable"});
+            targetMN.name, methodDescriptor,
+            null, new String[]{"java/lang/Throwable"});
         targetMN.accept(mv); // copy targetMN to mv
         cw.visitEnd();
         return new Result(newClassName + "." + targetMN.name + methodDescriptor, cw.toByteArray());
-    }
-
-    /**
-     * Check if there is a bytecode pattern that use typed local variable.
-     * If so, tranform it with heuristic rules to be native xADD etc.
-     *
-     * @param m
-     */
-    private void optimiseBinaryOperators(MethodNode m) {
-
     }
 
 }
