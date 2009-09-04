@@ -28,17 +28,32 @@ public class Utils implements Opcodes {
 
     public static MethodInsnNode getBoxNode(Class<?> type) {
         String name=null;
-        String desc=null;
-        if(type == int.class)     {name = "Integer";  desc = "I"; } else
-        if(type == long.class)    {name = "Long";     desc = "J"; } else
-        if(type == byte.class)    {name = "Byte";     desc = "B"; } else
-        if(type == boolean.class) {name = "Boolean";  desc = "Z"; } else
-        if(type == short.class)   {name = "Short";    desc = "S"; } else
-        if(type == double.class)  {name = "Double";   desc = "D"; } else
-        if(type == float.class)   {name = "Float";    desc = "F"; } else
-        if(type == char.class)    {name = "Character";desc = "C"; }
+        String primitive=null;
+        if(type == int.class)     {name = "Integer";  primitive = "I"; } else
+        if(type == long.class)    {name = "Long";     primitive = "J"; } else
+        if(type == byte.class)    {name = "Byte";     primitive = "B"; } else
+        if(type == boolean.class) {name = "Boolean";  primitive = "Z"; } else
+        if(type == short.class)   {name = "Short";    primitive = "S"; } else
+        if(type == double.class)  {name = "Double";   primitive = "D"; } else
+        if(type == float.class)   {name = "Float";    primitive = "F"; } else
+        if(type == char.class)    {name = "Character";primitive = "C"; }
         if(name == null) throw new RuntimeException("No box for " + type);
-        return new MethodInsnNode(INVOKESTATIC, "java/lang/" + name, "valueOf", "(" + desc + ")Ljava/lang/" + name + ";");
+        return new MethodInsnNode(INVOKESTATIC, "java/lang/" + name, "valueOf", "(" + primitive + ")Ljava/lang/" + name + ";");
+    }
+
+    public static MethodInsnNode getBoxNode(Type type) {
+        String name=null;
+        String primitive=null;
+        if(type == Type.INT_TYPE)     {name = "Integer";  primitive = "I"; } else
+        if(type == Type.LONG_TYPE)    {name = "Long";     primitive = "J"; } else
+        if(type == Type.BYTE_TYPE)    {name = "Byte";     primitive = "B"; } else
+        if(type == Type.BOOLEAN_TYPE) {name = "Boolean";  primitive = "Z"; } else
+        if(type == Type.SHORT_TYPE)   {name = "Short";    primitive = "S"; } else
+        if(type == Type.DOUBLE_TYPE)  {name = "Double";   primitive = "D"; } else
+        if(type == Type.FLOAT_TYPE)   {name = "Float";    primitive = "F"; } else
+        if(type == Type.CHAR_TYPE)    {name = "Character";primitive = "C"; }
+        if(name == null) throw new RuntimeException("No box for " + type);
+        return new MethodInsnNode(INVOKESTATIC, "java/lang/" + name, "valueOf", "(" + primitive + ")Ljava/lang/" + name + ";");
     }
 
     public static InsnList getUnboxNodes(String desc) {
