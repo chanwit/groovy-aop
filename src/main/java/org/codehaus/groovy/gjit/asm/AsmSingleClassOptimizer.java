@@ -1,5 +1,6 @@
 package org.codehaus.groovy.gjit.asm;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.groovy.gjit.SingleClassOptimizer;
@@ -37,6 +38,13 @@ public class AsmSingleClassOptimizer implements SingleClassOptimizer {
     private ClassNode loadClass(Class<?> c) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public void setTransformers(Transformer[] transformers) {
+        this.transformers.clear();
+        for (int i = 0; i < transformers.length; i++) {
+            this.transformers.add(transformers[i]);
+        }
     }
 
 }

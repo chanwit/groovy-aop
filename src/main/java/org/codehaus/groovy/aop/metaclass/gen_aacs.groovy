@@ -1,7 +1,6 @@
 #!/usr/bin/env groovy
 
-def header = '''
-package org.codehaus.groovy.aop.metaclass;
+def header = '''package org.codehaus.groovy.aop.metaclass;
 
 import groovy.lang.*;
 
@@ -14,12 +13,11 @@ import org.codehaus.groovy.aop.abstraction.Joinpoint;
 import org.codehaus.groovy.aop.abstraction.joinpoint.CallJoinpoint;
 import org.codehaus.groovy.aop.cache.*;
 import org.codehaus.groovy.gjit.agent.Agent;
-import org.codehaus.groovy.gjit.soot.SootSingleClassOptimizer;
-import org.codehaus.groovy.gjit.soot.transformer.AspectAwareTransformer;
+import org.codehaus.groovy.gjit.asm.AsmSingleClassOptimizer;
+import org.codehaus.groovy.gjit.asm.transformer.AsmAspectAwareTransformer;
+import org.codehaus.groovy.gjit.asm.transformer.Transformer;
 import org.codehaus.groovy.runtime.callsite.CallSite;
 import org.codehaus.groovy.runtime.callsite.CallSiteArray;
-
-import soot.BodyTransformer;
 
 /**
  *   AspectAwareCallSite
@@ -209,15 +207,14 @@ def footer = '''
         new Thread() {
             @Override
             public void run() {
-                SootSingleClassOptimizer sco = new SootSingleClassOptimizer();
-                sco.setViaShimple(true);
-                AspectAwareTransformer aatf = new AspectAwareTransformer();
+                AsmSingleClassOptimizer sco = new AsmSingleClassOptimizer();
+                AsmAspectAwareTransformer aatf = new AsmAspectAwareTransformer();
                 aatf.setAdvisedTypes(tic.getArgTypeOfBinding());
                 aatf.setAdvisedReturnType(returnType);
                 aatf.setCallSite(callSite);
                 aatf.setWithInMethodName(withInMethodName);
                 try {
-                    sco.setTransformers(new BodyTransformer[]{aatf});
+                    sco.setTransformers(new Transformer[]{aatf});
                     byte[] bytes = sco.optimize(sender);
                     Instrumentation i = Agent.getInstrumentation();
                     if(i != null) {

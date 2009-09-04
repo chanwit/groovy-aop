@@ -196,4 +196,20 @@ public class AsmAspectAwareTransformer implements Transformer, Opcodes {
         return null;
     }
 
+    public void setAdvisedTypes(Class<?>[] argTypeOfBinding) {
+        this.advisedTypes = argTypeOfBinding;
+    }
+
+    public void setAdvisedReturnType(Class<?> returnType) {
+        this.advisedReturnType = returnType;
+    }
+
+    public void setCallSite(CallSite callSite) {
+        this.callSite = callSite;
+    }
+
+    public void setWithInMethodName(String withInMethodName2) {
+        this.withInMethodName = withInMethodName;
+    }
+
 }
