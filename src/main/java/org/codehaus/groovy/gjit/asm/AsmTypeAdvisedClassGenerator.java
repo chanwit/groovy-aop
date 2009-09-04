@@ -55,11 +55,15 @@ public class AsmTypeAdvisedClassGenerator implements Opcodes {
     }
 
     public static class Result {
-        public final String methodSignature;
+        public final String owner;
+        public final String name;
+        public final String desc;
         public final byte[] body;
-        public Result(String methodSignature, byte[] body) {
+        public Result(String owner, String name, String desc, byte[] body) {
             super();
-            this.methodSignature = methodSignature;
+            this.owner = owner;
+            this.name = name;
+            this.desc = desc;
             this.body = body;
         }
     }
@@ -156,7 +160,7 @@ public class AsmTypeAdvisedClassGenerator implements Opcodes {
             null, new String[]{"java/lang/Throwable"});
         targetMN.accept(mv); // copy targetMN to mv
         cw.visitEnd();
-        return new Result(newClassName + "." + targetMN.name + methodDescriptor, cw.toByteArray());
+        return new Result(newClassName, targetMN.name, methodDescriptor, cw.toByteArray());
     }
 
 }
