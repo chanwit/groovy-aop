@@ -7,8 +7,10 @@ import org.codehaus.groovy.gjit.asm.PartialDefUseAnalyser;
 import org.codehaus.groovy.gjit.asm.AsmTypeAdvisedClassGenerator.Result;
 import org.codehaus.groovy.runtime.callsite.CallSite;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -16,6 +18,16 @@ import org.objectweb.asm.tree.VarInsnNode;
 import org.objectweb.asm.util.AbstractVisitor;
 
 public class AsmAspectAwareTransformer implements Transformer, Opcodes {
+
+    private static class Location {
+        public final AbstractInsnNode invokeStmt;
+        public final Map<AbstractInsnNode, AbstractInsnNode[]> usedMap;
+        public Location(AbstractInsnNode invoke,
+                Map<AbstractInsnNode, AbstractInsnNode[]> usedMap) {
+            this.invokeStmt = invoke;
+            this.usedMap = usedMap;
+        }
+    }
 
     private String withInMethodName;
     private MethodNode body;
@@ -32,28 +44,72 @@ public class AsmAspectAwareTransformer implements Transformer, Opcodes {
             this.units = body.instructions;
 
             VarInsnNode acallsite = findCallSiteArray(units);
-            AbstractInsnNode invokeStmt  = locateCallSiteByIndex(units, acallsite, callSite.getIndex());
-            if(invokeStmt == null) return;
+            Location location = locateCallSiteByIndex(units, acallsite, callSite.getIndex());
+            if(location.invokeStmt== null) return;
             MethodInsnNode newInvokeStmt = typePropagate(callSite);
-            replaceCallSite((MethodInsnNode)invokeStmt, newInvokeStmt);
+            replaceCallSite(location, newInvokeStmt);
         }
     }
 
-    private void replaceCallSite(MethodInsnNode invokeStmt, MethodInsnNode newInvokeStmt) {
+    private void replaceCallSite(Location location, MethodInsnNode newInvokeStmt) {
+        // old
+        // INVOKEINTERFACE org/codehaus/groovy/runtime/callsite/CallSite
+        // call(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+
+        // new
+        // INVOKESTATIC org/codehaus/groovy/gjit/soot/fibbonacci/Fib$fib$x
+        // fib(I)I
+
+        MethodInsnNode invokeStmt = (MethodInsnNode)location.invokeStmt;
+
+        //
+        // remove unused ALOAD, LDC and AALOAD
+        //
+        AbstractInsnNode[] array = location.usedMap.get(invokeStmt);
+        units.remove(array[0].getNext().getNext()); // AALOAD
+        units.remove(array[0].getNext());           // LDC
+        units.remove(array[0]);                     // ALOAD
+
+        Type[] src = Type.getArgumentTypes(invokeStmt.desc);
+        Type[] dst = Type.getArgumentTypes(newInvokeStmt.desc);
+        if(src.length == dst.length) {
+            // instance-level
+            for(int i=0; i<dst.length; i++) {
+
+            }
+        } else if(src.length == dst.length + 1){
+            // class-level
+            for(int i=0; i<dst.length; i++) {
+
+            }
+        }
+
+        units.set(invokeStmt, newInvokeStmt);
         //
         // match old and new arguments
         //
-        System.out.println("old");
-        System.out.println(AbstractVisitor.OPCODES[invokeStmt.getOpcode()]);
-        System.out.println(invokeStmt.owner);
-        System.out.println(invokeStmt.name);
-        System.out.println(invokeStmt.desc);
-        System.out.println("new");
-        System.out.println(AbstractVisitor.OPCODES[newInvokeStmt.getOpcode()]);
-        System.out.println(newInvokeStmt.owner);
-        System.out.println(newInvokeStmt.name);
-        System.out.println(newInvokeStmt.desc);
-        // units.set(invokeStmt, newInvokeStmt);
+        Type newReturnType = Type.getReturnType(newInvokeStmt.desc);
+        if(newReturnType.getSort() >= Type.BOOLEAN && newReturnType.getSort() <= Type.DOUBLE) {
+            // it's primitive
+            // need boxing
+            units.insert(newInvokeStmt, Utils.getBoxNode(newReturnType));
+        } else if(newReturnType.getSort() == Type.VOID) {
+            // it's expected to have something in TOS, so pushing null
+            units.insert(newInvokeStmt, new InsnNode(ACONST_NULL));
+        } else {
+            // TODO: OBJECT and ARRAY are fine here
+        }
+
+//        System.out.println("old");
+//        System.out.println(AbstractVisitor.OPCODES[invokeStmt.getOpcode()]);
+//        System.out.println(invokeStmt.owner);
+//        System.out.println(invokeStmt.name);
+//        System.out.println(invokeStmt.desc);
+//        System.out.println("new");
+//        System.out.println(AbstractVisitor.OPCODES[newInvokeStmt.getOpcode()]);
+//        System.out.println(newInvokeStmt.owner);
+//        System.out.println(newInvokeStmt.name);
+//        System.out.println(newInvokeStmt.desc);
     }
 
     private MethodInsnNode typePropagate(CallSite callSite) {
@@ -69,7 +125,7 @@ public class AsmAspectAwareTransformer implements Transformer, Opcodes {
         return new MethodInsnNode(INVOKESTATIC, result.owner, result.name, result.desc);
     }
 
-    private AbstractInsnNode locateCallSiteByIndex(InsnList units,
+    private Location locateCallSiteByIndex(InsnList units,
             VarInsnNode acallsite, int callSiteIndex) {
         //
         // finding this pattern
@@ -103,8 +159,7 @@ public class AsmAspectAwareTransformer implements Transformer, Opcodes {
         // TODO Must find a way to use the "result"
         // for further autoboxing
         //
-        Map<AbstractInsnNode, AbstractInsnNode[]> result = pdua.getUsedMap();
-        return invoke;
+        return new Location(invoke, pdua.getUsedMap());
     }
 
     private static final String GET_CALL_SITE_ARRAY =
