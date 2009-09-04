@@ -12,7 +12,7 @@ public class AsmInsnList {
     static install() {
         if(installed) return
         InsnList.metaClass.append = { Closure c ->
-            c.delegate = new AsmBuilder()
+            c.delegate = new AsmNodeBuilder()
             c.resolveStrategy = Closure.DELEGATE_FIRST
             c.call()
             delegate.add( c.delegate.list )
