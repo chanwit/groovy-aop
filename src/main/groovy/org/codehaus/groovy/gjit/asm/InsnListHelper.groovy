@@ -27,6 +27,9 @@ public class InsnListHelper {
             c.call()
             delegate.add( c.delegate.list )
         }
+        InsnList.metaClass.get << { IntRange r ->
+            return new InsnListRange(range:r, list: delegate)
+        }
         InsnList.metaClass.getAt = { i ->
             delegate.get(i)
         }
@@ -35,7 +38,7 @@ public class InsnListHelper {
                 Assert.failNotEquals("Instruction size not same", delegate.size(), obj.size())
                 return false
             }
-            for(i in 0..delegate.size()-1) {
+            for(i in 0..<delegate.size()) {
                 def r = delegate.get(i) == obj.get(i)
                 if(r == false) {
                     Assert.failNotEquals("Instruction $i not same",
