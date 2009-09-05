@@ -1,7 +1,6 @@
 package org.codehaus.groovy.gjit.asm
 
-import org.codehaus.groovy.gjit.asm.transformer.AsmAspectAwareTransformer;
-import org.codehaus.groovy.gjit.asm.transformer.Transformer;
+import org.codehaus.groovy.gjit.asm.transformer.*
 import org.codehaus.groovy.runtime.callsite.CallSite;
 import org.codehaus.groovy.gjit.soot.fibbonacci.Fib
 import org.codehaus.groovy.gjit.soot.fibbonacci.Fib$fib
@@ -23,7 +22,7 @@ public class AsmSingleClassOptimiserTests extends GroovyTestCase {
             callSite: new Fib$fib(),
             withInMethodName: "main"
         )
-        sco.transformers = [aatf]
+        sco.transformers = [DeConstantTransformer.class, aatf]
         byte[] bytes = sco.optimize(sender)
         def cr = new ClassReader(bytes);
         def cn = new ClassNode()
@@ -34,17 +33,19 @@ public class AsmSingleClassOptimiserTests extends GroovyTestCase {
         def units = main.instructions
         assertEquals asm { invokestatic Fib,'$getCallSiteArray',[],CallSite[] }, units[1]
         assertEquals asm { astore 1 }, units[2]
-        assertEquals asm { aload 1  }, units[5]
-        assertEquals asm { ldc 5    }, units[6]
-        assertEquals asm { aaload   }, units[7]
-        assertEquals asm { invokestatic Fib, '$get$$class$org$codehaus$groovy$gjit$soot$fibbonacci$Fib',
-                                        [],Class }, units[8]
-        assertEquals asm { invokestatic Fib, '$get$$class$org$codehaus$groovy$gjit$soot$fibbonacci$Fib',
-                                        [],Class }, units[9]
-        assertEquals asm { getstatic Fib,'$const$2',Integer}, units[10]
-        assertEquals asm { invokestatic 'org/codehaus/groovy/gjit/soot/fibbonacci/Fib$fib$x',
-                                        'fib',[int],int },    units[11]
-        assertEquals asm { invokestatic Integer,"valueOf",[int],Integer }, units[12]
+        assertEquals asm {
+            aload 1
+            ldc 5
+            aaload
+            invokestatic Fib, '$get$$class$org$codehaus$groovy$gjit$soot$fibbonacci$Fib',[],Class
+            invokestatic Fib, '$get$$class$org$codehaus$groovy$gjit$soot$fibbonacci$Fib',[],Class
+            bipush 40
+            invokestatic Integer,"valueOf",[int],Integer
+            checkcast Integer
+            invokevirtual Integer,"intValue",[],int
+            invokestatic 'org/codehaus/groovy/gjit/soot/fibbonacci/Fib$fib$x','fib',[int],int
+            invokestatic Integer,"valueOf",[int],Integer
+        }, units[5..15]
     }
 
 //    public static transient varargs main([Ljava/lang/String;)V
