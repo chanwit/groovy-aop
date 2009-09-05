@@ -26,7 +26,10 @@ public class AsmSingleClassOptimiserTests extends GroovyTestCase {
             callSite: new Fib$fib(),
             withInMethodName: "main"
         )
-        sco.transformers = [DeConstantTransformer.class, aatf]
+        sco.transformers = [DeConstantTransformer.class,
+                            aatf,
+                            AutoBoxEliminatorTransformer.class,
+                            ClassPopEliminatorTransformer.class]
         byte[] bytes = sco.optimize(sender)
         def cr = new ClassReader(bytes);
         def cn = new ClassNode()
@@ -46,15 +49,12 @@ public class AsmSingleClassOptimiserTests extends GroovyTestCase {
             ldc 5
             aaload
             invokestatic Fib, '$get$$class$org$codehaus$groovy$gjit$soot$fibbonacci$Fib',[],Class
-            invokestatic Fib, '$get$$class$org$codehaus$groovy$gjit$soot$fibbonacci$Fib',[],Class
-            pop
+            // invokestatic Fib, '$get$$class$org$codehaus$groovy$gjit$soot$fibbonacci$Fib',[],Class
+            // pop
             bipush 40
-            invokestatic  Integer,"valueOf",[int],Integer
-            checkcast     Integer
-            invokevirtual Integer,"intValue",[],int
             invokestatic 'org/codehaus/groovy/gjit/soot/fibbonacci/Fib$fib$x','fib',[int],int
             invokestatic Integer,"valueOf",[int],Integer
-        }, units[5..16]
+        }, units[5..11]
         CheckClassAdapter.verify(cr, true, new PrintWriter(System.out))
     }
 
