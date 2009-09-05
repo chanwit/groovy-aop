@@ -143,12 +143,13 @@ public class AsmTypeAdvisedClassGenerator implements Opcodes {
         Map<String, Object> options = new HashMap<String, Object>();
         options.put("advisedTypes",      advisedTypes);
         options.put("advisedReturnType", advisedReturnType);
-
         for (int i = 0; i < transformers.length; i++) {
             transformers[i].internalTransform(targetMN, options);
         }
 
+        //
         // generate a new class
+        //
         String newClassName = Type.getInternalName(callSite.getClass()) + "$x";
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         cw.visit(V1_5, ACC_PUBLIC + ACC_SYNTHETIC, newClassName, null,
@@ -160,7 +161,13 @@ public class AsmTypeAdvisedClassGenerator implements Opcodes {
             null, new String[]{"java/lang/Throwable"});
         targetMN.accept(mv); // copy targetMN to mv
         cw.visitEnd();
-        return new Result(newClassName, targetMN.name, methodDescriptor, cw.toByteArray());
+
+        //
+        // cached for further optimisation
+        //
+        byte[] bytes = cw.toByteArray();
+        ClassBodyCache.v().put(newClassName, bytes);
+        return new Result(newClassName, targetMN.name, methodDescriptor, bytes);
     }
 
 }

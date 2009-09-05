@@ -11,6 +11,7 @@ import org.codehaus.groovy.gjit.asm.transformer.Transformer;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
@@ -29,7 +30,9 @@ public class AsmSingleClassOptimizer implements SingleClassOptimizer {
     private byte[] writeClass() {
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         this.classNode.accept(cw);
-        return cw.toByteArray();
+        byte[] bytes = cw.toByteArray();
+        ClassBodyCache.v().put(this.classNode.name, bytes);
+        return bytes;
     }
 
     @SuppressWarnings("unchecked")
@@ -57,7 +60,12 @@ public class AsmSingleClassOptimizer implements SingleClassOptimizer {
     private ClassNode loadClass(Class<?> c) {
         ClassReader cr;
         try {
-            cr = new ClassReader(c.getName());
+            String internalName = Type.getInternalName(c);
+            if(ClassBodyCache.v().containsKey(internalName)) {
+                cr = new ClassReader(ClassBodyCache.v().get(internalName));
+            } else {
+                cr = new ClassReader(c.getName());
+            }
             ClassNode cn = new ClassNode();
             cr.accept(cn, 0);
             return cn;
