@@ -85,6 +85,11 @@ public class AsmAspectAwareTransformer implements Transformer, Opcodes {
             }
         } else if(src.length == dst.length + 1){
             // class-level
+
+            //
+            // TODO POP insertion maybe not required
+            // if there is no array[1] in the usedMap
+            //
             units.insert(array[1], new InsnNode(POP));
             for(int i=0; i<dst.length; i++) {
                 unboxOrCast(src[i+1], dst[i], array[i+2]);
