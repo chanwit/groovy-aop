@@ -2,6 +2,7 @@ package org.codehaus.groovy.gjit.asm;
 
 import groovy.lang.Closure
 
+import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
@@ -137,6 +138,19 @@ public class InsnListHelper {
         }
         FieldInsnNode.metaClass.text = { ->
             return "${AbstractVisitor.OPCODES[delegate.opcode]}(name: ${delegate.name}, desc: ${delegate.desc})"
+        }
+
+        IntInsnNode.metaClass.equals = { obj ->
+            if(delegate.opcode != obj.opcode)
+                Assert.failNotEquals("Instruction not same",
+                    delegate.text(), obj.text())
+            if(delegate.operand != obj.operand)
+                Assert.failNotEquals("${AbstractVisitor.OPCODES[delegate.opcode]}'s [operand] not same",
+                    delegate.operand, obj.operand)
+            return true
+        }
+        IntInsnNode.metaClass.text = {
+            return "${AbstractVisitor.OPCODES[delegate.opcode]}(operand: ${delegate.operand})"
         }
 
         installed = true
