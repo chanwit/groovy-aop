@@ -34,6 +34,14 @@ public class AsmNodeBuilder implements Opcodes {
 public void invokevirtual(String owner, String name, String desc) {
     list.add(new MethodInsnNode(INVOKEVIRTUAL, owner, name, desc));
 }
+public void invokevirtual(String owner, String name, List args, Class<?> retType) {
+    Type[] types = new Type[args.size()];
+    for (int i = 0; i < types.length; i++) {
+        types[i] = Type.getType((Class<?>)args.get(i));
+    }
+    String desc = Type.getMethodDescriptor(Type.getType(retType), types);
+    invokevirtual(owner, name, desc);
+}
 public void invokevirtual(Class<?> ownerClass, String name, List args, Class<?> retType) {
     Type[] types = new Type[args.size()];
     for (int i = 0; i < types.length; i++) {
@@ -46,6 +54,14 @@ public void invokevirtual(Class<?> ownerClass, String name, List args, Class<?> 
 
 public void invokespecial(String owner, String name, String desc) {
     list.add(new MethodInsnNode(INVOKESPECIAL, owner, name, desc));
+}
+public void invokespecial(String owner, String name, List args, Class<?> retType) {
+    Type[] types = new Type[args.size()];
+    for (int i = 0; i < types.length; i++) {
+        types[i] = Type.getType((Class<?>)args.get(i));
+    }
+    String desc = Type.getMethodDescriptor(Type.getType(retType), types);
+    invokespecial(owner, name, desc);
 }
 public void invokespecial(Class<?> ownerClass, String name, List args, Class<?> retType) {
     Type[] types = new Type[args.size()];
@@ -60,6 +76,14 @@ public void invokespecial(Class<?> ownerClass, String name, List args, Class<?> 
 public void invokestatic(String owner, String name, String desc) {
     list.add(new MethodInsnNode(INVOKESTATIC, owner, name, desc));
 }
+public void invokestatic(String owner, String name, List args, Class<?> retType) {
+    Type[] types = new Type[args.size()];
+    for (int i = 0; i < types.length; i++) {
+        types[i] = Type.getType((Class<?>)args.get(i));
+    }
+    String desc = Type.getMethodDescriptor(Type.getType(retType), types);
+    invokestatic(owner, name, desc);
+}
 public void invokestatic(Class<?> ownerClass, String name, List args, Class<?> retType) {
     Type[] types = new Type[args.size()];
     for (int i = 0; i < types.length; i++) {
@@ -72,6 +96,14 @@ public void invokestatic(Class<?> ownerClass, String name, List args, Class<?> r
 
 public void invokeinterface(String owner, String name, String desc) {
     list.add(new MethodInsnNode(INVOKEINTERFACE, owner, name, desc));
+}
+public void invokeinterface(String owner, String name, List args, Class<?> retType) {
+    Type[] types = new Type[args.size()];
+    for (int i = 0; i < types.length; i++) {
+        types[i] = Type.getType((Class<?>)args.get(i));
+    }
+    String desc = Type.getMethodDescriptor(Type.getType(retType), types);
+    invokeinterface(owner, name, desc);
 }
 public void invokeinterface(Class<?> ownerClass, String name, List args, Class<?> retType) {
     Type[] types = new Type[args.size()];

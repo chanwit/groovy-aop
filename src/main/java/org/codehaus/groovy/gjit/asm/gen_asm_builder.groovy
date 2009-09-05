@@ -43,6 +43,14 @@ println header
     println "public void ${it.toLowerCase()}(String owner, String name, String desc) {"
     println "    list.add(new MethodInsnNode($it, owner, name, desc));"
     println "}"
+    println "public void ${it.toLowerCase()}(String owner, String name, List args, Class<?> retType) {"
+    println "    Type[] types = new Type[args.size()];"
+    println "    for (int i = 0; i < types.length; i++) {"
+    println "        types[i] = Type.getType((Class<?>)args.get(i));"
+    println "    }"
+    println "    String desc = Type.getMethodDescriptor(Type.getType(retType), types);"
+    println "    ${it.toLowerCase()}(owner, name, desc);"
+    println "}"
     println "public void ${it.toLowerCase()}(Class<?> ownerClass, String name, List args, Class<?> retType) {"
     println "    Type[] types = new Type[args.size()];"
     println "    for (int i = 0; i < types.length; i++) {"
@@ -59,7 +67,7 @@ println header
     def name = it
     if(name=="INSTANCE_OF") name = "INSTANCEOF"
     else if(name=="_NEW") name = "NEW"
-    
+
     println "public void ${it.toLowerCase()}(String cls) {"
     println "    list.add(new TypeInsnNode($name, cls));"
     println "}"
@@ -104,7 +112,7 @@ println header
     println "public Object get${it[0]+it[1..-1].toLowerCase()}() {"
     if(it=="_RETURN")
         println "   list.add(new InsnNode(${it[1..-1]})); return null;"
-    else    
+    else
         println "   list.add(new InsnNode($it)); return null;"
     println "}"
     println()
