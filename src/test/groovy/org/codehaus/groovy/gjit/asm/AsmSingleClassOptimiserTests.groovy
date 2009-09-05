@@ -39,12 +39,12 @@ public class AsmSingleClassOptimiserTests extends GroovyTestCase {
         assertEquals asm { aaload   }, units[7]
         assertEquals asm { invokestatic Fib, '$get$$class$org$codehaus$groovy$gjit$soot$fibbonacci$Fib',
                                         [],Class }, units[8]
-        assertEquals asm { aload 1  }, units[9]
-        assertEquals asm { ldc 6    }, units[10]
-        assertEquals asm { aaload   }, units[11]
         assertEquals asm { invokestatic Fib, '$get$$class$org$codehaus$groovy$gjit$soot$fibbonacci$Fib',
-                                        [],Class }, units[12]
-        assertEquals asm { getstatic Fib,'$const$2',Integer}, units[13]
+                                        [],Class }, units[9]
+        assertEquals asm { getstatic Fib,'$const$2',Integer}, units[10]
+        assertEquals asm { invokestatic 'org/codehaus/groovy/gjit/soot/fibbonacci/Fib$fib$x',
+                                        'fib',[int],int },    units[11]
+        assertEquals asm { invokestatic Integer,"valueOf",[int],Integer }, units[12]
     }
 
 //    public static transient varargs main([Ljava/lang/String;)V

@@ -15,6 +15,7 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
+import org.objectweb.asm.util.AbstractVisitor;
 
 
 public class AsmAspectAwareTransformer implements Transformer, Opcodes {
@@ -62,13 +63,18 @@ public class AsmAspectAwareTransformer implements Transformer, Opcodes {
 
         MethodInsnNode invokeStmt = (MethodInsnNode)location.invokeStmt;
 
+        AbstractInsnNode[] array = location.usedMap.get(invokeStmt);
+
         //
         // remove unused ALOAD, LDC and AALOAD
         //
-        AbstractInsnNode[] array = location.usedMap.get(invokeStmt);
-        units.remove(array[0].getNext().getNext()); // AALOAD
-        units.remove(array[0].getNext());           // LDC
-        units.remove(array[0]);                     // ALOAD
+        AbstractInsnNode aaload = array[0];
+        AbstractInsnNode ldc = aaload.getPrevious();
+        AbstractInsnNode aload = ldc.getPrevious();
+
+        units.remove(aaload);
+        units.remove(ldc);
+        units.remove(aload);
 
         Type[] src = Type.getArgumentTypes(invokeStmt.desc);
         Type[] dst = Type.getArgumentTypes(newInvokeStmt.desc);
