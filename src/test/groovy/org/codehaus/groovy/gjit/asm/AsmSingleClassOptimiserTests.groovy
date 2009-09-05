@@ -55,6 +55,9 @@ public class AsmSingleClassOptimiserTests extends GroovyTestCase {
             invokestatic 'org/codehaus/groovy/gjit/soot/fibbonacci/Fib$fib$x','fib',[int],int
             invokestatic Integer,"valueOf",[int],Integer
         }, units[5..11]
+        //
+        // re-check again with a verifier
+        //
         CheckClassAdapter.verify(cr, true, new PrintWriter(System.out))
     }
 
