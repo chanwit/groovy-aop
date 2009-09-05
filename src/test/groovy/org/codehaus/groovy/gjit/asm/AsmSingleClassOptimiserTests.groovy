@@ -1,8 +1,12 @@
 package org.codehaus.groovy.gjit.asm
 
+import java.io.PrintWriter;
+
 import org.codehaus.groovy.gjit.asm.transformer.*
 import org.codehaus.groovy.runtime.callsite.CallSite;
 import org.codehaus.groovy.gjit.soot.fibbonacci.Fib
+import org.objectweb.asm.util.CheckClassAdapter;
+import org.objectweb.asm.util.CheckMethodAdapter;
 import org.codehaus.groovy.gjit.soot.fibbonacci.Fib$fib
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.ClassReader
@@ -43,13 +47,15 @@ public class AsmSingleClassOptimiserTests extends GroovyTestCase {
             aaload
             invokestatic Fib, '$get$$class$org$codehaus$groovy$gjit$soot$fibbonacci$Fib',[],Class
             invokestatic Fib, '$get$$class$org$codehaus$groovy$gjit$soot$fibbonacci$Fib',[],Class
+            pop
             bipush 40
-            invokestatic Integer,"valueOf",[int],Integer
-            checkcast Integer
+            invokestatic  Integer,"valueOf",[int],Integer
+            checkcast     Integer
             invokevirtual Integer,"intValue",[],int
             invokestatic 'org/codehaus/groovy/gjit/soot/fibbonacci/Fib$fib$x','fib',[int],int
             invokestatic Integer,"valueOf",[int],Integer
-        }, units[5..15]
+        }, units[5..16]
+        CheckClassAdapter.verify(cr, true, new PrintWriter(System.out))
     }
 
 //    public static transient varargs main([Ljava/lang/String;)V

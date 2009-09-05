@@ -81,12 +81,13 @@ public class AsmAspectAwareTransformer implements Transformer, Opcodes {
         if(src.length == dst.length) {
             // instance-level
             for(int i=0; i<dst.length; i++) {
-                //boxOrCast(dst[i]);
+                unboxOrCast(src[i], dst[i], array[i+1]);
             }
         } else if(src.length == dst.length + 1){
             // class-level
+            units.insert(array[1], new InsnNode(POP));
             for(int i=0; i<dst.length; i++) {
-                //boxOrCast(dst[i]);
+                unboxOrCast(src[i+1], dst[i], array[i+2]);
             }
         }
 
@@ -105,17 +106,13 @@ public class AsmAspectAwareTransformer implements Transformer, Opcodes {
         } else {
             // TODO: OBJECT and ARRAY are fine here
         }
+    }
 
-//        System.out.println("old");
-//        System.out.println(AbstractVisitor.OPCODES[invokeStmt.getOpcode()]);
-//        System.out.println(invokeStmt.owner);
-//        System.out.println(invokeStmt.name);
-//        System.out.println(invokeStmt.desc);
-//        System.out.println("new");
-//        System.out.println(AbstractVisitor.OPCODES[newInvokeStmt.getOpcode()]);
-//        System.out.println(newInvokeStmt.owner);
-//        System.out.println(newInvokeStmt.name);
-//        System.out.println(newInvokeStmt.desc);
+    private void unboxOrCast(Type src, Type dst, AbstractInsnNode nodeLocation) {
+        if(src.getSort() == Type.OBJECT  &&
+           dst.getSort() >= Type.BOOLEAN && dst.getSort() <= Type.DOUBLE) {
+            units.insert(nodeLocation, Utils.getUnboxNodes(dst));
+        }
     }
 
     private MethodInsnNode typePropagate(CallSite callSite) {

@@ -56,6 +56,25 @@ public class Utils implements Opcodes {
         return new MethodInsnNode(INVOKESTATIC, "java/lang/" + name, "valueOf", "(" + primitive + ")Ljava/lang/" + name + ";");
     }
 
+    public static InsnList getUnboxNodes(Type type) {
+        InsnList result = new InsnList();
+        char primitive=0;
+        String name = null;
+        if(type == Type.INT_TYPE)   	{ primitive = 'I'; name = "Integer";   } else
+        if(type == Type.LONG_TYPE)      { primitive = 'L'; name = "Long";      } else
+        if(type == Type.BYTE_TYPE)      { primitive = 'B'; name = "Byte";      } else
+        if(type == Type.BOOLEAN_TYPE)   { primitive = 'Z'; name = "Boolean";   } else
+        if(type == Type.SHORT_TYPE)     { primitive = 'S'; name = "Short";     } else
+        if(type == Type.DOUBLE_TYPE)    { primitive = 'D'; name = "Double";    } else
+        if(type == Type.FLOAT_TYPE)     { primitive = 'F'; name = "Float";     } else
+        if(type == Type.CHAR_TYPE) 		{ primitive = 'C'; name = "Character"; }
+        if(primitive == 0) throw new RuntimeException("No unbox for " + type);
+
+        result.add(new TypeInsnNode(CHECKCAST, "java/lang/" + name));
+        result.add(new MethodInsnNode(INVOKEVIRTUAL, "java/lang/" + name, type.getClassName() + "Value", "()" + primitive));
+        return result;
+    }
+
     public static InsnList getUnboxNodes(String desc) {
         InsnList result = new InsnList();
         String primitive = null;
