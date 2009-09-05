@@ -42,7 +42,7 @@ public class AsmSingleClassOptimiserTests extends GroovyTestCase {
             invokestatic Fib,'$getCallSiteArray',[],CallSite[]
             astore 1
         }, units[1..2]
-        // skip 3,4 it's label and line no
+        // skip 3,4 they're label and line no
         assertEquals asm {
             aload 1
             ldc 5
