@@ -10,6 +10,7 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.Type;
+import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList
 import junit.framework.Assert
 
@@ -60,6 +61,7 @@ public class InsnListHelper {
             else
                 c.delegate.list
         }
+
         VarInsnNode.metaClass.equals = { obj ->
             if(delegate.opcode != obj.opcode)
                 Assert.failNotEquals("Instruction not same",
@@ -71,6 +73,7 @@ public class InsnListHelper {
             return "${AbstractVisitor.OPCODES[delegate.opcode]}" +
                    "(var: ${delegate.var})"
         }
+
         MethodInsnNode.metaClass.equals = { obj ->
             if(delegate.opcode != obj.opcode)
                 Assert.failNotEquals("Instruction not same",
@@ -90,35 +93,52 @@ public class InsnListHelper {
             return "${AbstractVisitor.OPCODES[delegate.opcode]}" +
                    "(owner: ${delegate.owner},name:${delegate.name},desc:${delegate.desc})"
         }
+
         TypeInsnNode.metaClass.equals = { obj ->
             if(delegate.opcode != obj.opcode)
-                Assert.failNotEquals("Instruction not same",
-                        delegate.text(), obj.text())
+                Assert.failNotEquals("Instruction not same", delegate.text(), obj.text())
             return delegate.opcode == obj.opcode &&
                    delegate.desc   == obj.desc
         }
         TypeInsnNode.metaClass.text = { ->
             return "${AbstractVisitor.OPCODES[delegate.opcode]}(desc: ${delegate.desc})"
         }
+
         LdcInsnNode.metaClass.equals = { obj ->
             if(delegate.opcode != obj.opcode)
-                Assert.failNotEquals("Instruction not same",
-                        delegate.text(), obj.text())
+                Assert.failNotEquals("Instruction not same", delegate.text(), obj.text())
             return delegate.opcode == obj.opcode &&
                    delegate.cst    == obj.cst
         }
         LdcInsnNode.metaClass.text = { ->
             return "${AbstractVisitor.OPCODES[delegate.opcode]}(cst: ${delegate.cst})"
         }
+
         InsnNode.metaClass.equals = { obj ->
             if(delegate.opcode != obj.opcode)
-                Assert.failNotEquals("Instruction not same",
-                        delegate.text(), obj.text())
+                Assert.failNotEquals("Instruction not same", delegate.text(), obj.text())
             return delegate.opcode == obj.opcode
         }
         InsnNode.metaClass.text = { ->
             return "${AbstractVisitor.OPCODES[delegate.opcode]}"
         }
+
+        FieldInsnNode.metaClass.equals = { obj ->
+            if(delegate.opcode != obj.opcode)
+                Assert.failNotEquals("Instruction not same",
+                    delegate.text(), obj.text())
+            if(delegate.name != obj.name)
+                Assert.failNotEquals("${AbstractVisitor.OPCODES[delegate.opcode]}'s [name] not same",
+                    delegate.name, obj.name)
+            if(delegate.desc != obj.desc)
+                Assert.failNotEquals("${AbstractVisitor.OPCODES[delegate.opcode]}'s [desc] not same",
+                    delegate.desc, obj.desc)
+            return true
+        }
+        FieldInsnNode.metaClass.text = { ->
+            return "${AbstractVisitor.OPCODES[delegate.opcode]}(name: ${delegate.name}, desc: ${delegate.desc})"
+        }
+
         installed = true
     }
 
