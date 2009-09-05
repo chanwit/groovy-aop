@@ -68,10 +68,20 @@ public class InsnListHelper {
                    "(var: ${delegate.var})"
         }
         MethodInsnNode.metaClass.equals = { obj ->
-            return delegate.opcode == obj.opcode &&
-                   delegate.owner  == obj.owner  &&
-                   delegate.name   == obj.name   &&
-                   delegate.desc   == obj.desc
+            if(delegate.opcode != obj.opcode)
+                Assert.failNotEquals("Instruction not same",
+                    AbstractVisitor.OPCODES[delegate.opcode],
+                    AbstractVisitor.OPCODES[obj.opcode])
+            if(delegate.owner != obj.owner)
+                Assert.failNotEquals("${AbstractVisitor.OPCODES[delegate.opcode]}'s [owner] not same",
+                    delegate.owner, obj.owner)
+            if(delegate.name != obj.name)
+                Assert.failNotEquals("${AbstractVisitor.OPCODES[delegate.opcode]}'s [name] not same",
+                    delegate.name, obj.name)
+            if(delegate.desc != obj.desc)
+                Assert.failNotEquals("${AbstractVisitor.OPCODES[delegate.opcode]}'s [desc] not same",
+                    delegate.desc, obj.desc)
+            return true
         }
         MethodInsnNode.metaClass.text = { ->
             return "${AbstractVisitor.OPCODES[delegate.opcode]}" +
