@@ -86,10 +86,19 @@ public class AsmAspectAwareTransformer implements Transformer, Opcodes {
             // class-level
 
             //
-            // TODO POP insertion maybe not required
-            // if there is no array[1] in the usedMap
+            // POP insertion maybe not required
+            // if there is no array[1]'s dependency in the usedMap
             //
-            units.insert(array[1], new InsnNode(POP));
+            AbstractInsnNode[] a1used = location.usedMap.get(array[1]);
+            if(a1used.length == 0) {
+                // no dependency,
+                // safe to remove
+                units.remove(array[1]);
+            } else if(a1used.length >= 0){
+                // not save,
+                // used pop to discard it instead
+                units.insert(array[1], new InsnNode(POP));
+            }
             for(int i=0; i<dst.length; i++) {
                 unboxOrCast(src[i+1], dst[i], array[i+2]);
             }

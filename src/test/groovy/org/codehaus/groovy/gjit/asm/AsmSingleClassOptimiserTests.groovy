@@ -28,8 +28,7 @@ public class AsmSingleClassOptimiserTests extends GroovyTestCase {
         )
         sco.transformers = [DeConstantTransformer.class,
                             aatf,
-                            AutoBoxEliminatorTransformer.class,
-                            ClassPopEliminatorTransformer.class]
+                            AutoBoxEliminatorTransformer.class]
         byte[] bytes = sco.optimize(sender)
         def cr = new ClassReader(bytes);
         def cn = new ClassNode()
@@ -49,8 +48,6 @@ public class AsmSingleClassOptimiserTests extends GroovyTestCase {
             ldc 5
             aaload
             invokestatic Fib, '$get$$class$org$codehaus$groovy$gjit$soot$fibbonacci$Fib',[],Class
-            // invokestatic Fib, '$get$$class$org$codehaus$groovy$gjit$soot$fibbonacci$Fib',[],Class
-            // pop
             bipush 40
             invokestatic 'org/codehaus/groovy/gjit/soot/fibbonacci/Fib$fib$x','fib',[int],int
             invokestatic Integer,"valueOf",[int],Integer
@@ -58,7 +55,7 @@ public class AsmSingleClassOptimiserTests extends GroovyTestCase {
         //
         // re-check again with a verifier
         //
-        CheckClassAdapter.verify(cr, true, new PrintWriter(System.out))
+        CheckClassAdapter.verify(cr, false, new PrintWriter(System.out))
     }
 
 //    public static transient varargs main([Ljava/lang/String;)V
