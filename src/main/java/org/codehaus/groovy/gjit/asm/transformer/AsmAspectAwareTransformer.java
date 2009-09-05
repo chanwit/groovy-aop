@@ -15,7 +15,6 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
-import org.objectweb.asm.util.AbstractVisitor;
 
 
 public class AsmAspectAwareTransformer implements Transformer, Opcodes {
@@ -109,7 +108,7 @@ public class AsmAspectAwareTransformer implements Transformer, Opcodes {
             // it's expected to have something in TOS, so pushing null
             units.insert(newInvokeStmt, new InsnNode(ACONST_NULL));
         } else {
-            // TODO: OBJECT and ARRAY are fine here
+            // TODO: OBJECT and ARRAY should be fine here
         }
     }
 
@@ -163,10 +162,6 @@ public class AsmAspectAwareTransformer implements Transformer, Opcodes {
                                             body, found,
                                             INVOKEINTERFACE);
         AbstractInsnNode invoke = pdua.analyse0();
-        //
-        // TODO Must find a way to use the "result"
-        // for further autoboxing
-        //
         return new Location(invoke, pdua.getUsedMap());
     }
 
