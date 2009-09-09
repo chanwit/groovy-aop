@@ -23,6 +23,7 @@ public class TypePropagateTransformer implements Transformer, Opcodes {
         final Class<?>   advisedReturnType = (Class<?>) options.get("advisedReturnType");
 
         final boolean staticMethod = (body.access & ACC_STATIC) != 0;
+
         InsnList units = body.instructions;
         AbstractInsnNode s = units.getFirst();
         while(s != null) {
@@ -30,17 +31,11 @@ public class TypePropagateTransformer implements Transformer, Opcodes {
                 VarInsnNode v = (VarInsnNode)s;
                 Class<?> type;
                 if(staticMethod) {
-                    if(v.var >= advisedTypes.length) {
-                        s = s.getNext();
-                        continue;
-                    }
+                    if(v.var >= advisedTypes.length)   { s = s.getNext(); continue; }
                     type = advisedTypes[v.var];
                 }
                 else {
-                    if(v.var-1 >= advisedTypes.length) {
-                        s = s.getNext();
-                        continue;
-                    }
+                    if(v.var-1 >= advisedTypes.length) { s = s.getNext(); continue; }
                     type = advisedTypes[v.var - 1];
                 }
                 if(type != null && type.isPrimitive()) {
@@ -60,9 +55,9 @@ public class TypePropagateTransformer implements Transformer, Opcodes {
             } else if (s.getOpcode() == ARETURN) {
                 if(advisedReturnType != null && advisedReturnType.isPrimitive()) {
                     int offset = 4;
-                    if(advisedReturnType == int.class)    offset = 4; else
-                    if(advisedReturnType == long.class)   offset = 3; else
-                    if(advisedReturnType == float.class)  offset = 2; else
+                    if(advisedReturnType == int.class   ) offset = 4; else
+                    if(advisedReturnType == long.class  ) offset = 3; else
+                    if(advisedReturnType == float.class ) offset = 2; else
                     if(advisedReturnType == double.class) offset = 1;
                     InsnNode newS = new InsnNode(ARETURN - offset);
                     units.set(s, newS);

@@ -92,6 +92,8 @@ public class AsmTypeAdvisedClassGenerator implements Opcodes {
     }
 
     public Result perform(CallSite callSite) {
+        String newClassName = Type.getInternalName(callSite.getClass()) + "$x";
+
         String[] targetNames = callSite.getClass().getName().split("\\$");
         ClassReader cr;
         ClassNode targetCN = new ClassNode();
@@ -150,7 +152,6 @@ public class AsmTypeAdvisedClassGenerator implements Opcodes {
         //
         // generate a new class
         //
-        String newClassName = Type.getInternalName(callSite.getClass()) + "$x";
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         cw.visit(V1_5, ACC_PUBLIC + ACC_SYNTHETIC, newClassName, null,
             "sun/reflect/GroovyAOPMagic", null);
