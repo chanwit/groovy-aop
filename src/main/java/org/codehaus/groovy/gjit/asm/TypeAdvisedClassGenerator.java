@@ -97,9 +97,11 @@ public class TypeAdvisedClassGenerator implements Opcodes {
         // this must be changed to Fib_fib_x to allow re-transformation
         // because Fib_fib_x will get a call site Fib_fib_x$fib
         //
-        String newClassName = Type.getInternalName(callSite.getClass()) + "$x";
+        String newClassName = Type.getInternalName(callSite.getClass()) + "_x";
+        newClassName = newClassName.replace('$', '_');
 
         String[] targetNames = callSite.getClass().getName().split("\\$");
+
         ClassReader cr;
         ClassNode targetCN = new ClassNode();
         try {
@@ -120,18 +122,19 @@ public class TypeAdvisedClassGenerator implements Opcodes {
         // it is added to be the first argument to simulate "this".
         //
         Type[] targetMN_types = Type.getArgumentTypes(targetMN.desc);
+
         //
         // if it's not a static method, adding simulated "this"
         //
-        if((targetMN.access & ACC_STATIC) == 0) {
+        if((targetMN.access & ACC_STATIC) == 0)
             typeList.add(Type.getType("L" + targetCN.name + ";"));
-        }
+
         for (int i = 0; i < advisedTypes.length; i++) {
             Class<?> advisedParamType = advisedTypes[i];
             if(advisedParamType == null)
-                typeList.add( targetMN_types[i] );
+                typeList.add(targetMN_types[i]);
             else
-                typeList.add( Type.getType(advisedParamType) );
+                typeList.add(Type.getType(advisedParamType));
         }
         Type[] argumentTypes = typeList.toArray(new Type[typeList.size()]);
 
