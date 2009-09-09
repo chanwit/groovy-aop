@@ -7,12 +7,12 @@ import org.objectweb.asm.tree.VarInsnNode
 import org.objectweb.asm.tree.MethodInsnNode
 import org.objectweb.asm.tree.LdcInsnNode
 import org.objectweb.asm.tree.InsnNode
-import org.objectweb.asm.tree.LabelNode
 import org.objectweb.asm.tree.TypeInsnNode
 import org.objectweb.asm.Type
 import org.objectweb.asm.tree.FieldInsnNode
 import org.objectweb.asm.tree.InsnList
 import junit.framework.Assert
+
 import static org.objectweb.asm.util.AbstractVisitor.OPCODES
 
 public class InsnListHelper {
