@@ -1,9 +1,10 @@
 package org.codehaus.groovy.gjit.asm
-import org.codehaus.groovy.gjit.asm.transformer.CallSiteNameCollector
-import org.objectweb.asm.Type;
 
-import groovy.lang.GroovyClassLoader
-import groovy.util.GroovyTestCase
+import org.codehaus.groovy.gjit.asm.AsmSingleClassOptimizer
+import org.codehaus.groovy.gjit.asm.CallSiteNameHolder
+import org.codehaus.groovy.gjit.asm.Subject
+import org.codehaus.groovy.gjit.asm.transformer.CallSiteNameCollector
+import org.objectweb.asm.Type
 
 class CallSiteNameTest extends GroovyTestCase {
 

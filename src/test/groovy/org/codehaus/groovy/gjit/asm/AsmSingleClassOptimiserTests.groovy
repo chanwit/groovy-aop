@@ -5,8 +5,7 @@ import java.io.PrintWriter
 import org.codehaus.groovy.runtime.callsite.CallSite
 
 import org.codehaus.groovy.gjit.asm.transformer.*
-import org.codehaus.groovy.gjit.soot.fibbonacci.Fib
-import org.codehaus.groovy.gjit.soot.fibbonacci.Fib$fib
+import org.codehaus.groovy.gjit.soot.fibbonacci.*
 
 import org.objectweb.asm.util.*
 import org.objectweb.asm.tree.*

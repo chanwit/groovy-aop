@@ -1,13 +1,15 @@
 package org.codehaus.groovy.gjit.asm
 
-import org.objectweb.asm.*
-import org.objectweb.asm.tree.*
-import org.objectweb.asm.util.AbstractVisitor
-import org.codehaus.groovy.gjit.asm.transformer.*;
-
-import groovy.util.GroovyTestCase
-
-import org.codehaus.groovy.gjit.soot.fibbonacci.*;
+import org.codehaus.groovy.gjit.asm.AsmTypeAdvisedClassGenerator
+import org.codehaus.groovy.gjit.asm.CallSiteNameHolder
+import org.codehaus.groovy.gjit.asm.ConstantHolder
+import org.codehaus.groovy.gjit.asm.transformer.CallSiteNameCollector
+import org.codehaus.groovy.gjit.asm.transformer.ConstantCollector
+import org.codehaus.groovy.gjit.soot.fibbonacci.Fib
+import org.codehaus.groovy.gjit.soot.fibbonacci.Fib$fib
+import org.objectweb.asm.ClassReader
+import org.objectweb.asm.Opcodes
+import org.objectweb.asm.tree.ClassNode
 
 class AsmTypeAdvisedClassGenTests extends GroovyTestCase implements Opcodes {
 
@@ -60,8 +62,8 @@ class AsmTypeAdvisedClassGenTests extends GroovyTestCase implements Opcodes {
 //  	    INVOKESTATIC java/lang/Integer.valueOf(I)Ljava/lang/Integer;
 //  	    GETSTATIC org/codehaus/groovy/gjit/soot/fibbonacci/Fib.$const$0 : Ljava/lang/Integer;
 //  	    INVOKESTATIC org/codehaus/groovy/runtime/ScriptBytecodeAdapter.compareLessThan(Ljava/lang/Object;Ljava/lang/Object;)Z
-//			** here's checking if type information is enought **
-//			compareLessThan x,y: Z ->
+//  	    ** here's checking if type information is enought **
+//  	    compareLessThan x,y: Z ->
 //  	    IFEQ L2
 //  	   L3
 //  	    LINENUMBER 7 L3
