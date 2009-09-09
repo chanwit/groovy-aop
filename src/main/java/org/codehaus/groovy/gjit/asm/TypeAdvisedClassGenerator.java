@@ -16,10 +16,16 @@ import org.codehaus.groovy.gjit.asm.transformer.UnwrapCompareTransformer;
 import org.codehaus.groovy.runtime.callsite.CallSite;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
 public class TypeAdvisedClassGenerator implements Opcodes {
@@ -97,8 +103,8 @@ public class TypeAdvisedClassGenerator implements Opcodes {
         // this must be changed to Fib_fib_x to allow re-transformation
         // because Fib_fib_x will get a call site Fib_fib_x$fib
         //
-        String newClassName = Type.getInternalName(callSite.getClass()) + "_x";
-        newClassName = newClassName.replace('$', '_');
+        String newInternalClassName = Type.getInternalName(callSite.getClass()) + "_x";
+        newInternalClassName = newInternalClassName.replace('$', '_');
 
         String[] targetNames = callSite.getClass().getName().split("\\$");
 
@@ -162,9 +168,11 @@ public class TypeAdvisedClassGenerator implements Opcodes {
         // Generate a new class
         //
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-        cw.visit(V1_5, ACC_PUBLIC + ACC_SYNTHETIC, newClassName, null,
+        cw.visit(V1_5, ACC_PUBLIC + ACC_SYNTHETIC, newInternalClassName, null,
             "sun/reflect/GroovyAOPMagic", null);
-
+        FieldVisitor fv = cw.visitField(ACC_PRIVATE + ACC_STATIC + ACC_SYNTHETIC,
+            "$callSiteArray", "Ljava/lang/ref/SoftReference;", null, null);
+        fv.visitEnd();
         //
         // TODO The generated class requires its own call site arrays
         // to correctly support recursive
@@ -174,13 +182,43 @@ public class TypeAdvisedClassGenerator implements Opcodes {
         // need to checkout the real structure for this
 
         //
+        // TODO Teeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeestu
+        //
+        MethodNode createCallSiteArray = findMethod(targetCN, "$createCallSiteArray");
+        transformCreateCallSiteArray(createCallSiteArray, newInternalClassName);
+        {
+            MethodVisitor mv = cw.visitMethod(
+                createCallSiteArray.access,
+                createCallSiteArray.name,
+                createCallSiteArray.desc,
+                createCallSiteArray.signature,
+                (String[]) createCallSiteArray.exceptions.toArray(new String[createCallSiteArray.exceptions.size()])
+            );
+            createCallSiteArray.accept(mv);
+        }
+        MethodNode getCallSiteArray = findMethod(targetCN, "$getCallSiteArray");
+        transformGetCallSiteArray(getCallSiteArray, newInternalClassName);
+        {
+            MethodVisitor mv = cw.visitMethod(
+                getCallSiteArray.access,
+                getCallSiteArray.name,
+                getCallSiteArray.desc,
+                getCallSiteArray.signature,
+                (String[]) getCallSiteArray.exceptions.toArray(new String[getCallSiteArray.exceptions.size()])
+            );
+            getCallSiteArray.accept(mv);
+        }
+
+        //
         // Generate a new method based on "targetMN"
         //
         String methodDescriptor = Type.getMethodDescriptor(returnType, argumentTypes);
-        MethodVisitor mv = cw.visitMethod( ACC_PUBLIC + ACC_STATIC + ACC_SYNTHETIC ,
-            targetMN.name, methodDescriptor,
-            null, new String[]{"java/lang/Throwable"});
-        targetMN.accept(mv); // copy targetMN to mv
+        {
+            MethodVisitor mv = cw.visitMethod( ACC_PUBLIC + ACC_STATIC + ACC_SYNTHETIC ,
+                targetMN.name, methodDescriptor,
+                null, new String[]{"java/lang/Throwable"});
+            targetMN.accept(mv); // copy targetMN to mv
+        }
 
         cw.visitEnd();
 
@@ -188,8 +226,52 @@ public class TypeAdvisedClassGenerator implements Opcodes {
         // cached for further optimisation
         //
         byte[] bytes = cw.toByteArray();
-        ClassBodyCache.v().put(newClassName, bytes);
-        return new Result(newClassName, targetMN.name, methodDescriptor, bytes);
+        ClassBodyCache.v().put(newInternalClassName, bytes);
+        return new Result(newInternalClassName, targetMN.name, methodDescriptor, bytes);
+    }
+
+    private void transformCreateCallSiteArray(MethodNode createCallSiteArray,
+            String newInternalClassName) {
+        {
+            InsnList units = createCallSiteArray.instructions;
+            AbstractInsnNode s = units.getFirst();
+            while(s.getOpcode() != GETSTATIC) s = s.getNext();
+            LdcInsnNode newS = new LdcInsnNode(Type.getType("L"+ newInternalClassName+ ";"));
+            units.set(s, newS);
+        }
+    }
+
+    private void transformGetCallSiteArray(MethodNode getCallSiteArray,
+            String newInternalClassName) {
+        {
+            InsnList units = getCallSiteArray.instructions;
+            AbstractInsnNode s = units.getFirst();
+            while(s != null)  {
+                switch(s.getOpcode()) {
+                    case GETSTATIC:
+                    case PUTSTATIC: {
+                        FieldInsnNode f = (FieldInsnNode)s;
+                        FieldInsnNode newS = new FieldInsnNode(f.getOpcode(),
+                                    newInternalClassName,
+                                    f.name, f.desc);
+                        units.set(s, newS);
+                        s = newS.getNext();
+                        continue;
+                    }
+                    case INVOKESTATIC: {
+                        MethodInsnNode m = (MethodInsnNode)s;
+                        if(m.name.equals("$createCallSiteArray")) {
+                            MethodInsnNode newS = new MethodInsnNode(m.getOpcode(),
+                                    newInternalClassName, m.name, m.desc);
+                            units.set(s, newS);
+                            s = newS.getNext();
+                            continue;
+                        }
+                    }
+                }
+                s = s.getNext();
+            }
+        }
     }
 
 }
