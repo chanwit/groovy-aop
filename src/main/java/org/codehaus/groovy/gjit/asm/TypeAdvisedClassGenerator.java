@@ -181,9 +181,6 @@ public class TypeAdvisedClassGenerator implements Opcodes {
         // 2. copy get call site array
         // need to checkout the real structure for this
 
-        //
-        // TODO Teeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeestu
-        //
         MethodNode createCallSiteArray = findMethod(targetCN, "$createCallSiteArray");
         transformCreateCallSiteArray(createCallSiteArray, newInternalClassName);
         {
