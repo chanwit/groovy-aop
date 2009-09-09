@@ -92,6 +92,11 @@ public class TypeAdvisedClassGenerator implements Opcodes {
     }
 
     public Result perform(CallSite callSite) {
+        //
+        // current name is in Fib$fib$x format
+        // this must be changed to Fib_fib_x to allow re-transformation
+        // because Fib_fib_x will get a call site Fib_fib_x$fib
+        //
         String newClassName = Type.getInternalName(callSite.getClass()) + "$x";
 
         String[] targetNames = callSite.getClass().getName().split("\\$");
@@ -140,7 +145,8 @@ public class TypeAdvisedClassGenerator implements Opcodes {
 
         //
         // Prepare required information and
-        // Perform a set of transformation
+        // Perform a set of transformations
+        // The main transformation is TypePropagateTransformer
         //
         Map<String, Object> options = new HashMap<String, Object>();
         options.put("advisedTypes",      advisedTypes);
@@ -150,17 +156,29 @@ public class TypeAdvisedClassGenerator implements Opcodes {
         }
 
         //
-        // generate a new class
+        // Generate a new class
         //
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         cw.visit(V1_5, ACC_PUBLIC + ACC_SYNTHETIC, newClassName, null,
             "sun/reflect/GroovyAOPMagic", null);
 
+        //
+        // TODO The generated class requires its own call site arrays
+        // to correctly support recursive
+        //
+        // 1. copy static field of the array
+        // 2. copy get call site array
+        // need to checkout the real structure for this
+
+        //
+        // Generate a new method based on "targetMN"
+        //
         String methodDescriptor = Type.getMethodDescriptor(returnType, argumentTypes);
         MethodVisitor mv = cw.visitMethod( ACC_PUBLIC + ACC_STATIC + ACC_SYNTHETIC ,
             targetMN.name, methodDescriptor,
             null, new String[]{"java/lang/Throwable"});
         targetMN.accept(mv); // copy targetMN to mv
+
         cw.visitEnd();
 
         //
