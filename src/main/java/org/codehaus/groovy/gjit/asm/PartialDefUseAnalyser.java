@@ -78,7 +78,7 @@ public class PartialDefUseAnalyser implements Opcodes {
 
     private static final DefValue NULL_VALUE = new DefValue(null, Type.VOID_TYPE);
 
-    private void prepareFakeStack(AbstractInsnNode s0) {
+    private void prepareFakeStack() {
         for(int i = 0; i < maxStack;i++ ) {
             stack.push(NULL_VALUE);
         }
@@ -86,7 +86,7 @@ public class PartialDefUseAnalyser implements Opcodes {
 
     public AbstractInsnNode analyse0() {
         AbstractInsnNode s0 = start;
-        prepareFakeStack(s0);
+        prepareFakeStack();
         Set<Integer> set = new HashSet<Integer>();
         set.add(units.indexOf(s0));
         while(s0 != null) {
@@ -112,7 +112,7 @@ public class PartialDefUseAnalyser implements Opcodes {
 
     public Map<AbstractInsnNode, AbstractInsnNode[]> analyse() {
         AbstractInsnNode s0 = start;
-        prepareFakeStack(s0);
+        prepareFakeStack();
         while(s0 != stop) {
             execute(s0);
             s0 = s0.getNext();
@@ -265,7 +265,7 @@ public class PartialDefUseAnalyser implements Opcodes {
     }
 
     private void execute0(LdcInsnNode insn) {
-        Type type = null;
+        Type type;
         if(insn.cst instanceof Integer)   type = Type.INT_TYPE;     else
         if(insn.cst instanceof Long)      type = Type.LONG_TYPE;    else
         if(insn.cst instanceof Byte)      type = Type.BYTE_TYPE;    else
