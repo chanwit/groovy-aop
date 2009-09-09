@@ -28,7 +28,7 @@ public class InsnListHelper {
             delegate.add( c.delegate.list )
         }
         InsnList.metaClass.get << { IntRange r ->
-            return new InsnListRange(range:r, list: delegate)
+            new InsnListRange(range:r, list: delegate)
         }
         InsnList.metaClass.getAt = { i ->
             delegate.get(i)
@@ -93,8 +93,10 @@ public class InsnListHelper {
             return true
         }
         MethodInsnNode.metaClass.text = { ->
-            return "${OPCODES[delegate.opcode]}" +
-                   "(owner: ${delegate.owner},name:${delegate.name},desc:${delegate.desc})"
+            "${OPCODES[delegate.opcode]}(" +
+                "owner: ${delegate.owner}," +
+                "name: ${delegate.name},"   +
+                "desc: ${delegate.desc})"
         }
 
         TypeInsnNode.metaClass.equals = { obj ->
@@ -104,7 +106,7 @@ public class InsnListHelper {
                    delegate.desc   == obj.desc
         }
         TypeInsnNode.metaClass.text = { ->
-            return "${OPCODES[delegate.opcode]}(desc: ${delegate.desc})"
+            "${OPCODES[delegate.opcode]}(desc: ${delegate.desc})"
         }
 
         LdcInsnNode.metaClass.equals = { obj ->
@@ -114,7 +116,7 @@ public class InsnListHelper {
                    delegate.cst    == obj.cst
         }
         LdcInsnNode.metaClass.text = { ->
-            return "${OPCODES[delegate.opcode]}(cst: ${delegate.cst})"
+            "${OPCODES[delegate.opcode]}(cst: ${delegate.cst})"
         }
 
         InsnNode.metaClass.equals = { obj ->
@@ -123,13 +125,16 @@ public class InsnListHelper {
             return delegate.opcode == obj.opcode
         }
         InsnNode.metaClass.text = { ->
-            return "${OPCODES[delegate.opcode]}"
+            "${OPCODES[delegate.opcode]}"
         }
 
         FieldInsnNode.metaClass.equals = { obj ->
             if(delegate.opcode != obj.opcode)
                 Assert.failNotEquals("Instruction not same",
                     delegate.text(), obj.text())
+            if(delegate.owner != obj.owner)
+                Assert.failNotEquals("${OPCODES[delegate.opcode]}'s [owner] not same",
+                    delegate.owner, obj.owner)
             if(delegate.name != obj.name)
                 Assert.failNotEquals("${OPCODES[delegate.opcode]}'s [name] not same",
                     delegate.name, obj.name)
@@ -139,7 +144,10 @@ public class InsnListHelper {
             return true
         }
         FieldInsnNode.metaClass.text = { ->
-            return "${OPCODES[delegate.opcode]}(name: ${delegate.name}, desc: ${delegate.desc})"
+            "${OPCODES[delegate.opcode]}("  +
+                "owner: ${delegate.owner}," +
+                "name: ${delegate.name},"   +
+                "desc: ${delegate.desc})"
         }
 
         IntInsnNode.metaClass.equals = { obj ->
@@ -152,7 +160,7 @@ public class InsnListHelper {
             return true
         }
         IntInsnNode.metaClass.text = {
-            return "${OPCODES[delegate.opcode]}(operand: ${delegate.operand})"
+            "${OPCODES[delegate.opcode]}(operand: ${delegate.operand})"
         }
 
         installed = true

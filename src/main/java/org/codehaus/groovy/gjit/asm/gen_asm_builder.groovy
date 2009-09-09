@@ -119,15 +119,17 @@ println header
 }
 
 ["GETSTATIC", "PUTSTATIC", "GETFIELD", "PUTFIELD"].each {
-    println "public void ${it.toLowerCase()}(String owner, String name, String desc) {"
+    println "public void ${it.toLowerCase()}(Object owner, String name, Object desc) {"
+    println "    if(owner instanceof Class) owner = Type.getInternalName((Class)owner);"
+    println "    if(desc  instanceof Class) desc =  Type.getDescriptor((Class)desc);"
     println "    list.add(new FieldInsnNode($it,"
-    println "            owner, name, desc));"
+    println "            (String)owner, name, (String)desc));"
     println "}"
-    println "public void ${it.toLowerCase()}(Class<?> owner, String name, Class<?> desc) {"
-    println "   list.add(new FieldInsnNode($it,"
-    println "           Type.getInternalName(owner),"
-    println "           name, Type.getDescriptor(desc)));"
-    println "}"
+    //println "public void ${it.toLowerCase()}(Class<?> owner, String name, Class<?> desc) {"
+    //println "   list.add(new FieldInsnNode($it,"
+    //println "           Type.getInternalName(owner),"
+    //println "           name, Type.getDescriptor(desc)));"
+    //println "}"
     println()
 }
 

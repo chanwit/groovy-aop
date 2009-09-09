@@ -655,44 +655,32 @@ public Object getMonitorexit() {
    list.add(new InsnNode(MONITOREXIT)); return null;
 }
 
-public void getstatic(String owner, String name, String desc) {
+public void getstatic(Object owner, String name, Object desc) {
+    if(owner instanceof Class) owner = Type.getInternalName((Class)owner);
+    if(desc  instanceof Class) desc =  Type.getDescriptor((Class)desc);
     list.add(new FieldInsnNode(GETSTATIC,
-            owner, name, desc));
-}
-public void getstatic(Class<?> owner, String name, Class<?> desc) {
-   list.add(new FieldInsnNode(GETSTATIC,
-           Type.getInternalName(owner),
-           name, Type.getDescriptor(desc)));
+            (String)owner, name, (String)desc));
 }
 
-public void putstatic(String owner, String name, String desc) {
+public void putstatic(Object owner, String name, Object desc) {
+    if(owner instanceof Class) owner = Type.getInternalName((Class)owner);
+    if(desc  instanceof Class) desc =  Type.getDescriptor((Class)desc);
     list.add(new FieldInsnNode(PUTSTATIC,
-            owner, name, desc));
-}
-public void putstatic(Class<?> owner, String name, Class<?> desc) {
-   list.add(new FieldInsnNode(PUTSTATIC,
-           Type.getInternalName(owner),
-           name, Type.getDescriptor(desc)));
+            (String)owner, name, (String)desc));
 }
 
-public void getfield(String owner, String name, String desc) {
+public void getfield(Object owner, String name, Object desc) {
+    if(owner instanceof Class) owner = Type.getInternalName((Class)owner);
+    if(desc  instanceof Class) desc =  Type.getDescriptor((Class)desc);
     list.add(new FieldInsnNode(GETFIELD,
-            owner, name, desc));
-}
-public void getfield(Class<?> owner, String name, Class<?> desc) {
-   list.add(new FieldInsnNode(GETFIELD,
-           Type.getInternalName(owner),
-           name, Type.getDescriptor(desc)));
+            (String)owner, name, (String)desc));
 }
 
-public void putfield(String owner, String name, String desc) {
+public void putfield(Object owner, String name, Object desc) {
+    if(owner instanceof Class) owner = Type.getInternalName((Class)owner);
+    if(desc  instanceof Class) desc =  Type.getDescriptor((Class)desc);
     list.add(new FieldInsnNode(PUTFIELD,
-            owner, name, desc));
-}
-public void putfield(Class<?> owner, String name, Class<?> desc) {
-   list.add(new FieldInsnNode(PUTFIELD,
-           Type.getInternalName(owner),
-           name, Type.getDescriptor(desc)));
+            (String)owner, name, (String)desc));
 }
 
 public void iload(int i) {
