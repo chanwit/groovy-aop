@@ -1,12 +1,13 @@
 package org.codehaus.groovy.gjit.asm.transformer;
 
 import java.util.Map;
+import org.codehaus.groovy.runtime.callsite.CallSite;
+import org.objectweb.asm.Opcodes;
 
 import org.codehaus.groovy.gjit.asm.AsmTypeAdvisedClassGenerator;
 import org.codehaus.groovy.gjit.asm.PartialDefUseAnalyser;
 import org.codehaus.groovy.gjit.asm.AsmTypeAdvisedClassGenerator.Result;
-import org.codehaus.groovy.runtime.callsite.CallSite;
-import org.objectweb.asm.Opcodes;
+
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnList;
@@ -145,13 +146,13 @@ public class AsmAspectAwareTransformer implements Transformer, Opcodes {
             VarInsnNode acallsite, int callSiteIndex) {
         //
         // finding this pattern
-        //	    ALOAD 1
-        //	    LDC 0
-        //	    AALOAD
+        //      ALOAD 1
+        //      LDC 0
+        //      AALOAD
         //
         AbstractInsnNode found = null;
         for (int i = 0; i < units.size(); i ++) {
-            AbstractInsnNode s = (AbstractInsnNode) units.get(i);
+            AbstractInsnNode s = units.get(i);
             if(s.getOpcode() != ALOAD) continue;
             VarInsnNode aload = (VarInsnNode)s;
             if(aload.var != acallsite.var) continue;
@@ -178,13 +179,13 @@ public class AsmAspectAwareTransformer implements Transformer, Opcodes {
         "$getCallSiteArray()[Lorg/codehaus/groovy/runtime/callsite/CallSite;";
 
     private VarInsnNode findCallSiteArray(InsnList units) {
-//	    ALOAD 0
-//	    INVOKESPECIAL java/lang/Object.<init>()V
-//	   L0
-//	    INVOKESTATIC org/codehaus/groovy/gjit/soot/Subject.$getCallSiteArray()[Lorg/codehaus/groovy/runtime/callsite/CallSite;
-//	    ASTORE 1
+//      ALOAD 0
+//      INVOKESPECIAL java/lang/Object.<init>()V
+//     L0
+//      INVOKESTATIC org/codehaus/groovy/gjit/soot/Subject.$getCallSiteArray()[Lorg/codehaus/groovy/runtime/callsite/CallSite;
+//      ASTORE 1
         for (int i = 0; i < units.size(); i ++) {
-            AbstractInsnNode node = (AbstractInsnNode) units.get(i);
+            AbstractInsnNode node = units.get(i);
             if(node.getOpcode() != INVOKESTATIC) continue;
             MethodInsnNode invNode = (MethodInsnNode) node;
             if( GET_CALL_SITE_ARRAY.equals(invNode.name + invNode.desc)) {
