@@ -40,9 +40,9 @@ public class TypePropagateTransformer implements Transformer, Opcodes {
                 }
                 if(type != null && type.isPrimitive()) {
                     int offset = 4;
-                    if(type == int.class)    offset = 4; else
-                    if(type == long.class)   offset = 3; else
-                    if(type == float.class)  offset = 2; else
+                    if(type == int.class   ) offset = 4; else
+                    if(type == long.class  ) offset = 3; else
+                    if(type == float.class ) offset = 2; else
                     if(type == double.class) offset = 1;
                     VarInsnNode newS = new VarInsnNode(v.getOpcode()-offset, v.var);
                     units.set(s, newS);
