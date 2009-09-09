@@ -22,13 +22,13 @@ import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
-public class AsmTypeAdvisedClassGenerator implements Opcodes {
+public class TypeAdvisedClassGenerator implements Opcodes {
 
     private Class<?>   advisedReturnType;
     private Class<?>[] advisedTypes;
     private Transformer[] transformers;
 
-    public AsmTypeAdvisedClassGenerator() {
+    public TypeAdvisedClassGenerator() {
         this.transformers = new Transformer[] {
             new TypePropagateTransformer(),
             new DeConstantTransformer(),

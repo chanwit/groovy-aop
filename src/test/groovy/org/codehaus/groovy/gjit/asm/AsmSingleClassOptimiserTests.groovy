@@ -20,7 +20,7 @@ public class AsmSingleClassOptimiserTests extends GroovyTestCase {
 
         def sender = Fib.class
         def sco = new AsmSingleClassOptimizer();
-        def aatf = new AsmAspectAwareTransformer(
+        def aatf = new AspectAwareTransformer(
             advisedTypes:[int] as Class[],
             advisedReturnType: int,
             callSite: new Fib$fib(),

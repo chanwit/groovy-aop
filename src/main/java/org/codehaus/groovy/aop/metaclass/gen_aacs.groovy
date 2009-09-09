@@ -14,7 +14,7 @@ import org.codehaus.groovy.aop.abstraction.joinpoint.CallJoinpoint;
 import org.codehaus.groovy.aop.cache.*;
 import org.codehaus.groovy.gjit.agent.Agent;
 import org.codehaus.groovy.gjit.asm.AsmSingleClassOptimizer;
-import org.codehaus.groovy.gjit.asm.transformer.AsmAspectAwareTransformer;
+import org.codehaus.groovy.gjit.asm.transformer.AspectAwareTransformer;
 import org.codehaus.groovy.gjit.asm.transformer.Transformer;
 import org.codehaus.groovy.runtime.callsite.CallSite;
 import org.codehaus.groovy.runtime.callsite.CallSiteArray;
@@ -208,7 +208,7 @@ def footer = '''
             @Override
             public void run() {
                 AsmSingleClassOptimizer sco = new AsmSingleClassOptimizer();
-                AsmAspectAwareTransformer aatf = new AsmAspectAwareTransformer();
+                AspectAwareTransformer aatf = new AspectAwareTransformer();
                 aatf.setAdvisedTypes(tic.getArgTypeOfBinding());
                 aatf.setAdvisedReturnType(returnType);
                 aatf.setCallSite(callSite);

@@ -4,9 +4,9 @@ import java.util.Map;
 import org.codehaus.groovy.runtime.callsite.CallSite;
 import org.objectweb.asm.Opcodes;
 
-import org.codehaus.groovy.gjit.asm.AsmTypeAdvisedClassGenerator;
+import org.codehaus.groovy.gjit.asm.TypeAdvisedClassGenerator;
 import org.codehaus.groovy.gjit.asm.PartialDefUseAnalyser;
-import org.codehaus.groovy.gjit.asm.AsmTypeAdvisedClassGenerator.Result;
+import org.codehaus.groovy.gjit.asm.TypeAdvisedClassGenerator.Result;
 
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AbstractInsnNode;
@@ -18,7 +18,7 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 
-public class AsmAspectAwareTransformer implements Transformer, Opcodes {
+public class AspectAwareTransformer implements Transformer, Opcodes {
 
     private static class Location {
         public final AbstractInsnNode invokeStmt;
@@ -130,7 +130,7 @@ public class AsmAspectAwareTransformer implements Transformer, Opcodes {
     }
 
     private MethodInsnNode typePropagate(CallSite callSite) {
-        AsmTypeAdvisedClassGenerator atacg = new AsmTypeAdvisedClassGenerator();
+        TypeAdvisedClassGenerator atacg = new TypeAdvisedClassGenerator();
         atacg.setAdvisedTypes(advisedTypes);
         atacg.setAdvisedReturnType(advisedReturnType);
         Result result = atacg.perform(callSite);

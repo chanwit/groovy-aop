@@ -1,6 +1,6 @@
 package org.codehaus.groovy.gjit.asm
 
-import org.codehaus.groovy.gjit.asm.AsmTypeAdvisedClassGenerator
+import org.codehaus.groovy.gjit.asm.TypeAdvisedClassGenerator
 import org.codehaus.groovy.gjit.asm.CallSiteNameHolder
 import org.codehaus.groovy.gjit.asm.ConstantHolder
 import org.codehaus.groovy.gjit.asm.transformer.CallSiteNameCollector
@@ -30,7 +30,7 @@ class AsmTypeAdvisedClassGenTests extends GroovyTestCase implements Opcodes {
         def ccsa   = cn.@methods.find { it.name == '$createCallSiteArray' }
         new CallSiteNameCollector().internalTransform(ccsa, null);
 
-        def tp = new AsmTypeAdvisedClassGenerator(
+        def tp = new TypeAdvisedClassGenerator(
             advisedTypes: [int] as Class[],
             advisedReturnType: int
         )
