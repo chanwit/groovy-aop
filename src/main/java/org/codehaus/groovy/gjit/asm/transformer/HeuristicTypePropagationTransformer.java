@@ -7,7 +7,7 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodNode;
 
-public class HeuristicTypePropagationTransformation implements Transformer, Opcodes {
+public class HeuristicTypePropagationTransformer implements Transformer, Opcodes {
 
     @Override
     public void internalTransform(MethodNode body, Map<String, Object> options) {
