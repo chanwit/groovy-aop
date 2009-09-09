@@ -180,6 +180,7 @@ public class TypeAdvisedClassGenerator implements Opcodes {
         // 1. copy static field of the array
         // 2. copy get call site array
         // need to checkout the real structure for this
+        // 3. change the first line of GETSTATIC to get field from the new class
 
         MethodNode createCallSiteArray = findMethod(targetCN, "$createCallSiteArray");
         transformCreateCallSiteArray(createCallSiteArray, newInternalClassName);
@@ -205,6 +206,7 @@ public class TypeAdvisedClassGenerator implements Opcodes {
             );
             getCallSiteArray.accept(mv);
         }
+        relocateGetCallSiteArray(targetMN, newInternalClassName);
 
         //
         // Generate a new method based on "targetMN"
@@ -225,6 +227,15 @@ public class TypeAdvisedClassGenerator implements Opcodes {
         byte[] bytes = cw.toByteArray();
         ClassBodyCache.v().put(newInternalClassName, bytes);
         return new Result(newInternalClassName, targetMN.name, methodDescriptor, bytes);
+    }
+
+    private void relocateGetCallSiteArray(MethodNode targetMN, String newInternalClassName) {
+        InsnList units = targetMN.instructions;
+        AbstractInsnNode s = units.getFirst();
+        while(s.getOpcode() != INVOKESTATIC) s = s.getNext();
+        MethodInsnNode m = (MethodInsnNode)s;
+        MethodInsnNode newS = new MethodInsnNode(INVOKESTATIC, newInternalClassName, m.name, m.desc);
+        units.set(s, newS);
     }
 
     private void transformCreateCallSiteArray(MethodNode createCallSiteArray,

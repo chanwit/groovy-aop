@@ -29,7 +29,7 @@ class AsmTypeAdvisedClassGenTests extends GroovyTestCase implements Opcodes {
         ConstantHolder.v().clear()
         CallSiteNameHolder.v().clear()
 
-        def cr = new ClassReader("org.codehaus.groovy.gjit.soot.fibbonacci.Fib");
+        def cr = new ClassReader("org.codehaus.groovy.gjit.soot.fibbonacci.Fib")
         def cn = new ClassNode()
         cr.accept cn, 0
         assert cn.name == FIB_NAME
@@ -109,6 +109,23 @@ class AsmTypeAdvisedClassGenTests extends GroovyTestCase implements Opcodes {
 
     private assertFib(body) {
         assert body != null
+        def u = body.instructions
+        // skip 0
+        assert asm {
+            invokestatic FIB_NEW_NAME, '$getCallSiteArray', [], CallSite[]
+            astore 1
+        } == u[1..2]
+        // skip 3, 4
+        assert asm {
+            iload 0
+            iconst_2
+        } == u[5..6]
+        assert IF_ICMPGE == u[7].opcode
+        // skip 8, 9
+        assert asm {
+            iload 0
+            ireturn
+        } == u[10..11]
 //        public static fib(Ljava/lang/Object;)Ljava/lang/Object;
 //        L0
 //         INVOKESTATIC org/codehaus/groovy/gjit/soot/fibbonacci/Fib.$getCallSiteArray()[Lorg/codehaus/groovy/runtime/callsite/CallSite;
