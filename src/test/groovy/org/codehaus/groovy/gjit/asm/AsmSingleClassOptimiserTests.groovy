@@ -66,7 +66,7 @@ public class AsmSingleClassOptimiserTests extends GroovyTestCase {
     }
 
     private assertFib_fib_x() {
-        def sco = new AsmSingleClassOptimizer()
+        def sco = new TypeAdvisedReOptimizer()
         def aatf = new AspectAwareTransformer(
                 advisedTypes:[int] as Class[],
                 advisedReturnType: int,
