@@ -32,7 +32,7 @@ public class DeConstantTxTests extends GroovyTestCase implements Opcodes {
 
         assert pack['$const$0'] == 2
         assert pack['$const$1'] == 1
-        assert pack['$const$2'] == 40
+        assert pack['$const$2'] == 5
     }
 
     void testDeConsant_Const_0() {
@@ -71,8 +71,7 @@ public class DeConstantTxTests extends GroovyTestCase implements Opcodes {
 
         new DeConstantTransformer().internalTransform(mn, null)
 
-        assert units[1].opcode  == BIPUSH
-        assert units[1].operand == 40
+        assert units[1].opcode  == ICONST_5
 
         assert units[2].opcode == INVOKESTATIC
         assert units[2].owner  == Integer.internalName

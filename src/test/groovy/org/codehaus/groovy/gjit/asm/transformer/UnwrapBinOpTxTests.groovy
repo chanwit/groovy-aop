@@ -23,7 +23,7 @@ public class UnwrapBinOpTxTests extends GroovyTestCase implements Opcodes {
         def ccsa = cn.@methods.find { it.name == '$createCallSiteArray' }
         new CallSiteNameCollector().internalTransform(ccsa, null);
         def names = CallSiteNameHolder.v().get(FIB_NAME)
-        assert names.size() == 7
+        assert names.size() == 19
         assert names[0] == "plus"
         assert names[1] == "fib"
         assert names[2] == "minus"
