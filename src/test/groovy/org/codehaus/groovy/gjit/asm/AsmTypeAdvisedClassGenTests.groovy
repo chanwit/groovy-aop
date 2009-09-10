@@ -134,25 +134,27 @@ class AsmTypeAdvisedClassGenTests extends GroovyTestCase implements Opcodes {
             ldc 1
             aaload
             invokestatic Fib,'$get$$class$org$codehaus$groovy$gjit$soot$fibbonacci$Fib',[],Class
-            aload 1
-            ldc 2
-            aaload
-            aload 0
-            getstatic Fib, '$const$1', Integer
-            invokeinterface 'CallSite', 'call',[Object, Object],Object
-            invokeinterface 'CallSite', 'callStatic',[Class,Object],Object
+            iload 0
+            iconst_1
+            isub
+            invokestatic Integer,'valueOf',[int],Integer
+            invokeinterface CallSite, 'callStatic',[Class, Object],Object
             aload 1
             ldc 3
             aaload
             invokestatic Fib,'$get$$class$org$codehaus$groovy$gjit$soot$fibbonacci$Fib',[],Class
-            aload 1
-            ldc 4
-            aaload
-            aload 0
-            getstatic Fib, '$const$0', Integer
-            invokeinterface 'CallSite', 'call',[Object, Object],Object
-            invokeinterface 'CallSite', 'callStatic',[Class,Object],Object
-            invokeinterface 'CallSite', 'call',[Object, Object],Object
-        } == u[15..40]
+            iload 0
+            iconst_2
+            isub
+            invokestatic Integer,'valueOf',[int],Integer
+            invokeinterface CallSite, 'callStatic',[Class, Object],Object
+            invokeinterface CallSite, 'call',[Object, Object],Object
+        } == u[15..36]
+        // skip 37 label
+        assert asm {
+            checkcast Integer
+            invokevirtual Integer,'intValue',[],int
+            ireturn
+        } == u[38..40]
     }
 }
