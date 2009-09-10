@@ -49,7 +49,7 @@ task gen_aacs << {
     ['gen_aacs':    'AspectAwareCallSite',
      'gen_adv_inv': 'AdviceInvoker'].each { k, v ->
         ant.exec( dir:'.', executable:'bash', output:"${metaClassPackage}/${v}.java") {
-            arg line:"-c ${metaClassPackage}/${k}.groovy"
+            arg line:"-c \$GROOVY_HOME/bin/groovy ${metaClassPackage}/${k}.groovy"
         }
     }
 }
