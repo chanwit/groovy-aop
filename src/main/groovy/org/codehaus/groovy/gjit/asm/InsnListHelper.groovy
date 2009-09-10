@@ -39,7 +39,7 @@ public class InsnListHelper {
                 return false
             }
             for(i in 0..<delegate.size()) {
-                def r = delegate.get(i) == obj.get(i)
+                def r = delegate.get(i).test(obj.get(i))
                 if(r == false) {
                     Assert.failNotEquals("Instruction $i not same",
                             delegate.get(i).text(),
@@ -65,7 +65,10 @@ public class InsnListHelper {
             else
                 c.delegate.list
         }
-
+        VarInsnNode.metaClass.test = { obj ->
+            return delegate.opcode == obj.opcode &&
+                   delegate.var    == obj.var
+        }
         VarInsnNode.metaClass.equals = { obj ->
             if(delegate.opcode != obj.opcode)
                 Assert.failNotEquals("Instruction not same",
@@ -77,6 +80,12 @@ public class InsnListHelper {
             return "${OPCODES[delegate.opcode]}(var: ${delegate.var})"
         }
 
+        MethodInsnNode.metaClass.test = { obj ->
+            return delegate.opcode == obj.opcode &&
+                   delegate.owner  == obj.owner  &&
+                   delegate.name   == obj.name   &&
+                   delegate.desc   == obj.desc
+        }
         MethodInsnNode.metaClass.equals = { obj ->
             if(delegate.opcode != obj.opcode)
                 Assert.failNotEquals("Instruction not same",
@@ -99,6 +108,10 @@ public class InsnListHelper {
                 "desc: ${delegate.desc})"
         }
 
+        TypeInsnNode.metaClass.test = { obj ->
+            return delegate.opcode == obj.opcode &&
+                   delegate.desc   == obj.desc
+        }
         TypeInsnNode.metaClass.equals = { obj ->
             if(delegate.opcode != obj.opcode)
                 Assert.failNotEquals("Instruction not same", delegate.text(), obj.text())
@@ -109,6 +122,10 @@ public class InsnListHelper {
             "${OPCODES[delegate.opcode]}(desc: ${delegate.desc})"
         }
 
+        LdcInsnNode.metaClass.test = { obj ->
+            return delegate.opcode == obj.opcode &&
+                   delegate.cst    == obj.cst
+        }
         LdcInsnNode.metaClass.equals = { obj ->
             if(delegate.opcode != obj.opcode)
                 Assert.failNotEquals("Instruction not same", delegate.text(), obj.text())
@@ -119,6 +136,9 @@ public class InsnListHelper {
             "${OPCODES[delegate.opcode]}(cst: ${delegate.cst})"
         }
 
+        InsnNode.metaClass.test = { obj ->
+            return delegate.opcode == obj.opcode
+        }
         InsnNode.metaClass.equals = { obj ->
             if(delegate.opcode != obj.opcode)
                 Assert.failNotEquals("Instruction not same", delegate.text(), obj.text())
@@ -128,6 +148,12 @@ public class InsnListHelper {
             "${OPCODES[delegate.opcode]}"
         }
 
+        FieldInsnNode.metaClass.test = { obj ->
+            return delegate.opcode == obj.opcode &&
+                   delegate.owner  == obj.owner  &&
+                   delegate.name   == obj.name   &&
+                   delegate.desc   == obj.desc
+        }
         FieldInsnNode.metaClass.equals = { obj ->
             if(delegate.opcode != obj.opcode)
                 Assert.failNotEquals("Instruction not same",
@@ -150,6 +176,10 @@ public class InsnListHelper {
                 "desc: ${delegate.desc})"
         }
 
+        IntInsnNode.metaClass.test = { obj ->
+            return delegate.opcode  == obj.opcode  &&
+                   delegate.operand == obj.operand
+        }
         IntInsnNode.metaClass.equals = { obj ->
             if(delegate.opcode != obj.opcode)
                 Assert.failNotEquals("Instruction not same",
