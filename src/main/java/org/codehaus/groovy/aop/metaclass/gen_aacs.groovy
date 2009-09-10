@@ -215,7 +215,7 @@ def footer = '''
                 aatf.setWithInMethodName(withInMethodName);
                 try {
                     sco.setTransformers(new Transformer[]{aatf});
-                    byte[] bytes = sco.optimize(sender);
+                    byte[] bytes = sco.optimize(sender.getName());
                     Instrumentation i = Agent.getInstrumentation();
                     if(i != null) {
                         i.redefineClasses(new ClassDefinition(sender, bytes));
