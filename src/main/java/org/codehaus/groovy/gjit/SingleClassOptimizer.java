@@ -10,6 +10,8 @@ public interface SingleClassOptimizer {
      *            optimization.
      * @return a byte array containing optimized class
      */
-    public abstract byte[] optimize(String className);
+    public byte[] optimize(String className);
+
+    public void setTransformers(Object[] transformers);
 
 }

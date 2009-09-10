@@ -16,6 +16,8 @@ import groovy.util.GroovyTestCase
 
 public class AsmSingleClassOptimiserTests extends GroovyTestCase {
 
+    static FIB_FIB_X = "org/codehaus/groovy/gjit/soot/fibbonacci/Fib_fib_x"
+
     void testOptimisationFib() {
         InsnListHelper.install()
 
@@ -30,7 +32,7 @@ public class AsmSingleClassOptimiserTests extends GroovyTestCase {
         sco.transformers = [DeConstantTransformer.class,
                             aatf,
                             AutoBoxEliminatorTransformer.class]
-        byte[] bytes = sco.optimize(sender)
+        byte[] bytes = sco.optimize(sender.name)
         def cr = new ClassReader(bytes)
         def cn = new ClassNode()
         cr.accept cn, 0
@@ -50,7 +52,7 @@ public class AsmSingleClassOptimiserTests extends GroovyTestCase {
             aaload
             invokestatic Fib, '$get$$class$org$codehaus$groovy$gjit$soot$fibbonacci$Fib',[],Class
             iconst_5
-            invokestatic 'org/codehaus/groovy/gjit/soot/fibbonacci/Fib_fib_x','fib',[int],int
+            invokestatic FIB_FIB_X,'fib',[int],int
             invokestatic Integer,"valueOf",[int],Integer
         }, units[5..11]
         //
@@ -58,8 +60,24 @@ public class AsmSingleClassOptimiserTests extends GroovyTestCase {
         //
         CheckClassAdapter.verify(cr, false, new PrintWriter(System.out))
 
-        def fib_x_body = ClassBodyCache.v().get("org/codehaus/groovy/gjit/soot/fibbonacci/Fib_fib_x")
+        def fib_x_body = ClassBodyCache.v().get(FIB_FIB_X)
         assert fib_x_body != null
+        assertFib_fib_x()
+    }
+
+    private assertFib_fib_x() {
+        def sco = new AsmSingleClassOptimizer()
+        def aatf = new AspectAwareTransformer(
+                advisedTypes:[int] as Class[],
+                advisedReturnType: int,
+                callSite: new Fib_fib_x$fib(),
+                withInMethodName: "fib"
+            )
+        sco.transformers = [DeConstantTransformer.class,
+                            aatf,
+                            AutoBoxEliminatorTransformer.class]
+        byte[] bytes = sco.optimize(FIB_FIB_X)
+        assert bytes != null
     }
 
 }
