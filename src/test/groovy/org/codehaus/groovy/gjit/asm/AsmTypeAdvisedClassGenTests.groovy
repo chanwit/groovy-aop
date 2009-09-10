@@ -11,11 +11,10 @@ import org.codehaus.groovy.gjit.soot.fibbonacci.Fib
 import org.codehaus.groovy.gjit.soot.fibbonacci.Fib$fib
 import org.codehaus.groovy.runtime.callsite.CallSiteArray
 import org.codehaus.groovy.runtime.callsite.CallSite
-import org.objectweb.asm.ClassReader
-import org.objectweb.asm.Opcodes
+
+import org.objectweb.asm.*
 import org.objectweb.asm.tree.*
-import org.objectweb.asm.tree.LabelNode
-import org.objectweb.asm.Type
+import org.objectweb.asm.util.*
 
 class AsmTypeAdvisedClassGenTests extends GroovyTestCase implements Opcodes {
 
@@ -62,6 +61,10 @@ class AsmTypeAdvisedClassGenTests extends GroovyTestCase implements Opcodes {
         assertGCSA( actualCn.@methods.find { it.name == '$getCallSiteArray'    } )
         assertFib ( actualCn.@methods.find { it.name == 'fib' } )
 
+        //
+        // re-check again with a verifier
+        //
+        CheckClassAdapter.verify(actualCr, false, new PrintWriter(System.out))
     }
 
     private assertCCSA(body) {
