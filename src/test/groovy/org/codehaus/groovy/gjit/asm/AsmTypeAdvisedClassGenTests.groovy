@@ -126,55 +126,33 @@ class AsmTypeAdvisedClassGenTests extends GroovyTestCase implements Opcodes {
             iload 0
             ireturn
         } == u[10..11]
-//        public static fib(Ljava/lang/Object;)Ljava/lang/Object;
-//        L0
-//         INVOKESTATIC org/codehaus/groovy/gjit/soot/fibbonacci/Fib.$getCallSiteArray()[Lorg/codehaus/groovy/runtime/callsite/CallSite;
-//         ASTORE 1
-//        L1
-//         LINENUMBER 6 L1
-//         ALOAD 0
-//         GETSTATIC org/codehaus/groovy/gjit/soot/fibbonacci/Fib.$const$0 : Ljava/lang/Integer;
-//         INVOKESTATIC org/codehaus/groovy/runtime/ScriptBytecodeAdapter.compareLessThan(Ljava/lang/Object;Ljava/lang/Object;)Z
-//         IFEQ L2
-//        L3
-//         LINENUMBER 7 L3
-//         ALOAD 0
-//         ARETURN
-//         GOTO L4
-//        L2
-//         LINENUMBER 9 L2
-//         ALOAD 1
-//         LDC 0
-//         AALOAD
-//         ALOAD 1
-//         LDC 1
-//         AALOAD
-//         INVOKESTATIC org/codehaus/groovy/gjit/soot/fibbonacci/Fib.$get$$class$org$codehaus$groovy$gjit$soot$fibbonacci$Fib()Ljava/lang/Class;
-//         ALOAD 1
-//         LDC 2
-//         AALOAD
-//         ALOAD 0
-//         GETSTATIC org/codehaus/groovy/gjit/soot/fibbonacci/Fib.$const$1 : Ljava/lang/Integer;
-//         INVOKEINTERFACE org/codehaus/groovy/runtime/callsite/CallSite.call(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-//         INVOKEINTERFACE org/codehaus/groovy/runtime/callsite/CallSite.callStatic(Ljava/lang/Class;Ljava/lang/Object;)Ljava/lang/Object;
-//         ALOAD 1
-//         LDC 3
-//         AALOAD
-//         INVOKESTATIC org/codehaus/groovy/gjit/soot/fibbonacci/Fib.$get$$class$org$codehaus$groovy$gjit$soot$fibbonacci$Fib()Ljava/lang/Class;
-//         ALOAD 1
-//         LDC 4
-//         AALOAD
-//         ALOAD 0
-//         GETSTATIC org/codehaus/groovy/gjit/soot/fibbonacci/Fib.$const$0 : Ljava/lang/Integer;
-//         INVOKEINTERFACE org/codehaus/groovy/runtime/callsite/CallSite.call(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-//         INVOKEINTERFACE org/codehaus/groovy/runtime/callsite/CallSite.callStatic(Ljava/lang/Class;Ljava/lang/Object;)Ljava/lang/Object;
-//         INVOKEINTERFACE org/codehaus/groovy/runtime/callsite/CallSite.call(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-//        L5
-//         ARETURN
-//        L4
-//         GOTO L5
-//         LOCALVARIABLE n Ljava/lang/Object; L0 L4 0
-//         MAXSTACK = 7
-//         MAXLOCALS = 2
+        assert asm {
+            aload 1
+            ldc 0
+            aaload
+            aload 1
+            ldc 1
+            aaload
+            invokestatic Fib,'$get$$class$org$codehaus$groovy$gjit$soot$fibbonacci$Fib',[],Class
+            aload 1
+            ldc 2
+            aaload
+            aload 0
+            getstatic Fib, '$const$1', Integer
+            invokeinterface 'CallSite', 'call',[Object, Object],Object
+            invokeinterface 'CallSite', 'callStatic',[Class,Object],Object
+            aload 1
+            ldc 3
+            aaload
+            invokestatic Fib,'$get$$class$org$codehaus$groovy$gjit$soot$fibbonacci$Fib',[],Class
+            aload 1
+            ldc 4
+            aaload
+            aload 0
+            getstatic Fib, '$const$0', Integer
+            invokeinterface 'CallSite', 'call',[Object, Object],Object
+            invokeinterface 'CallSite', 'callStatic',[Class,Object],Object
+            invokeinterface 'CallSite', 'call',[Object, Object],Object
+        } == u[15..20]
     }
 }
