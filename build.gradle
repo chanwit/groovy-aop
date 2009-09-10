@@ -12,7 +12,7 @@ repositories {
 test {
     scanForTestClasses = false
     excludes = ["**/*Support.class", "**/UnitTestAsScriptTest.class"]
-    options.fork( jvmArgs: [ "-javaagent:C:/groovy/groovy-1.6.4/lib/${jar.archiveName}"] )
+    options.fork( jvmArgs: [ "-javaagent:$libsDir/${jar.archiveName}"] )
 }
 configurations {
     textile
