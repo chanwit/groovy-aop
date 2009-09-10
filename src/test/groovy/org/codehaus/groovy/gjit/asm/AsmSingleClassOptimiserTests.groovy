@@ -79,7 +79,7 @@ public class AsmSingleClassOptimiserTests extends GroovyTestCase {
         byte[] bytes = sco.optimize(FIB_FIB_X)
         assert bytes != null
         def cr = new ClassReader(bytes)
-        CheckClassAdapter.verify(cr, true, new PrintWriter(System.out))
+        CheckClassAdapter.verify(cr, false, new PrintWriter(System.out))
     }
 
 //    how to identify a recursive call?
