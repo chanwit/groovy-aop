@@ -47,9 +47,50 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
             VarInsnNode acallsite = findCallSiteArray(units);
             Location location = locateCallSiteByIndex(units, acallsite, callSite.getIndex());
             if(location.invokeStmt== null) return;
-            MethodInsnNode newInvokeStmt = typePropagate(callSite);
-            replaceCallSite(location, newInvokeStmt);
+            if(!recursive(location, callSite)) {
+                MethodInsnNode newInvokeStmt = typePropagate(callSite);
+                replaceCallSite(location, newInvokeStmt);
+            } else {
+                replaceRecursion(location);
+            }
         }
+    }
+
+    private void replaceRecursion(Location location) {
+        String owner = callSite.getClass().getName().split("\\$")[0].replace('.', '/');
+        MethodInsnNode newInvokeStmt = new MethodInsnNode(INVOKESTATIC, owner, body.name, body.desc);
+        replaceCallSite(location, newInvokeStmt);
+    }
+
+    private boolean recursive(Location location, CallSite callSite) {
+        String typeOfCall = ((MethodInsnNode)location.invokeStmt).name;
+        // callSite is Fib_fib_x$fib
+        if(typeOfCall.equals("callStatic")) {
+            // 1. check recursive of callStatic
+            String callSiteClassName = callSite.getClass().getName();
+            String names[] = callSiteClassName.split("\\$|_");
+            if(names.length != 4) throw new RuntimeException("Name pattern not support: " + callSiteClassName);
+            //   1.1 same call site name
+            if(names[1].equals(names[3])==false) return false;
+            //   1.2 same class
+            AbstractInsnNode[] array = location.usedMap.get(location.invokeStmt);
+            // array[1] must be an invokestatic returns Class<?>
+            names[0] = names[0].replace('.', '/');
+            String classFromFirstArg = convertFromGetClassToInternalName(((MethodInsnNode)array[1]).name);
+            return names[0].equals(classFromFirstArg);
+        } else {
+            return false;
+            // 2. check recursive of call, callCurrent
+            // throw new RuntimeException("NYI");
+        }
+    }
+
+    private String convertFromGetClassToInternalName(String name) {
+        // pattern:
+        // $get$$class$org$codehaus$groovy$gjit$soot$fibbonacci$Fib
+        // output:
+        // org/codehaus/groovy/gjit/soot/fibbonacci/Fib
+        return name.substring("$get$$class$".length(), name.length()).replace('$', '/');
     }
 
     private void replaceCallSite(Location location, MethodInsnNode newInvokeStmt) {
@@ -96,7 +137,7 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
                 // safe to remove
                 units.remove(array[1]);
             } else if(a1used.length >= 0){
-                // not save,
+                // looks not safe,
                 // used pop to discard it instead
                 units.insert(array[1], new InsnNode(POP));
             }

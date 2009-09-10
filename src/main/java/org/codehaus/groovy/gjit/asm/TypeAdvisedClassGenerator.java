@@ -111,7 +111,13 @@ public class TypeAdvisedClassGenerator implements Opcodes {
         ClassReader cr;
         ClassNode targetCN = new ClassNode();
         try {
-            cr = new ClassReader(targetNames[0]);
+            String targetInternalName = targetNames[0].replace('.', '/');
+            if(ClassBodyCache.v().containsKey(targetInternalName)) {
+                byte[] bytes = ClassBodyCache.v().get(targetInternalName);
+                cr = new ClassReader(bytes);
+            } else {
+                cr = new ClassReader(targetNames[0]);
+            }
             cr.accept(targetCN, 0);
         } catch (IOException e) {
             throw new RuntimeException(e);
