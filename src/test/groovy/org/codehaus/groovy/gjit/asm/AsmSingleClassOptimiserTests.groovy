@@ -67,6 +67,7 @@ public class AsmSingleClassOptimiserTests extends GroovyTestCase {
 
     private assertFib_fib_x() {
         def sco = new TypeAdvisedReOptimizer()
+
         def aatf = new AspectAwareTransformer(
                 advisedTypes:[int] as Class[],
                 advisedReturnType: int,
@@ -83,14 +84,26 @@ public class AsmSingleClassOptimiserTests extends GroovyTestCase {
         def aatf2 = new AspectAwareTransformer(
                 advisedTypes:[int] as Class[],
                 advisedReturnType: int,
-                callSite: new Fib_fib_x$fib(3),
+                callSite: new Fib_fib_x$fib(3), // a mock call site set the index to 3
                 withInMethodName: "fib"
             )
         sco.transformers = [DeConstantTransformer.class,
                             aatf2,
                             AutoBoxEliminatorTransformer.class]
         bytes = sco.optimize(FIB_FIB_X)
-        CheckClassAdapter.verify(new ClassReader(bytes), true, new PrintWriter(System.out))
+        CheckClassAdapter.verify(new ClassReader(bytes), false, new PrintWriter(System.out))
+
+//        def aatf3 = new AspectAwareTransformer(
+//                advisedTypes:[int] as Class[],
+//                advisedReturnType: int,
+//                // callSite: new Integer, // a mock call site set the index to 3
+//                withInMethodName: "fib"
+//            )
+//        sco.transformers = [DeConstantTransformer.class,
+//                            aatf3,
+//                            AutoBoxEliminatorTransformer.class]
+//        bytes = sco.optimize(FIB_FIB_X)
+//        CheckClassAdapter.verify(new ClassReader(bytes), false, new PrintWriter(System.out))
     }
 
 //    how to identify a recursive call?
