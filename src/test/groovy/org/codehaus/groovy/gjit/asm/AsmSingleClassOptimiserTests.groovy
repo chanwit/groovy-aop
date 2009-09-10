@@ -78,6 +78,64 @@ public class AsmSingleClassOptimiserTests extends GroovyTestCase {
                             AutoBoxEliminatorTransformer.class]
         byte[] bytes = sco.optimize(FIB_FIB_X)
         assert bytes != null
+        def cr = new ClassReader(bytes)
+        CheckClassAdapter.verify(cr, true, new PrintWriter(System.out))
     }
+
+//    how to identify a recursive call?
+//
+//    		Fib_fib_x -> this is a call Fib.fib
+//
+//    		0. this is a typed advised class with (I)I
+//    		1. callStatic
+//    		2. first arg is      "Fib.class"
+//    		3. call site name is "fib"
+//    		4. secnd arg is of type Integer
+//
+//
+//    		fib(I)I
+//    		  INVOKESTATIC org/codehaus/groovy/gjit/soot/fibbonacci/Fib_fib_x.$getCallSiteArray ()[Lorg/codehaus/groovy/runtime/callsite/CallSite;
+//    		  ASTORE 1
+//    		  ILOAD 0
+//    		  ICONST_2
+//    		  IF_ICMPGE L0
+//    		  ILOAD 0
+//    		  IRETURN
+//    		  GOTO L1
+//    		L0
+//    		  ALOAD 1
+//    		  LDC 0
+//    		  AALOAD
+//    		  ALOAD 1
+//    		  LDC 1
+//    		  AALOAD
+//    		  INVOKESTATIC org/codehaus/groovy/gjit/soot/fibbonacci/Fib.$get$$class$org$codehaus$groovy$gjit$soot$fibbonacci$Fib ()Ljava/lang/Class;
+//    		  ILOAD 0
+//    		  ICONST_1
+//    		  ISUB
+//    		  INVOKESTATIC java/lang/Integer.valueOf (I)Ljava/lang/Integer;
+//    		  INVOKEINTERFACE org/codehaus/groovy/runtime/callsite/CallSite.callStatic (Ljava/lang/Class;Ljava/lang/Object;)Ljava/lang/Object;
+//    		  // ALOAD 1
+//    		  // LDC 3
+//    		  // AALOAD
+//    		  // INVOKESTATIC org/codehaus/groovy/gjit/soot/fibbonacci/Fib.$get$$class$org$codehaus$groovy$gjit$soot$fibbonacci$Fib ()Ljava/lang/Class;
+//    		  ILOAD 0
+//    		  ICONST_2
+//    		  ISUB
+//    		  INVOKESTATIC java/lang/Integer.valueOf (I)Ljava/lang/Integer;
+//    		  CHECKCAST java/lang/Integer
+//    		  INVOKEVIRTUAL java/lang/Integer.intValue ()I
+//    		  // org: INVOKEINTERFACE
+//    		  //      org/codehaus/groovy/runtime/callsite/CallSite.callStatic
+//    		  //      (Ljava/lang/Class;Ljava/lang/Object;)Ljava/lang/Object;
+//    		  INVOKESTATIC org/codehaus/groovy/gjit/soot/fibbonacci/Fib_fib_x.fib(I)I
+//    		  INVOKESTATIC java/lang/Integer.valueOf (I)Ljava/lang/Integer;
+//    		  INVOKEINTERFACE org/codehaus/groovy/runtime/callsite/CallSite.call (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+//    		L2
+//    		  CHECKCAST java/lang/Integer
+//    		  INVOKEVIRTUAL java/lang/Integer.intValue ()I
+//    		  IRETURN
+//    		L1
+//    		  GOTO L2
 
 }

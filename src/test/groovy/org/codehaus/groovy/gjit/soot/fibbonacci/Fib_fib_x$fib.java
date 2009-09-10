@@ -26,7 +26,7 @@ class Fib_fib_x$fib extends AbstractCallSite {
         //
         // this should be (generated) Fib_fib_x.class
         //
-        super(new CallSiteArray(Fib.class, NAMES),6, "fib");
+        super(new CallSiteArray(Fib.class, NAMES),1, "fib");
     }
 
 }
