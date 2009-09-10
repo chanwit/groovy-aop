@@ -72,7 +72,7 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
         if(CallSiteNameHolder.v().containsKey(owner)) {
             names = CallSiteNameHolder.v().get(owner);
         } else {
-            throw new RuntimeException("No call site name array");
+            throw new RuntimeException("No call site name array of class: " + owner);
         }
 
         //
