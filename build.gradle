@@ -7,7 +7,7 @@ version = '0.5.4'
 repositories {
     mavenCentral()
     mavenRepo urls: ['http://repository.codehaus.org/', 'http://download.java.net/maven/2/']
-    flatDir name: 'localRepository', dirs: 'lib'
+    // flatDir name: 'localRepository', dirs: 'lib'
 }
 test {
     scanForTestClasses = false
