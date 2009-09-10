@@ -62,7 +62,7 @@ public class AsmSingleClassOptimiserTests extends GroovyTestCase {
 
         def fib_x_body = ClassBodyCache.v().get(FIB_FIB_X)
         assert fib_x_body != null
-        // assertFib_fib_x()
+        assertFib_fib_x()
     }
 
     private assertFib_fib_x() {
