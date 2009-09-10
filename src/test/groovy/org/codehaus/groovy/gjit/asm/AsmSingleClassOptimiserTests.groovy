@@ -48,8 +48,8 @@ public class AsmSingleClassOptimiserTests extends GroovyTestCase {
             ldc 5
             aaload
             invokestatic Fib, '$get$$class$org$codehaus$groovy$gjit$soot$fibbonacci$Fib',[],Class
-            bipush 40
-            invokestatic 'org/codehaus/groovy/gjit/soot/fibbonacci/Fib$fib$x','fib',[int],int
+            iconst_5
+            invokestatic 'org/codehaus/groovy/gjit/soot/fibbonacci/Fib_fib_x','fib',[int],int
             invokestatic Integer,"valueOf",[int],Integer
         }, units[5..11]
         //

@@ -4,4 +4,7 @@ import groovy.util.GroovyTestCase;
 
 public class ClassBodyCacheTests extends GroovyTestCase {
 
+    void testSomething() {
+    }
+
 }

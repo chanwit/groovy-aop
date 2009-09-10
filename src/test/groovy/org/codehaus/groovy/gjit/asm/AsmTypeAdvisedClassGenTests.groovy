@@ -126,6 +126,9 @@ class AsmTypeAdvisedClassGenTests extends GroovyTestCase implements Opcodes {
             iload 0
             ireturn
         } == u[10..11]
+        assert asm {
+
+        } == u[15..15]
 //        public static fib(Ljava/lang/Object;)Ljava/lang/Object;
 //        L0
 //         INVOKESTATIC org/codehaus/groovy/gjit/soot/fibbonacci/Fib.$getCallSiteArray()[Lorg/codehaus/groovy/runtime/callsite/CallSite;
