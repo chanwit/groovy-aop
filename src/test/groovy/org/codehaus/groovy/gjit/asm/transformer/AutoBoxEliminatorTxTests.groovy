@@ -24,9 +24,9 @@ public class AutoBoxEliminatorTxTests extends GroovyTestCase implements Opcodes 
         def units = mn.instructions
         units.append {
             iload 0
-            invokestatic  Integer,"valueOf",[int],Integer
+            invokestatic  Integer, "valueOf", [int], Integer
             checkcast     Integer
-            invokevirtual Integer,"intValue",[],int
+            invokevirtual Integer, "intValue", [], int
             ireturn
         }
         new AutoBoxEliminatorTransformer().internalTransform(mn, null);
