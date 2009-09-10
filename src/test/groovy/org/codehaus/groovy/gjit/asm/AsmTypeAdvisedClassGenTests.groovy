@@ -153,6 +153,6 @@ class AsmTypeAdvisedClassGenTests extends GroovyTestCase implements Opcodes {
             invokeinterface 'CallSite', 'call',[Object, Object],Object
             invokeinterface 'CallSite', 'callStatic',[Class,Object],Object
             invokeinterface 'CallSite', 'call',[Object, Object],Object
-        } == u[15..20]
+        } == u[15..40]
     }
 }
