@@ -13,7 +13,7 @@ class CallSiteNameTest extends GroovyTestCase {
         try {
             new AsmSingleClassOptimizer(
                 transformers:[CallSiteNameCollector]
-            ).optimize(Subject.class)
+            ).optimize(Subject.class.name)
             def callsiteNames = CallSiteNameHolder.v().get(Type.getInternalName(Subject))
             assert callsiteNames != null
             assert callsiteNames[0] == "println"

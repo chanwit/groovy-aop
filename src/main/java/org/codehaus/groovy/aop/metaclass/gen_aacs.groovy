@@ -225,7 +225,7 @@ def footer = '''
                     // TODO if production, should print stack trace and continue
                     //
                     // e.printStackTrace();
-                    throw new RuntimeException(e);
+                    throw new RuntimeException("Error while optimising class " + sender.getName(), e);
                 }
             }
         }.start();

@@ -23,7 +23,7 @@ import org.codehaus.groovy.gjit.asm.transformer.CallSiteNameCollector;
     void testSelfTest() {
         assert i != null
         def c = Subject.class
-        byte[] bytes = new AsmSingleClassOptimizer().optimize(c)
+        byte[] bytes = new AsmSingleClassOptimizer().optimize(c.name)
         assert bytes.length != 0
         i.redefineClasses(new ClassDefinition(c, bytes))
         assert new Subject().add(10, 20) == 30
@@ -36,7 +36,7 @@ import org.codehaus.groovy.gjit.asm.transformer.CallSiteNameCollector;
             def c = Subject.class
             byte[] bytes = new AsmSingleClassOptimizer(
                 transformers: [CallSiteNameCollector]
-            ).optimize(c)
+            ).optimize(c.name)
             String[] names = CallSiteNameHolder.v().get(c)
             assert names[0] == "println"
             assert names[1] == "plus"
