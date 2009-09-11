@@ -5,6 +5,7 @@ import java.util.Map;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
@@ -28,10 +29,18 @@ public class AutoBoxEliminatorTransformer implements Transformer, Opcodes {
         while(s != null) {
             if(s.getOpcode() !=  INVOKESTATIC)   { s = s.getNext(); continue; }
             AbstractInsnNode s0 = s.getNext();
+
             if(s0 == null) break;
+            while(s0.getOpcode() == -1) { s0 = s0.getNext(); if(s0 == null) break;}
+            if(s0 == null) break;
+
             if(s0.getOpcode() != CHECKCAST)      { s = s.getNext(); continue; }
             AbstractInsnNode s1 = s0.getNext();
+
             if(s1 == null) break;
+            while(s1.getOpcode() == -1) { s1 = s1.getNext(); if(s1 == null) break;}
+            if(s1 == null) break;
+
             if(s1.getOpcode() != INVOKEVIRTUAL)  { s = s.getNext(); continue; }
 
             MethodInsnNode mi  = (MethodInsnNode)s;
