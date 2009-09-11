@@ -12,11 +12,17 @@ import org.objectweb.asm.*
 import org.objectweb.asm.util.*
 import org.objectweb.asm.tree.*
 
+import groovy.lang.ExpandoMetaClass;
 import groovy.util.GroovyTestCase
 
 public class AsmSingleClassOptimiserTests extends GroovyTestCase {
 
     static FIB_FIB_X = "org/codehaus/groovy/gjit/soot/fibbonacci/Fib_fib_x"
+
+    void testDummySubject() {
+        ExpandoMetaClass.enableGlobally()
+        new Subject().add(1,2)
+    }
 
     void testOptimisationFib() {
         InsnListHelper.install()
@@ -93,17 +99,17 @@ public class AsmSingleClassOptimiserTests extends GroovyTestCase {
         bytes = sco.optimize(FIB_FIB_X)
         CheckClassAdapter.verify(new ClassReader(bytes), false, new PrintWriter(System.out))
 
-//        def aatf3 = new AspectAwareTransformer(
-//                advisedTypes:[int] as Class[],
-//                advisedReturnType: int,
-//                // callSite: new Integer, // a mock call site set the index to 3
-//                withInMethodName: "fib"
-//            )
-//        sco.transformers = [DeConstantTransformer.class,
-//                            aatf3,
-//                            AutoBoxEliminatorTransformer.class]
-//        bytes = sco.optimize(FIB_FIB_X)
-//        CheckClassAdapter.verify(new ClassReader(bytes), false, new PrintWriter(System.out))
+        def aatf3 = new AspectAwareTransformer(
+                advisedTypes:[int] as Class[],
+                advisedReturnType: int,
+                callSite: new NumberNumberPlus$IntegerInteger(Fib.class, ["plus"] as String[], 0),
+                withInMethodName: "fib"
+            )
+        sco.transformers = [DeConstantTransformer.class,
+                            aatf3,
+                            AutoBoxEliminatorTransformer.class]
+        bytes = sco.optimize(FIB_FIB_X)
+        CheckClassAdapter.verify(new ClassReader(bytes), true, new PrintWriter(System.out))
     }
 
 //    how to identify a recursive call?
