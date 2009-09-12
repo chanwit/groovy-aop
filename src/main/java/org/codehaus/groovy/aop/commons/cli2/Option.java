@@ -44,7 +44,7 @@ public interface Option {
      */
     void process(
         final WriteableCommandLine commandLine,
-        final ListIterator args)
+        final ListIterator<String> args)
         throws OptionException;
 
     /**

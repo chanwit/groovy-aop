@@ -130,6 +130,7 @@ public class Command
         super.validate(commandLine);
     }
 
+    @SuppressWarnings("unchecked")
     public void appendUsage(final StringBuffer buffer,
                             final Set helpSettings,
                             final Comparator comp) {

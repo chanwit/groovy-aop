@@ -45,11 +45,11 @@ public class GroupImpl
     extends OptionImpl implements Group {
     private final String name;
     private final String description;
-    private final List options;
+    private final List<Option> options;
     private final int minimum;
     private final int maximum;
-    private final List anonymous;
-    private final SortedMap optionMap;
+    private final List<Option> anonymous;
+    private final SortedMap<String, Option> optionMap;
     private final Set prefixes;
 
     /**
@@ -62,6 +62,7 @@ public class GroupImpl
      * @param maximum the maximum number of Options for a valid CommandLine
      * @param required a flag whether this group is required
      */
+    @SuppressWarnings("unchecked")
     public GroupImpl(final List options,
                      final String name,
                      final String description,
@@ -80,10 +81,10 @@ public class GroupImpl
         this.options = Collections.unmodifiableList(options);
 
         // anonymous Argument temporary storage
-        final List newAnonymous = new ArrayList();
+        final List<Option> newAnonymous = new ArrayList<Option>();
 
         // map (key=trigger & value=Option) temporary storage
-        final SortedMap newOptionMap = new TreeMap(ReverseStringComparator.getInstance());
+        final SortedMap<String, Option> newOptionMap = new TreeMap<String, Option>(ReverseStringComparator.getInstance());
 
         // prefixes temporary storage
         final Set newPrefixes = new HashSet();
@@ -97,9 +98,9 @@ public class GroupImpl
                 i.remove();
                 newAnonymous.add(option);
             } else {
-                final Set triggers = option.getTriggers();
+                final Set<String> triggers = option.getTriggers();
 
-                for (Iterator j = triggers.iterator(); j.hasNext();) {
+                for (Iterator<String> j = triggers.iterator(); j.hasNext();) {
                     newOptionMap.put(j.next(), option);
                 }
 
@@ -125,11 +126,11 @@ public class GroupImpl
         }
 
         // filter
-        final Map tailMap = optionMap.tailMap(arg);
+        final Map<String, Option> tailMap = optionMap.tailMap(arg);
 
         // check if bursting is required
-        for (final Iterator iter = tailMap.values().iterator(); iter.hasNext();) {
-            final Option option = (Option) iter.next();
+        for (final Iterator<Option> iter = tailMap.values().iterator(); iter.hasNext();) {
+            final Option option = iter.next();
 
             if (option.canProcess(commandLine, arg)) {
                 return true;
@@ -152,19 +153,19 @@ public class GroupImpl
         return prefixes;
     }
 
-    public Set getTriggers() {
+    public Set<String> getTriggers() {
         return optionMap.keySet();
     }
 
     public void process(final WriteableCommandLine commandLine,
-                        final ListIterator arguments)
+                        final ListIterator<String> arguments)
         throws OptionException {
         String previous = null;
 
         // [START process each command line token
         while (arguments.hasNext()) {
             // grab the next argument
-            final String arg = (String) arguments.next();
+            final String arg = arguments.next();
 
             // if we have just tried to process this instance
             if (arg == previous) {
@@ -177,7 +178,7 @@ public class GroupImpl
             // remember last processed instance
             previous = arg;
 
-            final Option opt = (Option) optionMap.get(arg);
+            final Option opt = optionMap.get(arg);
 
             // option found
             if (opt != null) {
@@ -190,12 +191,12 @@ public class GroupImpl
                 // [START argument may be anonymous
                 if (looksLikeOption(commandLine, arg)) {
                     // narrow the search
-                    final Collection values = optionMap.tailMap(arg).values();
+                    final Collection<Option> values = optionMap.tailMap(arg).values();
 
                     boolean foundMemberOption = false;
 
-                    for (Iterator i = values.iterator(); i.hasNext() && !foundMemberOption;) {
-                        final Option option = (Option) i.next();
+                    for (Iterator<Option> i = values.iterator(); i.hasNext() && !foundMemberOption;) {
+                        final Option option = i.next();
 
                         if (option.canProcess(commandLine, arg)) {
                             foundMemberOption = true;
@@ -225,7 +226,7 @@ public class GroupImpl
 
                     // TODO: why do we iterate over all anonymous arguments?
                     // canProcess will always return true?
-                    for (final Iterator i = anonymous.iterator(); i.hasNext();) {
+                    for (final Iterator<Option> i = anonymous.iterator(); i.hasNext();) {
                         final Argument argument = (Argument) i.next();
 
                         if (argument.canProcess(commandLine, arguments)) {
@@ -245,8 +246,8 @@ public class GroupImpl
         // reference to first unexpected option
         Option unexpected = null;
 
-        for (final Iterator i = options.iterator(); i.hasNext();) {
-            final Option option = (Option) i.next();
+        for (final Iterator<Option> i = options.iterator(); i.hasNext();) {
+            final Option option = i.next();
 
             // needs validation?
             boolean validate = option.isRequired();
@@ -278,8 +279,8 @@ public class GroupImpl
         }
 
         // validate each anonymous argument
-        for (final Iterator i = anonymous.iterator(); i.hasNext();) {
-            final Option option = (Option) i.next();
+        for (final Iterator<Option> i = anonymous.iterator(); i.hasNext();) {
+            final Option option = i.next();
             option.validate(commandLine);
         }
     }
@@ -380,10 +381,10 @@ public class GroupImpl
         }
 
         if (arguments) {
-            for (final Iterator i = anonymous.iterator(); i.hasNext();) {
+            for (final Iterator<Option> i = anonymous.iterator(); i.hasNext();) {
                 buffer.append(' ');
 
-                final Option option = (Option) i.next();
+                final Option option = i.next();
                 option.appendUsage(buffer, helpSettingsCopy, comp);
             }
         }
@@ -393,10 +394,10 @@ public class GroupImpl
         }
     }
 
-    public List helpLines(final int depth,
+    public List<HelpLine> helpLines(final int depth,
                           final Set helpSettings,
                           final Comparator comp) {
-        final List helpLines = new ArrayList();
+        final List<HelpLine> helpLines = new ArrayList<HelpLine>();
 
         if (helpSettings.contains(DisplaySetting.DISPLAY_GROUP_NAME)) {
             final HelpLine helpLine = new HelpLineImpl(this, depth);
@@ -424,8 +425,8 @@ public class GroupImpl
         }
 
         if (helpSettings.contains(DisplaySetting.DISPLAY_GROUP_ARGUMENT)) {
-            for (final Iterator i = anonymous.iterator(); i.hasNext();) {
-                final Option option = (Option) i.next();
+            for (final Iterator<Option> i = anonymous.iterator(); i.hasNext();) {
+                final Option option = i.next();
                 helpLines.addAll(option.helpLines(depth + 1, helpSettings, comp));
             }
         }
@@ -446,7 +447,7 @@ public class GroupImpl
      * Gets the anonymous Arguments of this Group.
      * @return the Argument options of this Group
      */
-    public List getAnonymous() {
+    public List<Option> getAnonymous() {
         return anonymous;
     }
 
@@ -488,13 +489,13 @@ public class GroupImpl
     public void defaults(final WriteableCommandLine commandLine) {
         super.defaults(commandLine);
 
-        for (final Iterator i = options.iterator(); i.hasNext();) {
-            final Option option = (Option) i.next();
+        for (final Iterator<Option> i = options.iterator(); i.hasNext();) {
+            final Option option = i.next();
             option.defaults(commandLine);
         }
 
-        for (final Iterator i = anonymous.iterator(); i.hasNext();) {
-            final Option option = (Option) i.next();
+        for (final Iterator<Option> i = anonymous.iterator(); i.hasNext();) {
+            final Option option = i.next();
             option.defaults(commandLine);
         }
     }
@@ -521,8 +522,8 @@ public class GroupImpl
 }
 
 
-class ReverseStringComparator implements Comparator {
-    private static final Comparator instance = new ReverseStringComparator();
+class ReverseStringComparator implements Comparator<String> {
+    private static final Comparator<String> instance = new ReverseStringComparator();
 
     private ReverseStringComparator() {
         // just making sure nobody else creates one
@@ -532,15 +533,12 @@ class ReverseStringComparator implements Comparator {
      * Gets a singleton instance of a ReverseStringComparator
      * @return the singleton instance
      */
-    public static final Comparator getInstance() {
+    public static final Comparator<String> getInstance() {
         return instance;
     }
 
-    public int compare(final Object o1,
-                       final Object o2) {
-        final String s1 = (String) o1;
-        final String s2 = (String) o2;
-
+    @Override
+    public int compare(String s1, String s2) {
         return -s1.compareTo(s2);
     }
 }

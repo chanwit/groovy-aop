@@ -248,6 +248,7 @@ public class ArgumentBuilder {
      * @param defaultValue the default value for the Argument
      * @return this ArgumentBuilder
      */
+    @SuppressWarnings("unchecked")
     public final ArgumentBuilder withDefault(final Object defaultValue) {
         if (defaultValue == null) {
             throw new IllegalArgumentException(resources.getMessage(ResourceConstants.ARGUMENT_BUILDER_NULL_DEFAULT));
