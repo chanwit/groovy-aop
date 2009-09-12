@@ -180,15 +180,12 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
         AbstractInsnNode[] array = location.usedMap.get(invokeStmt);
 
         //
-        // remove unused ALOAD, LDC and AALOAD
+        // remove unused ALOAD, LDC and AALOAD in the reverse order
         //
         AbstractInsnNode aaload = array[0];
-        AbstractInsnNode ldc = aaload.getPrevious();
-        AbstractInsnNode aload = ldc.getPrevious();
-
+        units.remove(aaload.getPrevious().getPrevious());
+        units.remove(aaload.getPrevious());
         units.remove(aaload);
-        units.remove(ldc);
-        units.remove(aload);
 
         Type[] src = Type.getArgumentTypes(invokeStmt.desc);
         Type[] dst = Type.getArgumentTypes(newInvokeStmt.desc);
