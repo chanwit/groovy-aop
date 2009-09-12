@@ -176,9 +176,9 @@ public class TypeAdvisedClassGenerator implements Opcodes {
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         cw.visit(V1_5, ACC_PUBLIC + ACC_SYNTHETIC, newInternalClassName, null,
             "sun/reflect/GroovyAOPMagic", null);
-        FieldVisitor fv = cw.visitField(ACC_PRIVATE + ACC_STATIC + ACC_SYNTHETIC,
-            "$callSiteArray", "Ljava/lang/ref/SoftReference;", null, null);
-        fv.visitEnd();
+        cw.visitField(ACC_PRIVATE + ACC_STATIC + ACC_SYNTHETIC,
+            "$callSiteArray", "Ljava/lang/ref/SoftReference;", null, null)
+            .visitEnd();
         //
         // TODO The generated class requires its own call site arrays
         // to correctly support recursive
