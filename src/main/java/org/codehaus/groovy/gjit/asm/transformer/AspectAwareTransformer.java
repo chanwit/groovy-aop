@@ -65,29 +65,34 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
     }
 
     private void replaceBinaryCallSite(Location location, DGMResult dmg) {
-        if(dmg.op.equals("Plus")) {
-            if(dmg.desc.equals("II")) {
-                AbstractInsnNode[] array = location.usedMap.get(location.invokeStmt);
+        if(dmg.desc.equals("II")) {
+            int opcode;
+            final String op = dmg.op;
+            if(op.equals("Plus"))     { opcode = IADD; } else
+            if(op.equals("Minus"))    { opcode = ISUB; } else
+            if(op.equals("Multiply")) { opcode = IMUL; } else
+            if(op.equals("Div"))      { opcode = IDIV; } else throw new RuntimeException("NYI");
 
-                units.insert(array[1], Utils.getUnboxNodes(dmg.operand1));
-                units.insert(array[2], Utils.getUnboxNodes(dmg.operand2));
+            AbstractInsnNode[] array = location.usedMap.get(location.invokeStmt);
 
-                //
-                // replace with native op, and box it back to an object
-                //
-                InsnNode newS = new InsnNode(IADD);
-                units.set(location.invokeStmt, newS);
-                units.insert(newS, Utils.getBoxNode(dmg.operand1));
+            units.insert(array[1], Utils.getUnboxNodes(dmg.operand1));
+            units.insert(array[2], Utils.getUnboxNodes(dmg.operand2));
 
-                //
-                // clean unused ALOAD, LDC, AALOAD
-                //
-                // throw new RuntimeException("replaceBinaryCallSite: " + AbstractVisitor.OPCODES[array[0].getOpcode()] );
-                AbstractInsnNode aaload = array[0];
-                units.remove(aaload.getPrevious().getPrevious());
-                units.remove(aaload.getPrevious());
-                units.remove(aaload);
-            } else throw new RuntimeException("NYI");
+            //
+            // replace with native op, and box it back to an object
+            //
+            InsnNode newS = new InsnNode(opcode);
+            units.set(location.invokeStmt, newS);
+            units.insert(newS, Utils.getBoxNode(dmg.operand1));
+
+            //
+            // clean unused ALOAD, LDC, AALOAD
+            //
+            AbstractInsnNode aaload = array[0];
+            units.remove(aaload.getPrevious().getPrevious());
+            units.remove(aaload.getPrevious());
+            units.remove(aaload);
+
         } else throw new RuntimeException("NYI");
     }
 
