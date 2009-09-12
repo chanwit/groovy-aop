@@ -29,29 +29,29 @@ import org.codehaus.groovy.aop.abstraction.joinpoint.CallJoinpoint;
 
 public class PCallPCD extends AbstractPCD {
 
-	public PCallPCD(Object[] args) {
-		if(args.length!=1) throw new RuntimeException("NYI");
+    public PCallPCD(Object[] args) {
+        if(args.length!=1) throw new RuntimeException("NYI");
 
-		if(args[0] instanceof String  ||
-		   args[0] instanceof GString ||
-		   args[0] instanceof Symbol) {
-			setExpression(args[0].toString());
-		} else if(args[0] instanceof Map) {
-			// System.out.println("not implemented");
-			// TODO convert this to wild card
-			// ((Map)args[0]).entrySet().
-			setExpression(((Map)args[0]).toString());
-		} else {
-			throw new RuntimeException("NYI");
-		}
-	}
+        if(args[0] instanceof String  ||
+           args[0] instanceof GString ||
+           args[0] instanceof Symbol) {
+            setExpression(args[0].toString());
+        } else if(args[0] instanceof Map) {
+            // System.out.println("not implemented");
+            // TODO convert this to wild card
+            // ((Map)args[0]).entrySet().
+            setExpression(((Map)args[0]).toString());
+        } else {
+            throw new RuntimeException("NYI");
+        }
+    }
 
-	protected boolean doMatches(Pattern pattern, Joinpoint jp) {
-		if(jp instanceof CallJoinpoint == false) return false;
-		CallJoinpoint cjp=(CallJoinpoint)jp;
-		Class receiverClass = cjp.getReceiverClass();
-		String methodName = cjp.getMethodName();
-		return pattern.matcher(receiverClass.getCanonicalName()+"."+methodName).matches();
-	}
+    protected boolean doMatches(Pattern pattern, Joinpoint jp) {
+        if(jp instanceof CallJoinpoint == false) return false;
+        CallJoinpoint cjp=(CallJoinpoint)jp;
+        Class receiverClass = cjp.getReceiverClass();
+        String methodName = cjp.getMethodName();
+        return pattern.matcher(receiverClass.getCanonicalName()+"."+methodName).matches();
+    }
 
 }

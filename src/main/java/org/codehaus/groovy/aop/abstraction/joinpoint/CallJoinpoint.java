@@ -32,6 +32,16 @@ public class CallJoinpoint extends JoinpointAdapter {
     private Class<?>[] argTypes;
     private Object target;
     private Object[] callStackEntry;
+    private boolean isStatic=false;
+
+    public boolean isStatic() {
+        return isStatic;
+    }
+
+    public void setStatic(boolean isStatic) {
+        this.isStatic = isStatic;
+        this.receiverClass = (Class)target;
+    }
 
     public CallJoinpoint(Class<?> sender, String methodName, Object target, Object[] args, Class<?>[] argClasses) {
         super();
