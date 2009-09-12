@@ -12,7 +12,7 @@ class TypingAspect {
     def pc = pcall('org.codehaus.groovy.aop.tests.typing.Target.method') & args(i)
     typing(pc) {
       i >> int
-  	  return int
+        return int
     }
   }
 
@@ -20,9 +20,14 @@ class TypingAspect {
 '''
 
     void testTyping() {
+        100.times {
+            new Caller().realTest()
+            // Thread.sleep(100)
+        }
         setupAspect(aspectCode)
         100.times {
-        	new Caller().realTest()
+            new Caller().realTest()
+            // Thread.sleep(100)
         }
     }
 }

@@ -1,10 +1,14 @@
 package org.codehaus.groovy.gjit.asm.transformer;
 
+import java.util.List;
+
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 
 public class Utils implements Opcodes {
@@ -141,6 +145,18 @@ public class Utils implements Opcodes {
             throw new RuntimeException(e);
         }
         return clazz;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void prepareClassInfo(ClassNode classNode) {
+        List<MethodNode> methods = classNode.methods;
+        for(MethodNode method: methods) {
+            if(method.name.equals("<clinit>")) {
+                new ConstantCollector().internalTransform(method, null);
+            } else if(method.name.equals("$createCallSiteArray")) {
+                new CallSiteNameCollector().internalTransform(method, null);
+            }
+        }
     }
 
 

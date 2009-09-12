@@ -1,9 +1,6 @@
 package org.codehaus.groovy.gjit.asm.transformer;
 
-import java.util.HashMap;
 import java.util.Map;
-
-import javax.management.RuntimeErrorException;
 
 import org.codehaus.groovy.runtime.callsite.CallSite;
 import org.objectweb.asm.Opcodes;
@@ -19,6 +16,7 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import org.objectweb.asm.util.AbstractVisitor;
 
@@ -242,6 +240,8 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
         if(src.getSort() == Type.OBJECT  &&
            dst.getSort() >= Type.BOOLEAN && dst.getSort() <= Type.DOUBLE) {
             units.insert(nodeLocation, Utils.getUnboxNodes(dst));
+        } else if(src.getSort() == Type.OBJECT && dst.getSort() == Type.OBJECT){
+            units.insert(nodeLocation, new TypeInsnNode(CHECKCAST, dst.getInternalName()));
         }
     }
 

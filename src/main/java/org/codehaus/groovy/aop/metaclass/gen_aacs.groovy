@@ -4,6 +4,7 @@ def header = '''package org.codehaus.groovy.aop.metaclass;
 
 import groovy.lang.*;
 
+import java.io.PrintWriter;
 import java.lang.instrument.ClassDefinition;
 import java.lang.instrument.Instrumentation;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -15,9 +16,13 @@ import org.codehaus.groovy.aop.cache.*;
 import org.codehaus.groovy.gjit.agent.Agent;
 import org.codehaus.groovy.gjit.asm.AsmSingleClassOptimizer;
 import org.codehaus.groovy.gjit.asm.transformer.AspectAwareTransformer;
+import org.codehaus.groovy.gjit.asm.transformer.AutoBoxEliminatorTransformer;
+import org.codehaus.groovy.gjit.asm.transformer.DeConstantTransformer;
 import org.codehaus.groovy.gjit.asm.transformer.Transformer;
 import org.codehaus.groovy.runtime.callsite.CallSite;
 import org.codehaus.groovy.runtime.callsite.CallSiteArray;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.util.CheckClassAdapter;
 
 /**
  *   AspectAwareCallSite
@@ -213,18 +218,23 @@ def footer = '''
                 aatf.setAdvisedReturnType(returnType);
                 aatf.setCallSite(callSite);
                 aatf.setWithInMethodName(withInMethodName);
+                byte[] bytes = null;
                 try {
                     sco.setTransformers(new Transformer[]{aatf});
-                    byte[] bytes = sco.optimize(sender.getName());
+                    bytes = sco.optimize(sender.getName());
                     Instrumentation i = Agent.getInstrumentation();
                     if(i != null) {
                         i.redefineClasses(new ClassDefinition(sender, bytes));
+                        System.out.println("class " + sender.getName() + " redefined");
+                    } else {
+                        System.out.println("Instrumentation is not available");
                     }
                 } catch (Throwable e) {
                     //
                     // TODO if production, should print stack trace and continue
                     //
                     // e.printStackTrace();
+                    CheckClassAdapter.verify(new ClassReader(bytes), true, new PrintWriter(System.out));
                     throw new RuntimeException("Error while optimising class " + sender.getName(), e);
                 }
             }

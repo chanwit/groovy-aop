@@ -8,15 +8,17 @@ import java.util.List;
 import java.util.Map;
 
 import org.codehaus.groovy.gjit.asm.transformer.AutoBoxEliminatorTransformer;
+import org.codehaus.groovy.gjit.asm.transformer.CallSiteNameCollector;
+import org.codehaus.groovy.gjit.asm.transformer.ConstantCollector;
 import org.codehaus.groovy.gjit.asm.transformer.DeConstantTransformer;
 import org.codehaus.groovy.gjit.asm.transformer.Transformer;
 import org.codehaus.groovy.gjit.asm.transformer.TypePropagateTransformer;
 import org.codehaus.groovy.gjit.asm.transformer.UnwrapBinOpTransformer;
 import org.codehaus.groovy.gjit.asm.transformer.UnwrapCompareTransformer;
+import org.codehaus.groovy.gjit.asm.transformer.Utils;
 import org.codehaus.groovy.runtime.callsite.CallSite;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -122,6 +124,11 @@ public class TypeAdvisedClassGenerator implements Opcodes {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        //
+        // prepare constant and call site name array
+        //
+        Utils.prepareClassInfo(targetCN);
 
         // TODO use desc to exactly find target method
         // MethodNode targetMN = findMethod(targetCN, targetNames[1], desc);
