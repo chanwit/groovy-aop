@@ -1,7 +1,8 @@
 usePlugin 'groovy'
 usePlugin 'eclipse'
 
-version = '0.6''
+archivesBaseName = 'groovy-aop'
+version = 0.6
 
 repositories {
     mavenCentral()
