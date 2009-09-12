@@ -15,7 +15,7 @@ import org.objectweb.asm.tree.*
 import groovy.lang.ExpandoMetaClass;
 import groovy.util.GroovyTestCase
 
-public class AsmSingleClassOptimiserTests extends GroovyTestCase {
+public class AsmSingleClassOptimiserTests extends GroovyTestCase implements Opcodes {
 
     static FIB_FIB_X = "org/codehaus/groovy/gjit/soot/fibbonacci/Fib_fib_x"
 
@@ -82,7 +82,8 @@ public class AsmSingleClassOptimiserTests extends GroovyTestCase {
             )
         sco.transformers = [DeConstantTransformer.class,
                             aatf,
-                            AutoBoxEliminatorTransformer.class]
+                            AutoBoxEliminatorTransformer.class,
+                            UnusedCSARemovalTransformer.class]
         byte[] bytes = sco.optimize(FIB_FIB_X)
         assert bytes != null
         CheckClassAdapter.verify(new ClassReader(bytes), false, new PrintWriter(System.out))
@@ -95,7 +96,8 @@ public class AsmSingleClassOptimiserTests extends GroovyTestCase {
             )
         sco.transformers = [DeConstantTransformer.class,
                             aatf2,
-                            AutoBoxEliminatorTransformer.class]
+                            AutoBoxEliminatorTransformer.class,
+                            UnusedCSARemovalTransformer.class]
         bytes = sco.optimize(FIB_FIB_X)
         CheckClassAdapter.verify(new ClassReader(bytes), false, new PrintWriter(System.out))
 
@@ -107,8 +109,39 @@ public class AsmSingleClassOptimiserTests extends GroovyTestCase {
             )
         sco.transformers = [DeConstantTransformer.class,
                             aatf3,
-                            AutoBoxEliminatorTransformer.class]
+                            AutoBoxEliminatorTransformer.class,
+                            UnusedCSARemovalTransformer.class]
         bytes = sco.optimize(FIB_FIB_X)
-        CheckClassAdapter.verify(new ClassReader(bytes), true, new PrintWriter(System.out))
+        CheckClassAdapter.verify(new ClassReader(bytes), false, new PrintWriter(System.out))
+
+        def cr = new ClassReader(bytes)
+        def cn = new ClassNode()
+        cr.accept cn, ClassReader.SKIP_DEBUG
+        def u = (cn.@methods.find { it.name == "fib" }).instructions
+
+        assert asm {
+            iload 0
+            iconst_2
+        } == u[0..1]
+        assert IF_ICMPGE == u[2].opcode
+        assert asm {
+            iload 0
+            ireturn
+        } == u[3..4]
+        assert u[5].opcode == GOTO
+        assert u[6] instanceof LabelNode
+        assert asm {
+            iload 0
+            iconst_1
+            isub
+            invokestatic "org/codehaus/groovy/gjit/soot/fibbonacci/Fib_fib_x", "fib",[int],int
+            iload 0
+            iconst_2
+            isub
+            invokestatic "org/codehaus/groovy/gjit/soot/fibbonacci/Fib_fib_x", "fib",[int],int
+            iadd
+        } == u[7..15]
+        assert u[16] instanceof LabelNode
+        assert u[17].opcode == IRETURN
     }
 }
