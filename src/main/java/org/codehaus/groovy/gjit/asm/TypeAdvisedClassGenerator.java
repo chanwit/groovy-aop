@@ -246,45 +246,41 @@ public class TypeAdvisedClassGenerator implements Opcodes {
 
     private void transformCreateCallSiteArray(MethodNode createCallSiteArray,
             String newInternalClassName) {
-        {
-            InsnList units = createCallSiteArray.instructions;
-            AbstractInsnNode s = units.getFirst();
-            while(s.getOpcode() != GETSTATIC) s = s.getNext();
-            LdcInsnNode newS = new LdcInsnNode(Type.getType("L"+ newInternalClassName+ ";"));
-            units.set(s, newS);
-        }
+        InsnList units = createCallSiteArray.instructions;
+        AbstractInsnNode s = units.getFirst();
+        while(s.getOpcode() != GETSTATIC) s = s.getNext();
+        LdcInsnNode newS = new LdcInsnNode(Type.getType("L"+ newInternalClassName+ ";"));
+        units.set(s, newS);
     }
 
     private void transformGetCallSiteArray(MethodNode getCallSiteArray,
             String newInternalClassName) {
-        {
-            InsnList units = getCallSiteArray.instructions;
-            AbstractInsnNode s = units.getFirst();
-            while(s != null)  {
-                switch(s.getOpcode()) {
-                    case GETSTATIC:
-                    case PUTSTATIC: {
-                        FieldInsnNode f = (FieldInsnNode)s;
-                        FieldInsnNode newS = new FieldInsnNode(f.getOpcode(),
-                                    newInternalClassName,
-                                    f.name, f.desc);
+        InsnList units = getCallSiteArray.instructions;
+        AbstractInsnNode s = units.getFirst();
+        while(s != null)  {
+            switch(s.getOpcode()) {
+                case GETSTATIC:
+                case PUTSTATIC: {
+                    FieldInsnNode f = (FieldInsnNode)s;
+                    FieldInsnNode newS = new FieldInsnNode(f.getOpcode(),
+                                newInternalClassName,
+                                f.name, f.desc);
+                    units.set(s, newS);
+                    s = newS.getNext();
+                    continue;
+                }
+                case INVOKESTATIC: {
+                    MethodInsnNode m = (MethodInsnNode)s;
+                    if(m.name.equals("$createCallSiteArray")) {
+                        MethodInsnNode newS = new MethodInsnNode(m.getOpcode(),
+                                newInternalClassName, m.name, m.desc);
                         units.set(s, newS);
                         s = newS.getNext();
                         continue;
                     }
-                    case INVOKESTATIC: {
-                        MethodInsnNode m = (MethodInsnNode)s;
-                        if(m.name.equals("$createCallSiteArray")) {
-                            MethodInsnNode newS = new MethodInsnNode(m.getOpcode(),
-                                    newInternalClassName, m.name, m.desc);
-                            units.set(s, newS);
-                            s = newS.getNext();
-                            continue;
-                        }
-                    }
                 }
-                s = s.getNext();
             }
+            s = s.getNext();
         }
     }
 
