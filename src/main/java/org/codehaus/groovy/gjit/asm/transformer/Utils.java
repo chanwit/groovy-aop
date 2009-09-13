@@ -126,6 +126,7 @@ public class Utils implements Opcodes {
     }
 
     public static Class<?> defineClass(String className, byte[] bytes) {
+        // System.out.println("defining new class: " + className);
         Class<?> clazz = null;
         try {
             ClassLoader loader = ClassLoader.getSystemClassLoader();
@@ -142,7 +143,8 @@ public class Utils implements Opcodes {
                 method.setAccessible(false);
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            //throw new RuntimeException(e);
+            e.printStackTrace();
         }
         return clazz;
     }

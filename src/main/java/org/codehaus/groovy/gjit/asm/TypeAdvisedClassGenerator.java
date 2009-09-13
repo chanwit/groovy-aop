@@ -67,12 +67,14 @@ public class TypeAdvisedClassGenerator implements Opcodes {
         public final String name;
         public final String desc;
         public final byte[] body;
-        public Result(String owner, String name, String desc, byte[] body) {
+        public final boolean firstTime;
+        public Result(String owner, String name, String desc, byte[] body, boolean firstTime) {
             super();
             this.owner = owner;
             this.name = name;
             this.desc = desc;
             this.body = body;
+            this.firstTime = firstTime;
         }
     }
 
@@ -238,8 +240,12 @@ public class TypeAdvisedClassGenerator implements Opcodes {
         // cached for further optimisation
         //
         byte[] bytes = cw.toByteArray();
+        boolean firstTime = true;
+        if(ClassBodyCache.v().containsKey(newInternalClassName)) {
+            firstTime = false;
+        }
         ClassBodyCache.v().put(newInternalClassName, bytes);
-        return new Result(newInternalClassName, targetMN.name, methodDescriptor, bytes);
+        return new Result(newInternalClassName, targetMN.name, methodDescriptor, bytes, firstTime);
     }
 
     private void relocateGetCallSiteArray(MethodNode targetMN, String newInternalClassName) {

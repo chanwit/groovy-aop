@@ -53,7 +53,7 @@ public class CallSiteNameCollector implements Transformer, Opcodes {
             }
             s = s.getNext();
         }
-        System.out.println("owner: " + owner);
+        // System.out.println("owner: " + owner);
         CallSiteNameHolder.v().put(owner, names.toArray(new String[names.size()]));
     }
 

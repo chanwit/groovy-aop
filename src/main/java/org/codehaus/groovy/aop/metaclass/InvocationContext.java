@@ -36,7 +36,11 @@ public class InvocationContext extends GroovyObjectSupport {
     protected Symbol[] binding;
 
     public void setBinding(Symbol[] binding) {
-        this.binding = binding;
+        if(binding == null) {
+            this.binding = new Symbol[]{};
+        } else {
+            this.binding = binding;
+        }
     }
 
     public Object[] getArgs() {

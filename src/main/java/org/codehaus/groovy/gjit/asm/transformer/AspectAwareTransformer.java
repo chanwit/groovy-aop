@@ -1,8 +1,10 @@
 package org.codehaus.groovy.gjit.asm.transformer;
 
+import java.io.PrintWriter;
 import java.util.Map;
 
 import org.codehaus.groovy.runtime.callsite.CallSite;
+import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 
 import org.codehaus.groovy.gjit.asm.TypeAdvisedClassGenerator;
@@ -19,6 +21,7 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import org.objectweb.asm.util.AbstractVisitor;
+import org.objectweb.asm.util.CheckClassAdapter;
 
 
 public class AspectAwareTransformer implements Transformer, Opcodes {
@@ -140,12 +143,19 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
 
     private boolean recursive(Location location, CallSite callSite) {
         String typeOfCall = ((MethodInsnNode)location.invokeStmt).name;
+        // owner is Fib_fib_x
         // callSite is Fib_fib_x$fib
+        // old callSite is Fib$fib
         if(typeOfCall.equals("callStatic")) {
             // 1. check recursive of callStatic
-            String callSiteClassName = callSite.getClass().getName();
+            String callSiteClassName = callSite.getArray().owner.getName() + "$" + callSite.getName();
+            // callSite.getClass().getName();
             String names[] = callSiteClassName.split("\\$|_");
-            if(names.length != 4) throw new RuntimeException("Name pattern not support: " + callSiteClassName);
+            if(names.length != 4) {
+                System.out.println("Name pattern not support: " + callSiteClassName);
+                return false;
+                //throw new RuntimeException("Name pattern not support: " + callSiteClassName);
+            }
             //   1.1 same call site name
             if(names[1].equals(names[3])==false) return false;
             //   1.2 same class
@@ -246,15 +256,21 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
     }
 
     private MethodInsnNode typePropagate(CallSite callSite) {
-        TypeAdvisedClassGenerator atacg = new TypeAdvisedClassGenerator();
-        atacg.setAdvisedTypes(advisedTypes);
-        atacg.setAdvisedReturnType(advisedReturnType);
-        Result result = atacg.perform(callSite);
+        TypeAdvisedClassGenerator tacGen = new TypeAdvisedClassGenerator();
+        tacGen.setAdvisedTypes(advisedTypes);
+        tacGen.setAdvisedReturnType(advisedReturnType);
+        Result result = tacGen.perform(callSite);
+
+        // DEBUG: CheckClassAdapter.verify(new ClassReader(result.body), true, new PrintWriter(System.out));
+
         //
         // do caching the generated class for further optimisation
         //
-
-        Utils.defineClass(result.owner.replace('/', '.'), result.body);
+        if(result.firstTime) {
+            Utils.defineClass(result.owner.replace('/', '.'), result.body);
+        } else {
+            // do nothing
+        }
         return new MethodInsnNode(INVOKESTATIC, result.owner, result.name, result.desc);
     }
 
