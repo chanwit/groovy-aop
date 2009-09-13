@@ -16,6 +16,8 @@ import groovy.util.GroovyTestCase
             Caller.realTest(25)
             Caller.realTest(30)
             Caller.realTest(35)
+            Caller.realTest(36)
+            Caller.realTest(37)
         }
         unweave(FibAspect)
     }
