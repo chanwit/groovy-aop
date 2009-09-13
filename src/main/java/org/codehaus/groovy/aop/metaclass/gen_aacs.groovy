@@ -2,27 +2,35 @@
 
 def header = '''package org.codehaus.groovy.aop.metaclass;
 
-import groovy.lang.*;
+import groovy.lang.Closure;
+import groovy.lang.GroovyObject;
 
 import java.io.PrintWriter;
 import java.lang.instrument.ClassDefinition;
 import java.lang.instrument.Instrumentation;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.codehaus.groovy.aop.*;
+import org.codehaus.groovy.aop.AspectRegistry;
 import org.codehaus.groovy.aop.abstraction.Joinpoint;
 import org.codehaus.groovy.aop.abstraction.joinpoint.CallJoinpoint;
-import org.codehaus.groovy.aop.cache.*;
+import org.codehaus.groovy.aop.cache.AdviceCacheL1;
+import org.codehaus.groovy.aop.cache.AdviceCacheL2;
+import org.codehaus.groovy.gjit.SingleClassOptimizer;
 import org.codehaus.groovy.gjit.agent.Agent;
 import org.codehaus.groovy.gjit.asm.AsmSingleClassOptimizer;
+import org.codehaus.groovy.gjit.asm.TypeAdvisedReOptimizer;
 import org.codehaus.groovy.gjit.asm.transformer.AspectAwareTransformer;
 import org.codehaus.groovy.gjit.asm.transformer.AutoBoxEliminatorTransformer;
 import org.codehaus.groovy.gjit.asm.transformer.DeConstantTransformer;
 import org.codehaus.groovy.gjit.asm.transformer.Transformer;
+import org.codehaus.groovy.gjit.asm.transformer.UnusedCSARemovalTransformer;
 import org.codehaus.groovy.runtime.callsite.CallSite;
 import org.codehaus.groovy.runtime.callsite.CallSiteArray;
+import org.codehaus.groovy.runtime.callsite.StaticMetaMethodSite;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.util.CheckClassAdapter;
+
+import sun.reflect.GroovyAOPMagic;
 
 /**
  *   AspectAwareCallSite
@@ -48,6 +56,12 @@ public class AspectAwareCallSite implements CallSite {
 
     public AspectAwareCallSite(CallSite delegate) {
         this.delegate = delegate;
+//        System.out.println("===");
+//        System.out.println("delegate owner : " + delegate.getArray().owner.getName());
+//        System.out.println("delegate class : " + delegate.getClass().getName());
+//        System.out.println("delegate name  : " + delegate.getName());
+//        System.out.println("delegate super : " + delegate.getClass().getSuperclass().getName());
+//        System.out.println("===");        
     }
 '''
 
@@ -124,6 +138,9 @@ def text = """
             EffectiveAdvices effectiveAdviceCodes = new EffectiveAdvices();
             Class<?> sender = delegate.getArray().owner;
             $create_jp
+            if(delegate instanceof StaticMetaMethodSite) {
+                ((CallJoinpoint)jp).setStatic(true);
+            }            
             matcher.matchPerClass(effectiveAdviceCodes, jp);
             if(effectiveAdviceCodes.containsTypeAdvice()) {
                 performTypeAdvice(effectiveAdviceCodes, delegate, jp);
@@ -183,20 +200,32 @@ def text = """
 def footer = '''
     private void performTypeAdvice(EffectiveAdvices effectiveAdviceCodes,
             final CallSite callSite, Joinpoint jp) throws Throwable {
+        // System.out.println("perform Type Advice:" + callSite);
         final Class<?> sender = callSite.getArray().owner;
         // create typing-invocation-context
-        final TypingInvocationContext tic = new TypingInvocationContext();
-        tic.setBinding(jp.getBinding());
         // execute type advice closure to obtain type intervention
         Closure[] typing = effectiveAdviceCodes.getTypeAdviceClosureArray();
         Class<?> returnTypeTemp=null;
+        TypingInvocationContext ticTemp=null;
+        // System.out.println("typing length: " + typing.length);
         for (int i = 0; i < typing.length; i++) {
-            typing[i].setDelegate(tic);
+            TypingInvocationContext _tic = new TypingInvocationContext();
+            _tic.setBinding(jp.getBinding());
+            typing[i].setDelegate(_tic);
             typing[i].setResolveStrategy(Closure.DELEGATE_ONLY);
-            Object result = typing[i].call(tic);
-            if(result instanceof Class) { returnTypeTemp = (Class<?>)result; }
+            Object result = null;
+            try {
+                result = typing[i].call(_tic);
+                if(result != null && result instanceof Class) { returnTypeTemp = (Class<?>)result; }
+                ticTemp = _tic;
+            }catch(Throwable e) {
+                throw e;
+                // continue;
+            }
         }
+        final TypingInvocationContext tic = ticTemp;
         final Class<?> returnType = returnTypeTemp;
+        // System.out.println("advised return type: " + returnType);
 
         String withInMethodNameTemp=null;
         StackTraceElement[] sea = Thread.currentThread().getStackTrace();
@@ -212,30 +241,47 @@ def footer = '''
         new Thread() {
             @Override
             public void run() {
-                AsmSingleClassOptimizer sco = new AsmSingleClassOptimizer();
-                AspectAwareTransformer aatf = new AspectAwareTransformer();
-                aatf.setAdvisedTypes(tic.getArgTypeOfBinding());
-                aatf.setAdvisedReturnType(returnType);
-                aatf.setCallSite(callSite);
-                aatf.setWithInMethodName(withInMethodName);
+                SingleClassOptimizer sco;
+                if(sender.getSuperclass() == GroovyAOPMagic.class) {
+                    // System.out.println(">> doing TypeAdvisedReOptimizer");
+                    sco = new TypeAdvisedReOptimizer();
+                    AspectAwareTransformer aatf = new AspectAwareTransformer();
+                    aatf.setAdvisedTypes(tic.getArgTypeOfBinding());
+                    aatf.setAdvisedReturnType(returnType);
+                    aatf.setCallSite(callSite);
+                    aatf.setWithInMethodName(withInMethodName);
+                    sco.setTransformers(new Transformer[]{
+                        new DeConstantTransformer(),
+                        aatf,
+                        new AutoBoxEliminatorTransformer(),
+                        new UnusedCSARemovalTransformer()
+                    });
+                } else {
+                    // System.out.println(">> doing AsmSingleClassOptimizer");
+                    sco = new AsmSingleClassOptimizer();
+                    AspectAwareTransformer aatf = new AspectAwareTransformer();
+                    aatf.setAdvisedTypes(tic.getArgTypeOfBinding());
+                    aatf.setAdvisedReturnType(returnType);
+                    aatf.setCallSite(callSite);
+                    aatf.setWithInMethodName(withInMethodName);
+                    sco.setTransformers(new Transformer[]{aatf});
+                }
                 byte[] bytes = null;
                 try {
-                    sco.setTransformers(new Transformer[]{aatf});
                     bytes = sco.optimize(sender.getName());
                     Instrumentation i = Agent.getInstrumentation();
                     if(i != null) {
                         i.redefineClasses(new ClassDefinition(sender, bytes));
-                        System.out.println("class " + sender.getName() + " redefined");
-                    } else {
-                        System.out.println("Instrumentation is not available");
+                        // System.out.println(">>>>>>>> class " + sender.getName() + " redefined");
+                        // CheckClassAdapter.verify(new ClassReader(bytes), true, new PrintWriter(System.out));
                     }
                 } catch (Throwable e) {
                     //
                     // TODO if production, should print stack trace and continue
                     //
-                    // e.printStackTrace();
-                    CheckClassAdapter.verify(new ClassReader(bytes), true, new PrintWriter(System.out));
-                    throw new RuntimeException("Error while optimising class " + sender.getName(), e);
+                    e.printStackTrace();
+                    // CheckClassAdapter.verify(new ClassReader(bytes), true, new PrintWriter(System.out));
+                    // throw new RuntimeException("Error while optimising class " + sender.getName(), e);
                 }
             }
         }.start();
