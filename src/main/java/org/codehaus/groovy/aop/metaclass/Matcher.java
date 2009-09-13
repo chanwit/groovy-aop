@@ -23,11 +23,15 @@ public class Matcher {
         this.registry = registry;
         l1Cache = cache;
         l2Cache = cache2;
+
+        // always clear cache
+        l1Cache.reset();
+        l2Cache.reset();
     }
-    
+
     //
     // TODO: matchPerInstance
-    // 
+    //
 
     public void matchPerClass(EffectiveAdvices effAdvices, Joinpoint jp) {
         //
@@ -37,7 +41,7 @@ public class Matcher {
             effAdvices.addAll(l1Cache.get(jp));
             return;
         }
-        
+
         //
         // if there is no jp in L1:
         //  - pick aspects from the registry
@@ -66,7 +70,7 @@ public class Matcher {
         //
         EffectiveAdvices result = l2Cache.getByJoinpoint(jp);
         l1Cache.put(jp, result);
-        
+
         //
         // then all matched advice is going to be the result
         //
