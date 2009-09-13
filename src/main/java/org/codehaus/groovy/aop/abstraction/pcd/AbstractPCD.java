@@ -71,7 +71,6 @@ public abstract class AbstractPCD extends ComposablePCD {
         return expression;
     }
 
-/*
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
@@ -109,7 +108,7 @@ public abstract class AbstractPCD extends ComposablePCD {
             return false;
         return true;
     }
-*/
+
     public PCD getNextNode() {
         return nextNode;
     }
