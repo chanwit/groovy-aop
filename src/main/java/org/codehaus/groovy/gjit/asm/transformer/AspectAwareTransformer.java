@@ -136,13 +136,16 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
     }
 
     private void replaceRecursion(Location location) {
-        String owner = callSite.getClass().getName().split("\\$")[0].replace('.', '/');
+        String owner = callSite.getArray().owner.getName().replace('.', '/');
+        System.out.println("call site to replace: " + owner);
         MethodInsnNode newInvokeStmt = new MethodInsnNode(INVOKESTATIC, owner, body.name, body.desc);
         replaceCallSite(location, newInvokeStmt);
     }
 
     private boolean recursive(Location location, CallSite callSite) {
         String typeOfCall = ((MethodInsnNode)location.invokeStmt).name;
+        System.out.println(">> recursive");
+        System.out.println("owner: " + callSite.getArray().owner.getName());
         // owner is Fib_fib_x
         // callSite is Fib_fib_x$fib
         // old callSite is Fib$fib

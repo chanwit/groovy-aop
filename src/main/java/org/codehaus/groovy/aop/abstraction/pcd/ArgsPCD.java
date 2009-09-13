@@ -7,7 +7,7 @@ import org.codehaus.groovy.aop.abstraction.Joinpoint;
 
 public class ArgsPCD extends AbstractPCD {
 
-    private Symbol[] args;
+    private final Symbol[] args;
 
     public ArgsPCD(Object[] args) {
         this.args = new Symbol[args.length];
@@ -19,6 +19,7 @@ public class ArgsPCD extends AbstractPCD {
 
     @Override
     protected boolean doMatches(Pattern pt, Joinpoint jp) {
+        // System.out.println("(ArgsPCD) in do matches: " + args);
         jp.setBinding(args);
         // always return true
         // until ? a number of argument not matched?
