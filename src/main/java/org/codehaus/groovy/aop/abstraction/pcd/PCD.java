@@ -22,14 +22,16 @@ import org.codehaus.groovy.aop.abstraction.Joinpoint;
 
 public interface PCD {
 
-	public static int AND = 1;
-	public static int OR = 2;
-	public static int NOT = 3;
+    public static int AND = 1;
+    public static int OR = 2;
+    public static int NOT = 3;
 
 //	Object and(Object target);
 //	Object or(Object target);
 //	Object negate();
 
-	boolean matches(Joinpoint jp);
+    boolean matches(Joinpoint jp);
+
+    void exposeContext(Joinpoint jp);
 
 }

@@ -117,6 +117,7 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
 
     private DGMResult isDGMCallSite(CallSite callSite) {
         // NumberNumberPlus$IntegerInteger
+        // System.out.println("DGM detected");
         String name = callSite.getClass().getName();
         String[] names = name.split("\\.|\\$");
         int len = names.length;
@@ -137,15 +138,15 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
 
     private void replaceRecursion(Location location) {
         String owner = callSite.getArray().owner.getName().replace('.', '/');
-        System.out.println("call site to replace: " + owner);
+        //System.out.println("call site to replace: " + owner);
         MethodInsnNode newInvokeStmt = new MethodInsnNode(INVOKESTATIC, owner, body.name, body.desc);
         replaceCallSite(location, newInvokeStmt);
     }
 
     private boolean recursive(Location location, CallSite callSite) {
         String typeOfCall = ((MethodInsnNode)location.invokeStmt).name;
-        System.out.println(">> recursive");
-        System.out.println("owner: " + callSite.getArray().owner.getName());
+        // System.out.println(">> recursive");
+        // System.out.println("owner: " + callSite.getArray().owner.getName());
         // owner is Fib_fib_x
         // callSite is Fib_fib_x$fib
         // old callSite is Fib$fib
@@ -155,7 +156,7 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
             // callSite.getClass().getName();
             String names[] = callSiteClassName.split("\\$|_");
             if(names.length != 4) {
-                System.out.println("Name pattern not support: " + callSiteClassName);
+                // System.out.println("Name pattern not support: " + callSiteClassName);
                 return false;
                 //throw new RuntimeException("Name pattern not support: " + callSiteClassName);
             }

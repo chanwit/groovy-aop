@@ -1,12 +1,10 @@
 package org.codehaus.groovy.aop.metaclass;
 
-import java.util.ArrayList;
-
 import groovy.lang.MissingPropertyException;
 
 public class TypingInvocationContext extends InvocationContext {
 
-	@Override
+    @Override
     public Object propertyMissing(String name) {
         int found = -1;
         for(int i=0; i < binding.length; i++) {
@@ -19,13 +17,13 @@ public class TypingInvocationContext extends InvocationContext {
         return binding[found];
     }
 
-	public Class<?>[] getArgTypeOfBinding() {
-		Class<?>[] result = new Class<?>[binding.length];
-		for (int i = 0; i < binding.length; i++) {
-			if(result[binding[i].getIndex()] == null) {
-				result[binding[i].getIndex()] = binding[i].getType();
-			}
-		}
-		return result;
-	}
+    public Class<?>[] getArgTypeOfBinding() {
+        Class<?>[] result = new Class<?>[binding.length];
+        for (int i = 0; i < binding.length; i++) {
+            if(result[binding[i].getIndex()] == null) {
+                result[binding[i].getIndex()] = binding[i].getType();
+            }
+        }
+        return result;
+    }
 }

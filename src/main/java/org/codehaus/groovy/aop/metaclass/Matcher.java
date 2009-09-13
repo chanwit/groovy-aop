@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.codehaus.groovy.aop.AspectRegistry;
+import org.codehaus.groovy.aop.Symbol;
 import org.codehaus.groovy.aop.abstraction.Advice;
 import org.codehaus.groovy.aop.abstraction.Aspect;
 import org.codehaus.groovy.aop.abstraction.Joinpoint;
@@ -58,8 +59,11 @@ public class Matcher {
             for (Iterator<Advice> i = advices.iterator(); i.hasNext();) {
                 Advice advice = i.next();
                 Pointcut pc = advice.getPointcut();
+                Symbol[] old = jp.getBinding();
                 if (pc != null && pc.matches(jp)) {
                     l2Cache.put(jp, aspect, advice);
+                } else {
+                    jp.setBinding(old);
                 }
             }
         }

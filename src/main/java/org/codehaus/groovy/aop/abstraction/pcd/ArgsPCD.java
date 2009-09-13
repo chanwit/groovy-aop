@@ -5,9 +5,17 @@ import java.util.regex.Pattern;
 import org.codehaus.groovy.aop.Symbol;
 import org.codehaus.groovy.aop.abstraction.Joinpoint;
 
-public class ArgsPCD extends AbstractPCD {
+public class ArgsPCD extends AbstractPCD implements Cloneable {
 
-    private final Symbol[] args;
+    private Symbol[] args;
+
+    public Symbol[] getArgs() {
+        return args;
+    }
+
+    public void setArgs(Symbol[] args) {
+        this.args = args;
+    }
 
     public ArgsPCD(Object[] args) {
         this.args = new Symbol[args.length];
@@ -19,11 +27,12 @@ public class ArgsPCD extends AbstractPCD {
 
     @Override
     protected boolean doMatches(Pattern pt, Joinpoint jp) {
-        // System.out.println("(ArgsPCD) in do matches: " + args);
         jp.setBinding(args);
-        // always return true
-        // until ? a number of argument not matched?
         return true;
+    }
+
+    public void exposeContext(Joinpoint jp) {
+        jp.setBinding(args);
     }
 
 }
