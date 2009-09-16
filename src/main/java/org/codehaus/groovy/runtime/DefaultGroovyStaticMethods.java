@@ -179,7 +179,7 @@ public class DefaultGroovyStaticMethods {
      * @since 1.5.7
      */
     public static Date parse( Date self, String format, String input ) throws ParseException {
-    	return new SimpleDateFormat( format ).parse( input );
+        return new SimpleDateFormat( format ).parse( input );
     }
 
     /**
@@ -212,14 +212,14 @@ public class DefaultGroovyStaticMethods {
     public static ResourceBundle getBundle(ResourceBundle self, String bundleName, Locale locale) {
         ClassLoader targetCL = ReflectionUtils.getCallingClass().getClassLoader();
         if (targetCL == null) targetCL = ClassLoader.getSystemClassLoader();
-        return ResourceBundle.getBundle(bundleName, locale, targetCL);        
+        return ResourceBundle.getBundle(bundleName, locale, targetCL);
     }
 
     /**
      * Weave an apsect into the global aspect registry.
      * @param aspectClass
      * @since 1.6.4-AOP
-     */    
+     */
     public static Object weave(Object self, Class<?> aspectClass) throws Throwable {
         return Weaver.install(aspectClass);
     }
@@ -231,5 +231,14 @@ public class DefaultGroovyStaticMethods {
      */
     public static void unweave(Object self, Class<?> aspectClass) throws Throwable {
         Weaver.uninstall(aspectClass);
-    }    
+    }
+
+    public static Object getTic(Object self) {
+        TicTocStack.tic();
+        return null;
+    }
+
+    public static Object getToc(Object self) {
+        return TicTocStack.toc();
+    }
 }
