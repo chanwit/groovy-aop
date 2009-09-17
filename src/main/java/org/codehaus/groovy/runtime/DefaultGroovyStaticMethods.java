@@ -20,13 +20,19 @@ import groovy.lang.Closure;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.ResourceBundle;
 import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.regex.Matcher;
-import org.codehaus.groovy.runtime.typehandling.DefaultTypeTransformation;
-import org.codehaus.groovy.reflection.ReflectionUtils;
 
 import org.codehaus.groovy.aop.Weaver;
+import org.codehaus.groovy.geelab.linearalgebra.ComplexMatrix;
+import org.codehaus.groovy.geelab.linearalgebra.Matrix;
+import org.codehaus.groovy.geelab.linearalgebra.MatrixFactory;
+import org.codehaus.groovy.geelab.osp.numerics.FFT;
+import org.codehaus.groovy.geelab.osp.numerics.FFT2D;
+import org.codehaus.groovy.geelab.osp.numerics.FFTReal;
+import org.codehaus.groovy.reflection.ReflectionUtils;
+import org.codehaus.groovy.runtime.typehandling.DefaultTypeTransformation;
 
 /**
  * This class defines all the new static groovy methods which appear on normal
@@ -233,12 +239,54 @@ public class DefaultGroovyStaticMethods {
         Weaver.uninstall(aspectClass);
     }
 
+    /**
+     * Matlab-like commands
+     *
+     * @param self
+     * @return
+     */
     public static Object getTic(Object self) {
         TicTocStack.tic();
         return null;
     }
 
+    /**
+     * Matlab-like commands
+     *
+     * @param self
+     * @return
+     */
     public static Object getToc(Object self) {
         return TicTocStack.toc();
     }
+
+    /**
+     * Matlab-like commands
+     *
+     * @param self
+     * @return
+     */
+    public static void disp(Object self, Object str) {
+        System.out.println(str.toString());
+    }
+
+    public static Object zeros(Object self, Integer i, Integer j) {
+        ComplexMatrix c = new ComplexMatrix(i, j, new double[i*j*2]);
+        c.fill(0, 0);
+        return c;
+    }
+
+    public static Object ones(Object self, Integer i, Integer j) {
+        ComplexMatrix c = new ComplexMatrix(i, j, new double[i*j*2]);
+        c.fill(1, 0);
+        return c;
+    }
+
+    public static Object fft2(Object self, ComplexMatrix mat) {
+        FFT2D fft2d = new FFT2D(mat.getRows(), mat.getCols());
+        double[] result = mat.getData().clone();
+        fft2d.transform(result);
+        return new ComplexMatrix(mat.getRows(), mat.getCols(), result);
+    }
+
 }
