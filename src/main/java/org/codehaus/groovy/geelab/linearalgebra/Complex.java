@@ -26,11 +26,21 @@ public class Complex {
     @Override
     public String toString() {
         if(imaginary > 0) {
-            return real + " +" + imaginary + "i";
+            return real + " + " + imaginary + "i";
         } else if(imaginary < 0) {
-            return real + " -" + Math.abs(imaginary) + "i";
+            return real + " - " + Math.abs(imaginary) + "i";
         } else {
             return real + "";
+        }
+    }
+
+    public static class Imaginary {
+        public final double v;
+        public Imaginary(double v) {
+            this.v = v;
+        }
+        public Object plus(double n) {
+            return new Complex(n, this.v);
         }
     }
 }
