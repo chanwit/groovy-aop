@@ -42,5 +42,8 @@ public class Complex {
         public Object plus(double n) {
             return new Complex(n, this.v);
         }
+        public Object plus(Complex n) {
+            return new Complex(n.real, n.imaginary + this.v);
+        }
     }
 }

@@ -36,6 +36,7 @@ public class Console {
         Script_metaClass.registerBeanProperty("all", new Symbol("all"));
 
         Script_metaClass.registerInstanceMethod("clear", new Closure(Console.class){
+            @SuppressWarnings("unchecked")
             @Override
             public Object call(Object[] args) {
                 Script self = (Script) getDelegate();
@@ -59,6 +60,7 @@ public class Console {
                 return null;
             }
 
+            @SuppressWarnings("unchecked")
             @Override
             public Class[] getParameterTypes() {
                 return new Class[]{Object.class};
@@ -74,7 +76,7 @@ public class Console {
                 Imaginary n = (Imaginary)arguments[0];
                 return new Complex(real, n.v);
             }
-
+            @SuppressWarnings("unchecked")
             @Override
             public Class[] getParameterTypes() {
                 return new Class[]{Imaginary.class};
@@ -86,7 +88,7 @@ public class Console {
             public Object call(Object[] args) {
                 return new Imaginary(((Number)getDelegate()).doubleValue());
             }
-
+            @SuppressWarnings("unchecked")
             @Override
             public Class[] getParameterTypes() {
                 return new Class[]{};
@@ -95,7 +97,7 @@ public class Console {
     }
 
     public static void main(String[] args) throws Throwable {
-        registerMethods();
+        Console.registerMethods();
 
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         groovy.ui.Console console = new groovy.ui.Console();
