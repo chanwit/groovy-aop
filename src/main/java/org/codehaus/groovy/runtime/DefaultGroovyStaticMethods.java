@@ -271,14 +271,26 @@ public class DefaultGroovyStaticMethods {
         System.out.println(str.toString());
     }
 
-    public static Object zeros(Object self, Integer i, Integer j) {
-        ComplexMatrix c = new ComplexMatrix(i, j, new double[i*j*2]);
+    public static Object zeros(Object self, Integer n) {
+        ComplexMatrix c = new ComplexMatrix(n, n, new double[n*n*2]);
         c.fill(0, 0);
         return c;
     }
 
-    public static Object ones(Object self, Integer i, Integer j) {
-        ComplexMatrix c = new ComplexMatrix(i, j, new double[i*j*2]);
+    public static Object zeros(Object self, Integer n, Integer m) {
+        ComplexMatrix c = new ComplexMatrix(n, m, new double[n*m*2]);
+        c.fill(0, 0);
+        return c;
+    }
+
+    public static Object ones(Object self, Integer n) {
+        ComplexMatrix c = new ComplexMatrix(n, n, new double[n*n*2]);
+        c.fill(1, 0);
+        return c;
+    }
+
+    public static Object ones(Object self, Integer n, Integer m) {
+        ComplexMatrix c = new ComplexMatrix(n, m, new double[n*m*2]);
         c.fill(1, 0);
         return c;
     }

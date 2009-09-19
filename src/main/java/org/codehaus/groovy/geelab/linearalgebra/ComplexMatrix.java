@@ -176,6 +176,26 @@ public class ComplexMatrix {
         return new Object[]{r,c,v};
     }
 
+    public void each(Closure closure) {
+        for(int j=0; j<cols;j++) {
+            for(int i=0; i<rows;i++) {
+                int k = (i*rowspan) + (2*j);
+                int k1 = k + 1;
+                double re = data[k];
+                double im = data[k1];
+                Complex value = new Complex(re, im);
+                Object result = closure.call(value);
+                if(result instanceof Complex) {
+                    Complex c = (Complex)result;
+                    data[k] = c.getReal();
+                    data[k1] = c.getImaginary();
+                } else if(result instanceof Number) {
+                    data[k] = ((Number)result).doubleValue();
+                    data[k1] = 0;
+                }
+            }
+        }
+    }
 
     public static class RowFetcher {
 

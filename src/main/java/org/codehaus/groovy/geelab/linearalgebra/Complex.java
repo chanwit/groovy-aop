@@ -34,6 +34,22 @@ public class Complex implements Comparable {
         }
     }
 
+    public Complex multiply(double t) {
+        return new Complex(this.real * t, this.imaginary * t);
+    }
+
+    public Complex multiply(int t) {
+        return new Complex(this.real * t, this.imaginary * t);
+    }
+
+    public Complex plus(double t) {
+        return new Complex(this.real * t, this.imaginary);
+    }
+
+    public Complex plus(int t) {
+        return new Complex(this.real + t, this.imaginary);
+    }
+
     public static class Imaginary {
         public final double v;
         public Imaginary(double v) {

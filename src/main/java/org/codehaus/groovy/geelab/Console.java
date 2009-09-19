@@ -69,6 +69,19 @@ public class Console {
         });
 
         ExpandoMetaClass Number_metaClass = (ExpandoMetaClass) InvokerHelper.getMetaClass(Number.class);
+        Number_metaClass.registerInstanceMethod("multiply", new Closure(Console.class) {
+            @Override
+            public Object call(Object[] arguments) {
+                double scale = ((Number)getDelegate()).doubleValue();
+                Complex n = (Complex)arguments[0];
+                return new Complex(n.getReal() * scale, n.getImaginary() * scale);
+            }
+            @SuppressWarnings("unchecked")
+            @Override
+            public Class[] getParameterTypes() {
+                return new Class[]{Complex.class};
+            }
+        });
         Number_metaClass.registerInstanceMethod("plus", new Closure(Console.class) {
             @Override
             public Object call(Object[] arguments) {
