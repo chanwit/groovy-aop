@@ -1,6 +1,6 @@
 package org.codehaus.groovy.geelab.linearalgebra;
 
-public class Complex {
+public class Complex implements Comparable {
 
     private double real;
     private double imaginary;
@@ -45,5 +45,16 @@ public class Complex {
         public Object plus(Complex n) {
             return new Complex(n.real, n.imaginary + this.v);
         }
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        if(o instanceof Integer) {
+            Integer i = (Integer)o;
+            if(real == i && imaginary == 0)return 0;
+            else if(real > i) return  1;
+            else if(real < i) return -1;
+        }
+        throw new RuntimeException("NIY");
     }
 }

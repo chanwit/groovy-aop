@@ -5,7 +5,7 @@ import java.util.Arrays;
 public class MatrixFactory {
 
     public static Matrix create(int rows, int cols) {
-        return new Matrix(rows, cols, new double[rows*cols]);
+        return new Matrix(rows, cols);
     }
 
     public static Matrix create(int rows, int cols, double initValue) {

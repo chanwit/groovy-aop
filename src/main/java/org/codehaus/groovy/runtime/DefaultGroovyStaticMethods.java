@@ -25,6 +25,7 @@ import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 
 import org.codehaus.groovy.aop.Weaver;
+import org.codehaus.groovy.geelab.jama.util.MagicSquare;
 import org.codehaus.groovy.geelab.linearalgebra.ComplexMatrix;
 import org.codehaus.groovy.geelab.linearalgebra.Matrix;
 import org.codehaus.groovy.geelab.linearalgebra.MatrixFactory;
@@ -280,6 +281,15 @@ public class DefaultGroovyStaticMethods {
         ComplexMatrix c = new ComplexMatrix(i, j, new double[i*j*2]);
         c.fill(1, 0);
         return c;
+    }
+
+    public static Object magic(Object self, Integer n) {
+        double[] data = MagicSquare.magic(n).getRowPackedCopy();
+        double[] complex = new double[data.length*2];
+        for(int i=0,j=0;i<complex.length;i+=2,j++) {
+            complex[i] = data[j];
+        }
+        return new ComplexMatrix(n, n, complex);
     }
 
     public static Object fft2(Object self, ComplexMatrix mat) {

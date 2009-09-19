@@ -15,7 +15,13 @@ public class Matrix {
     private int cols;
     private double[] data;
 
-    Matrix(int rows, int cols, double[] data) {
+    public Matrix(int rows, int cols) {
+        this.rows = rows;
+        this.cols = cols;
+        this.data = new double[rows * cols];
+    }
+
+    public Matrix(int rows, int cols, double[] data) {
         this.rows = rows;
         this.cols = cols;
         this.data = data;

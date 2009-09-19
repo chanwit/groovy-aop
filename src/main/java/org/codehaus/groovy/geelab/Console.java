@@ -100,7 +100,7 @@ public class Console {
         Console.registerMethods();
 
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        groovy.ui.Console console = new groovy.ui.Console();
+        groovy.ui.Console console = new groovy.ui.Console(new GeeBinding());
         console.run();
     }
 
