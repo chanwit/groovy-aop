@@ -311,4 +311,11 @@ public class DefaultGroovyStaticMethods {
         return new ComplexMatrix(mat.getRows(), mat.getCols(), result);
     }
 
+    public static Object ifft2(Object self, ComplexMatrix mat) {
+        FFT2D fft2d = new FFT2D(mat.getRows(), mat.getCols());
+        double[] result = mat.getData().clone();
+        fft2d.inverse(result);
+        return new ComplexMatrix(mat.getRows(), mat.getCols(), result);
+    }
+
 }
