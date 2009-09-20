@@ -26,6 +26,7 @@ import java.util.regex.Matcher;
 
 import org.codehaus.groovy.aop.Weaver;
 import org.codehaus.groovy.geelab.jama.util.MagicSquare;
+import org.codehaus.groovy.geelab.linearalgebra.Complex;
 import org.codehaus.groovy.geelab.linearalgebra.ComplexMatrix;
 import org.codehaus.groovy.geelab.linearalgebra.Matrix;
 import org.codehaus.groovy.geelab.linearalgebra.MatrixFactory;
@@ -302,6 +303,42 @@ public class DefaultGroovyStaticMethods {
             complex[i] = data[j];
         }
         return new ComplexMatrix(n, n, complex);
+    }
+
+    public static Object exp(Object self, double o) {
+        return Math.exp(o);
+    }
+
+    public static Object exp(Object self, Complex c) {
+        return c.exp();
+    }
+
+    public static Object exp(Object self, ComplexMatrix c) {
+        return c.exp();
+    }
+
+    public static Object fft(Object self, ComplexMatrix mat) {
+        if(mat.getRows() == 1) {
+            FFT fft = new FFT(mat.getCols());
+            double[] result = mat.getData().clone();
+            fft.transform(result);
+            return new ComplexMatrix(mat.getRows(), mat.getCols(), result);
+        } else if(mat.getRows() == mat.getCols()) {
+            return fft2(self, mat);
+        }
+        throw new RuntimeException("NYI");
+    }
+
+    public static Object ifft(Object self, ComplexMatrix mat) {
+        if(mat.getRows() == 1) {
+            FFT fft = new FFT(mat.getCols());
+            double[] result = mat.getData().clone();
+            fft.inverse(result);
+            return new ComplexMatrix(mat.getRows(), mat.getCols(), result);
+        } else if(mat.getRows() == mat.getCols()) {
+            return ifft2(self, mat);
+        }
+        throw new RuntimeException("NYI");
     }
 
     public static Object fft2(Object self, ComplexMatrix mat) {

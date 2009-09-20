@@ -1,6 +1,6 @@
 package org.codehaus.groovy.geelab.linearalgebra;
 
-public class Complex implements Comparable {
+public class Complex implements Comparable<Object> {
 
     private double real;
     private double imaginary;

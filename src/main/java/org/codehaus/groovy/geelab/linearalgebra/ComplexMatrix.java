@@ -3,7 +3,6 @@ package org.codehaus.groovy.geelab.linearalgebra;
 import groovy.lang.Closure;
 
 import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -133,15 +132,61 @@ public class ComplexMatrix {
         return "Complex Matrix " + rows + " x " + cols;
     }
 
-    public Object asType(Class<?> c) {
-        System.out.println(c);
-        return this;
+    public ComplexMatrix dot(ComplexMatrix c) {
+        double[] result = new double[rows*cols*2];
+        for(int i=0; i<rows;i++) {
+            for(int j=0; j<cols;j++) {
+                int k = (i*rowspan) + (2*j);
+                int l = k + 1;
+                if(data[l] == 0 && c.data[l] == 0) {
+                    result[k] = data[k] * c.data[k];
+                    result[l] = 0;
+                } else {
+                    result[k] = (data[k] * c.data[k]) - (data[l] * c.data[l]);
+                    result[l] = (data[k] * c.data[l]) + (data[l] * c.data[k]);
+                }
+            }
+        }
+        return new ComplexMatrix(rows, cols, result);
+    }
+
+    public ComplexMatrix negative() {
+        double[] result = new double[rows*cols*2];
+        for(int i=0; i<rows;i++) {
+            for(int j=0; j<cols;j++) {
+                int k = (i*rowspan) + (2*j);
+                int l = k + 1;
+                result[k] = -data[k];
+                result[l] = -data[l];
+            }
+        }
+        return new ComplexMatrix(rows, cols, result);
+    }
+
+    public ComplexMatrix exp() {
+        double[] result = new double[rows*cols*2];
+        for(int j=0; j<cols;j++) {
+            for(int i=0; i<rows;i++) {
+                int k = (i*rowspan) + (2*j);
+                int l = k + 1;
+                double re = data[k];
+                double im = data[l];
+                if(im != 0) {
+                    result[k] = Math.exp(re) * Math.cos(im);
+                    result[l] = Math.exp(re) * Math.sin(im);
+                } else {
+                    result[k] = Math.exp(re);
+                    result[l] = 0;
+                }
+            }
+        }
+        return new ComplexMatrix(rows, cols, result);
     }
 
     public Object[] find() {
-        List r = new ArrayList();
-        List c = new ArrayList();
-        List v = new ArrayList();
+        List<Integer> r = new ArrayList<Integer>();
+        List<Integer> c = new ArrayList<Integer>();
+        List<Object>  v = new ArrayList<Object>();
         for(int j=0; j<cols;j++) {
             for(int i=0; i<rows;i++) {
                 double re = data[(i*rowspan) + (2*j)];
@@ -157,9 +202,9 @@ public class ComplexMatrix {
     }
 
     public Object[] find(Closure closure) {
-        List r = new ArrayList();
-        List c = new ArrayList();
-        List v = new ArrayList();
+        List<Integer> r = new ArrayList<Integer>();
+        List<Integer> c = new ArrayList<Integer>();
+        List<Object>  v = new ArrayList<Object>();
         for(int j=0; j<cols;j++) {
             for(int i=0; i<rows;i++) {
                 double re = data[(i*rowspan) + (2*j)];
@@ -180,18 +225,18 @@ public class ComplexMatrix {
         for(int j=0; j<cols;j++) {
             for(int i=0; i<rows;i++) {
                 int k = (i*rowspan) + (2*j);
-                int k1 = k + 1;
+                int l = k + 1;
                 double re = data[k];
-                double im = data[k1];
+                double im = data[l];
                 Complex value = new Complex(re, im);
                 Object result = closure.call(value);
                 if(result instanceof Complex) {
                     Complex c = (Complex)result;
                     data[k] = c.getReal();
-                    data[k1] = c.getImaginary();
+                    data[l] = c.getImaginary();
                 } else if(result instanceof Number) {
                     data[k] = ((Number)result).doubleValue();
-                    data[k1] = 0;
+                    data[l] = 0;
                 }
             }
         }
