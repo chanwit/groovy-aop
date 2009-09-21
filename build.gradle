@@ -18,7 +18,8 @@ configurations {
 }
 
 dependencies {
-    groovy      group: 'org.codehaus.groovy', name: 'groovy-all',     version: '1.6.4'
+    groovy		files('lib/groovy-all.jar')
+    //group: 'org.codehaus.groovy', name: 'groovy-all',     version: '1.6.4'
     testCompile group: 'junit',               name: 'junit',          version: '3.8.2'
     textile     group: 'net.java',            name: 'textile-j',      version: '2.2'
     compile(

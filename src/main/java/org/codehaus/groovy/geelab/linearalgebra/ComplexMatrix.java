@@ -126,13 +126,7 @@ public class ComplexMatrix {
         }
     }
 
-
-    @Override
-    public String toString() {
-        return "Complex Matrix " + rows + " x " + cols;
-    }
-
-    public ComplexMatrix dot(ComplexMatrix c) {
+    public ComplexMatrix dotMultiply(ComplexMatrix c) {
         double[] result = new double[rows*cols*2];
         for(int i=0; i<rows;i++) {
             for(int j=0; j<cols;j++) {
@@ -240,6 +234,11 @@ public class ComplexMatrix {
                 }
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Complex Matrix " + rows + " x " + cols;
     }
 
     public static class RowFetcher {
