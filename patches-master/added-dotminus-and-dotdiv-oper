@@ -1,0 +1,168 @@
+added dotMinus and dotDiv operators
+
+From: chanwit <chanwit@gmail.com>
+
+
+---
+
+ .../codehaus/groovy/antlr/AntlrParserPlugin.java   |   19 ++++++++++------
+ src/main/org/codehaus/groovy/antlr/groovy.g        |    2 ++
+ .../groovy/classgen/AsmClassGenerator.java         |   24 +++++++++++++-------
+ src/main/org/codehaus/groovy/syntax/Types.java     |   20 +++++++++--------
+ 4 files changed, 41 insertions(+), 24 deletions(-)
+
+
+diff --git a/src/main/org/codehaus/groovy/antlr/AntlrParserPlugin.java b/src/main/org/codehaus/groovy/antlr/AntlrParserPlugin.java
+index 6ae3b7a..7847356 100755
+--- a/src/main/org/codehaus/groovy/antlr/AntlrParserPlugin.java
++++ b/src/main/org/codehaus/groovy/antlr/AntlrParserPlugin.java
+@@ -1638,28 +1638,30 @@ public class AntlrParserPlugin extends ASTHelper implements ParserPlugin, Groovy
+             case PLUS:
+                 return binaryExpression(Types.PLUS, node);
+ 
+-            case PLUS_ASSIGN:
+-                return binaryExpression(Types.PLUS_EQUAL, node);
+-            
+             case DOT_PLUS:
+                 return binaryExpression(Types.DOT_PLUS, node);
+ 
++            case PLUS_ASSIGN:
++                return binaryExpression(Types.PLUS_EQUAL, node);
++            
+             case MINUS:
+                 return binaryExpression(Types.MINUS, node);
+ 
++            case DOT_MINUS:
++                return binaryExpression(Types.DOT_MINUS, node);
++
+             case MINUS_ASSIGN:
+                 return binaryExpression(Types.MINUS_EQUAL, node);
+ 
+-
+             case STAR:
+                 return binaryExpression(Types.MULTIPLY, node);
++                
++            case DOT_STAR:
++                return binaryExpression(Types.DOT_MULTIPLY, node);                
+ 
+             case STAR_ASSIGN:
+                 return binaryExpression(Types.MULTIPLY_EQUAL, node);
+ 
+-            case DOT_STAR:
+-                return binaryExpression(Types.DOT_MULTIPLY, node);
+-
+             case STAR_STAR:
+                 return binaryExpression(Types.POWER, node);
+ 
+@@ -1669,6 +1671,9 @@ public class AntlrParserPlugin extends ASTHelper implements ParserPlugin, Groovy
+ 
+             case DIV:
+                 return binaryExpression(Types.DIVIDE, node);
++                
++            case DOT_DIV:
++                return binaryExpression(Types.DOT_DIV, node);                
+ 
+             case DIV_ASSIGN:
+                 return binaryExpression(Types.DIVIDE_EQUAL, node);
+diff --git a/src/main/org/codehaus/groovy/antlr/groovy.g b/src/main/org/codehaus/groovy/antlr/groovy.g
+index 4d39af7..5a6909c 100755
+--- a/src/main/org/codehaus/groovy/antlr/groovy.g
++++ b/src/main/org/codehaus/groovy/antlr/groovy.g
+@@ -3559,6 +3559,8 @@ protected
+ DOLLAR            options {paraphrase="'$'";}           :   '$'             ;
+ DOT_STAR          options {paraphrase="'.*'";}          :   ".*"            ;
+ DOT_PLUS          options {paraphrase="'.+'";}          :   ".+"            ;
++DOT_MINUS         options {paraphrase="'.-'";}          :   ".-"            ;
++DOT_DIV           options {paraphrase="'./'";}          :   "./"            ;
+ RANGE_INCLUSIVE   options {paraphrase="'..'";}          :   ".."            ;
+ RANGE_EXCLUSIVE   options {paraphrase="'..<'";}         :   "..<"           ;
+ TRIPLE_DOT        options {paraphrase="'...'";}         :   "..."           ;
+diff --git a/src/main/org/codehaus/groovy/classgen/AsmClassGenerator.java b/src/main/org/codehaus/groovy/classgen/AsmClassGenerator.java
+index 922daf2..933781d 100755
+--- a/src/main/org/codehaus/groovy/classgen/AsmClassGenerator.java
++++ b/src/main/org/codehaus/groovy/classgen/AsmClassGenerator.java
+@@ -1402,18 +1402,22 @@ public class AsmClassGenerator extends ClassGenerator {
+             case Types.PLUS:
+                 evaluateBinaryExpression("plus", expression);
+                 break;
++                
++            case Types.DOT_PLUS:
++                evaluateBinaryExpression("dotPlus", expression);
++                break;                                
+ 
+             case Types.PLUS_EQUAL:
+                 evaluateBinaryExpressionWithAssignment("plus", expression);
+                 break;
+                 
+-            case Types.DOT_PLUS:
+-                evaluateBinaryExpression("dotPlus", expression);
+-                break;                
+-
+             case Types.MINUS:
+                 evaluateBinaryExpression("minus", expression);
+                 break;
++                
++            case Types.DOT_MINUS:
++                evaluateBinaryExpression("dotMinus", expression);
++                break;                                
+ 
+             case Types.MINUS_EQUAL:
+                 evaluateBinaryExpressionWithAssignment("minus", expression);
+@@ -1422,18 +1426,22 @@ public class AsmClassGenerator extends ClassGenerator {
+             case Types.MULTIPLY:
+                 evaluateBinaryExpression("multiply", expression);
+                 break;
++                
++            case Types.DOT_MULTIPLY:
++                evaluateBinaryExpression("dotMultiply", expression);
++                break;                
+ 
+             case Types.MULTIPLY_EQUAL:
+                 evaluateBinaryExpressionWithAssignment("multiply", expression);
+                 break;
+                 
+-            case Types.DOT_MULTIPLY:
+-                evaluateBinaryExpression("dotMultiply", expression);
+-                break;
+-
+             case Types.DIVIDE:
+                 evaluateBinaryExpression("div", expression);
+                 break;
++                
++            case Types.DOT_DIV:
++                evaluateBinaryExpression("dotDiv", expression);
++                break;                
+ 
+             case Types.DIVIDE_EQUAL:
+                 //SPG don't use divide since BigInteger implements directly
+diff --git a/src/main/org/codehaus/groovy/syntax/Types.java b/src/main/org/codehaus/groovy/syntax/Types.java
+index 4ce54a2..0d7fda7 100755
+--- a/src/main/org/codehaus/groovy/syntax/Types.java
++++ b/src/main/org/codehaus/groovy/syntax/Types.java
+@@ -104,15 +104,17 @@ public class Types
+     public static final int STAR_STAR                   = 206;   // **
+     public static final int POWER                       = STAR_STAR;   // **
+     public static final int DOT_PLUS                    = 207;   // .+
+-    public static final int DOT_MULTIPLY                = 208;   // .*
+-
+-    public static final int PLUS_EQUAL                  = 210;   // +=
+-    public static final int MINUS_EQUAL                 = 211;   // -=
+-    public static final int MULTIPLY_EQUAL              = 212;   // *=
+-    public static final int DIVIDE_EQUAL                = 213;   // /=
+-    public static final int INTDIV_EQUAL                = 214;   // \=
+-    public static final int MOD_EQUAL                   = 215;   // %=
+-    public static final int POWER_EQUAL                 = 216;   // **=
++    public static final int DOT_MINUS                   = 208;   // .-
++    public static final int DOT_MULTIPLY                = 209;   // .*
++    public static final int DOT_DIV                     = 210;   // ./
++
++    public static final int PLUS_EQUAL                  = 220;   // +=
++    public static final int MINUS_EQUAL                 = 221;   // -=
++    public static final int MULTIPLY_EQUAL              = 222;   // *=
++    public static final int DIVIDE_EQUAL                = 223;   // /=
++    public static final int INTDIV_EQUAL                = 224;   // \=
++    public static final int MOD_EQUAL                   = 225;   // %=
++    public static final int POWER_EQUAL                 = 226;   // **=
+ 
+     public static final int PLUS_PLUS                   = 250;   // ++
+     public static final int PREFIX_PLUS_PLUS            = 251;   // ++

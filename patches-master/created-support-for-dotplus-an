@@ -1,0 +1,162 @@
+created support for dotPlus and dotMultiply
+
+From: chanwit <chanwit@gmail.com>
+
+
+---
+
+ .../codehaus/groovy/antlr/AntlrParserPlugin.java   |    6 +++
+ src/main/org/codehaus/groovy/antlr/groovy.g        |   35 ++++++++++++--------
+ .../groovy/classgen/AsmClassGenerator.java         |    8 +++++
+ src/main/org/codehaus/groovy/syntax/Types.java     |    2 +
+ 4 files changed, 36 insertions(+), 15 deletions(-)
+
+
+diff --git a/src/main/org/codehaus/groovy/antlr/AntlrParserPlugin.java b/src/main/org/codehaus/groovy/antlr/AntlrParserPlugin.java
+index 6a52869..6ae3b7a 100755
+--- a/src/main/org/codehaus/groovy/antlr/AntlrParserPlugin.java
++++ b/src/main/org/codehaus/groovy/antlr/AntlrParserPlugin.java
+@@ -1640,7 +1640,9 @@ public class AntlrParserPlugin extends ASTHelper implements ParserPlugin, Groovy
+ 
+             case PLUS_ASSIGN:
+                 return binaryExpression(Types.PLUS_EQUAL, node);
+-
++            
++            case DOT_PLUS:
++                return binaryExpression(Types.DOT_PLUS, node);
+ 
+             case MINUS:
+                 return binaryExpression(Types.MINUS, node);
+@@ -1655,6 +1657,8 @@ public class AntlrParserPlugin extends ASTHelper implements ParserPlugin, Groovy
+             case STAR_ASSIGN:
+                 return binaryExpression(Types.MULTIPLY_EQUAL, node);
+ 
++            case DOT_STAR:
++                return binaryExpression(Types.DOT_MULTIPLY, node);
+ 
+             case STAR_STAR:
+                 return binaryExpression(Types.POWER, node);
+diff --git a/src/main/org/codehaus/groovy/antlr/groovy.g b/src/main/org/codehaus/groovy/antlr/groovy.g
+index 1fe5f89..4d39af7 100755
+--- a/src/main/org/codehaus/groovy/antlr/groovy.g
++++ b/src/main/org/codehaus/groovy/antlr/groovy.g
+@@ -774,8 +774,8 @@ int currentLtLevel = 0;}
+ // this gobbles up *some* amount of '>' characters, and counts how many
+ // it gobbled.
+ protected typeArgumentsOrParametersEnd
+-    :   GT! {ltCounter-=1;}
+-    |   SR! {ltCounter-=2;}
++    :   GT!  {ltCounter-=1;}
++    |   SR!  {ltCounter-=2;}
+     |   BSR! {ltCounter-=3;}
+     ;
+ 
+@@ -785,12 +785,10 @@ typeArgumentBounds
+     :
+         ( "extends"! {isUpperBounds=true;} | "super"! ) nls! classOrInterfaceType[true] nls!
+         {
+-            if (isUpperBounds)
+-            {
++            if ( isUpperBounds ) {
+                 #typeArgumentBounds = #(create(TYPE_UPPER_BOUNDS,"TYPE_UPPER_BOUNDS",first,LT(1)), #typeArgumentBounds);
+             }
+-            else
+-            {
++            else {
+                 #typeArgumentBounds = #(create(TYPE_LOWER_BOUNDS,"TYPE_LOWER_BOUNDS",first,LT(1)), #typeArgumentBounds);
+             }
+         }
+@@ -862,10 +860,17 @@ identifierStar {Token first = LT(1);}
+             d1:DOT! nls! i2:IDENT! 
+             {#i1 = #(create(DOT,".",first,LT(1)),i1,i2);}
+         )*
+-        (   d2:DOT!  nls! s:STAR! 
++        (   d2:DOT! nls! s:STAR! 
+             {#i1 = #(create(DOT,".",first,LT(1)),i1,s);}
++        |   d2x:DOT_STAR!
++            { 
++              Token star = new Token(STAR,"*");
++              AST s2;
++              #s2 = #(create(STAR,"*",star,star));
++              #i1 = #(create(DOT,".",first,LT(1)),i1,s2);
++            }            
+         |   "as"! nls! alias:IDENT!
+-        	{#i1 = #(create(LITERAL_as,"as",first,LT(1)),i1,alias);}
++        	  {#i1 = #(create(LITERAL_as,"as",first,LT(1)),i1,alias);}
+         )?
+         {#identifierStar = #i1;}
+     ;
+@@ -2639,7 +2644,7 @@ additiveExpression[int lc_stmt]
+         (
+             options {greedy=true;} :
+             // Be greedy here, to favor {x+y} instead of {print +value}
+-            (PLUS^ | MINUS^) nls!
++            (PLUS^ | MINUS^ | DOT_PLUS^) nls!
+             multiplicativeExpression[0]
+         )*
+     ;
+@@ -2647,11 +2652,11 @@ additiveExpression[int lc_stmt]
+ 
+ // multiplication/division/modulo (level 4)
+ multiplicativeExpression[int lc_stmt]
+-    :    ( INC^ nls!  powerExpressionNotPlusMinus[0] ((STAR^ | DIV^ | MOD^ )  nls!  powerExpression[0])* )
+-    |    ( DEC^ nls!  powerExpressionNotPlusMinus[0] ((STAR^ | DIV^ | MOD^ )  nls!  powerExpression[0])* )
+-    |    ( MINUS^ {#MINUS.setType(UNARY_MINUS);} nls!   powerExpressionNotPlusMinus[0] ((STAR^ | DIV^ | MOD^ )  nls!  powerExpression[0])* )
+-    |    ( PLUS^ {#PLUS.setType(UNARY_PLUS);} nls!   powerExpressionNotPlusMinus[0] ((STAR^ | DIV^ | MOD^ )  nls!  powerExpression[0])* )
+-    |    (  powerExpressionNotPlusMinus[lc_stmt] ((STAR^ | DIV^ | MOD^ )  nls!  powerExpression[0])* )
++    :    ( INC^ nls!  powerExpressionNotPlusMinus[0] ((STAR^ | DIV^ | MOD^ | DOT_STAR^)  nls!  powerExpression[0])* )
++    |    ( DEC^ nls!  powerExpressionNotPlusMinus[0] ((STAR^ | DIV^ | MOD^ | DOT_STAR^)  nls!  powerExpression[0])* )
++    |    ( MINUS^ {#MINUS.setType(UNARY_MINUS);} nls!   powerExpressionNotPlusMinus[0] ((STAR^ | DIV^ | MOD^ | DOT_STAR^ )  nls!  powerExpression[0])* )
++    |    ( PLUS^ {#PLUS.setType(UNARY_PLUS);} nls!   powerExpressionNotPlusMinus[0] ((STAR^ | DIV^ | MOD^ | DOT_STAR^ )  nls!  powerExpression[0])* )
++    |    (  powerExpressionNotPlusMinus[lc_stmt] ((STAR^ | DIV^ | MOD^ | DOT_STAR^ )  nls!  powerExpression[0])* )
+     ;
+ 
+ // math power operator (**) (level 3)
+@@ -3552,6 +3557,8 @@ LAND              options {paraphrase="'&&'";}          :   "&&"            ;
+ SEMI              options {paraphrase="';'";}           :   ';'             ;
+ protected
+ DOLLAR            options {paraphrase="'$'";}           :   '$'             ;
++DOT_STAR          options {paraphrase="'.*'";}          :   ".*"            ;
++DOT_PLUS          options {paraphrase="'.+'";}          :   ".+"            ;
+ RANGE_INCLUSIVE   options {paraphrase="'..'";}          :   ".."            ;
+ RANGE_EXCLUSIVE   options {paraphrase="'..<'";}         :   "..<"           ;
+ TRIPLE_DOT        options {paraphrase="'...'";}         :   "..."           ;
+diff --git a/src/main/org/codehaus/groovy/classgen/AsmClassGenerator.java b/src/main/org/codehaus/groovy/classgen/AsmClassGenerator.java
+index 26b52d3..922daf2 100755
+--- a/src/main/org/codehaus/groovy/classgen/AsmClassGenerator.java
++++ b/src/main/org/codehaus/groovy/classgen/AsmClassGenerator.java
+@@ -1406,6 +1406,10 @@ public class AsmClassGenerator extends ClassGenerator {
+             case Types.PLUS_EQUAL:
+                 evaluateBinaryExpressionWithAssignment("plus", expression);
+                 break;
++                
++            case Types.DOT_PLUS:
++                evaluateBinaryExpression("dotPlus", expression);
++                break;                
+ 
+             case Types.MINUS:
+                 evaluateBinaryExpression("minus", expression);
+@@ -1422,6 +1426,10 @@ public class AsmClassGenerator extends ClassGenerator {
+             case Types.MULTIPLY_EQUAL:
+                 evaluateBinaryExpressionWithAssignment("multiply", expression);
+                 break;
++                
++            case Types.DOT_MULTIPLY:
++                evaluateBinaryExpression("dotMultiply", expression);
++                break;
+ 
+             case Types.DIVIDE:
+                 evaluateBinaryExpression("div", expression);
+diff --git a/src/main/org/codehaus/groovy/syntax/Types.java b/src/main/org/codehaus/groovy/syntax/Types.java
+index ce0deb3..4ce54a2 100755
+--- a/src/main/org/codehaus/groovy/syntax/Types.java
++++ b/src/main/org/codehaus/groovy/syntax/Types.java
+@@ -103,6 +103,8 @@ public class Types
+     public static final int MOD                         = 205;   // %
+     public static final int STAR_STAR                   = 206;   // **
+     public static final int POWER                       = STAR_STAR;   // **
++    public static final int DOT_PLUS                    = 207;   // .+
++    public static final int DOT_MULTIPLY                = 208;   // .*
+ 
+     public static final int PLUS_EQUAL                  = 210;   // +=
+     public static final int MINUS_EQUAL                 = 211;   // -=
