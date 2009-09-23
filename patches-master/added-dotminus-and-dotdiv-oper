@@ -6,10 +6,10 @@ From: chanwit <chanwit@gmail.com>
 ---
 
  .../codehaus/groovy/antlr/AntlrParserPlugin.java   |   19 ++++++++++------
- src/main/org/codehaus/groovy/antlr/groovy.g        |    2 ++
+ src/main/org/codehaus/groovy/antlr/groovy.g        |    6 +++--
  .../groovy/classgen/AsmClassGenerator.java         |   24 +++++++++++++-------
  src/main/org/codehaus/groovy/syntax/Types.java     |   20 +++++++++--------
- 4 files changed, 41 insertions(+), 24 deletions(-)
+ 4 files changed, 43 insertions(+), 26 deletions(-)
 
 
 diff --git a/src/main/org/codehaus/groovy/antlr/AntlrParserPlugin.java b/src/main/org/codehaus/groovy/antlr/AntlrParserPlugin.java
@@ -65,9 +65,21 @@ index 6ae3b7a..7847356 100755
              case DIV_ASSIGN:
                  return binaryExpression(Types.DIVIDE_EQUAL, node);
 diff --git a/src/main/org/codehaus/groovy/antlr/groovy.g b/src/main/org/codehaus/groovy/antlr/groovy.g
-index 4d39af7..5a6909c 100755
+index 4d39af7..34259aa 100755
 --- a/src/main/org/codehaus/groovy/antlr/groovy.g
 +++ b/src/main/org/codehaus/groovy/antlr/groovy.g
+@@ -868,9 +868,9 @@ identifierStar {Token first = LT(1);}
+               AST s2;
+               #s2 = #(create(STAR,"*",star,star));
+               #i1 = #(create(DOT,".",first,LT(1)),i1,s2);
+-            }            
++            }
+         |   "as"! nls! alias:IDENT!
+-        	  {#i1 = #(create(LITERAL_as,"as",first,LT(1)),i1,alias);}
++             {#i1 = #(create(LITERAL_as,"as",first,LT(1)),i1,alias);}
+         )?
+         {#identifierStar = #i1;}
+     ;
 @@ -3559,6 +3559,8 @@ protected
  DOLLAR            options {paraphrase="'$'";}           :   '$'             ;
  DOT_STAR          options {paraphrase="'.*'";}          :   ".*"            ;
