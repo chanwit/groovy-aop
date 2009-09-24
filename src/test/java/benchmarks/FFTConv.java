@@ -11,9 +11,7 @@ public class FFTConv {
             int N = (int) Math.pow(2, m);
             // TODO
             ComplexMatrix t = new ComplexMatrix(1, N, null);
-            for(int i=0; i<N; i++) {
-            	t.putAt(1, i+1,(double)i);
-            }
+            for(int i=0; i<N; i++) t.putAt(1, i+1,(double)i);
             ComplexMatrix h = t.negative().exp();
             ComplexMatrix H = FFTHelper.fft(h);
             ComplexMatrix x = ComplexMatrixHelper.ones(1, N);
