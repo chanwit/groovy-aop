@@ -1,3 +1,4 @@
+package benchmarks;
 public class HeapSort {
 
     int dataSize;

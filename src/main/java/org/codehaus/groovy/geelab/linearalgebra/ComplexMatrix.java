@@ -260,5 +260,9 @@ public class ComplexMatrix {
         }
 
     }
+
+	public void putAt(int i, int j, double d) {
+		// TODO Auto-generated method stub
+	}
 }
 

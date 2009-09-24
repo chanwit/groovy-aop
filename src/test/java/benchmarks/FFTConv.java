@@ -1,17 +1,26 @@
+package benchmarks;
+
+import org.codehaus.groovy.geelab.linearalgebra.ComplexMatrix;
+import org.codehaus.groovy.geelab.linearalgebra.ComplexMatrixHelper;
+import org.codehaus.groovy.geelab.linearalgebra.FFTHelper;
+
 public class FFTConv {
-    
+
     public static void main(String[] args) {
         for(int m=1; m<=16; m++) {
-            int N = Math.pow(2, m);
-            ComplexMatrix t = new ComplexMatrix(1, N);
-            for(int i=0; i<N; i++) t.put(1, i+1) = (double)i;
+            int N = (int) Math.pow(2, m);
+            // TODO
+            ComplexMatrix t = new ComplexMatrix(1, N, null);
+            for(int i=0; i<N; i++) {
+            	t.putAt(1, i+1,(double)i);
+            }
             ComplexMatrix h = t.negative().exp();
             ComplexMatrix H = FFTHelper.fft(h);
             ComplexMatrix x = ComplexMatrixHelper.ones(1, N);
             int Nrep = 500;
             for(int i=1; i<=Nrep; i++) {
                 ComplexMatrix y = FFTHelper.ifft(FFTHelper.fft(x).dotMultiply(H));
-            } 
+            }
         }
     }
 
