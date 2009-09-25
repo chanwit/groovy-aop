@@ -6,7 +6,9 @@ version = '0.6.1'
 
 repositories {
     mavenCentral()
-    mavenRepo urls: ['http://repository.codehaus.org/', 'http://download.java.net/maven/2/']
+    mavenRepo urls: ['http://repository.codehaus.org/', 
+                     'http://download.java.net/maven/2/',
+                     'http://dl.getdropbox.com/u/381580/maven/']
 }
 test {
     scanForTestClasses = false
@@ -25,7 +27,8 @@ dependencies {
                [group: 'org.aspectj',         name: 'aspectjweaver',  version: '1.6.5'],
                [group: 'org.antlr',           name: 'antlr-runtime',  version: '3.1.3'],
                [group: 'org.antlr',           name: 'stringtemplate', version: '3.2'],
-               [group: 'asm',                 name: 'asm-all',        version: '3.1']
+               [group: 'asm',                 name: 'asm-all',        version: '3.1'],
+               [group: 'org.codehaus.gigatron', name:'gigatron', version:'0.1']
     )
 }
 
