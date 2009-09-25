@@ -1,5 +1,8 @@
 package org.codehaus.groovy.geelab.linearalgebra;
 
+import org.codehaus.groovy.geelab.osp.numerics.FFT;
+import org.codehaus.groovy.geelab.osp.numerics.FFT2D;
+
 public class FFTHelper {
 
     public static ComplexMatrix fft(ComplexMatrix mat) {
@@ -9,7 +12,7 @@ public class FFTHelper {
             fft.transform(result);
             return new ComplexMatrix(mat.getRows(), mat.getCols(), result);
         } else if(mat.getRows() == mat.getCols()) {
-            return fft2(self, mat);
+            return fft2(mat);
         }
         throw new RuntimeException("NYI");
     }
@@ -21,7 +24,7 @@ public class FFTHelper {
             fft.inverse(result);
             return new ComplexMatrix(mat.getRows(), mat.getCols(), result);
         } else if(mat.getRows() == mat.getCols()) {
-            return ifft2(self, mat);
+            return ifft2(mat);
         }
         throw new RuntimeException("NYI");
     }

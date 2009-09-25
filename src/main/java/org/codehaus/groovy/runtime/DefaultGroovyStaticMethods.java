@@ -28,6 +28,8 @@ import org.codehaus.groovy.aop.Weaver;
 import org.codehaus.groovy.geelab.jama.util.MagicSquare;
 import org.codehaus.groovy.geelab.linearalgebra.Complex;
 import org.codehaus.groovy.geelab.linearalgebra.ComplexMatrix;
+import org.codehaus.groovy.geelab.linearalgebra.ComplexMatrixHelper;
+import org.codehaus.groovy.geelab.linearalgebra.FFTHelper;
 import org.codehaus.groovy.geelab.linearalgebra.Matrix;
 import org.codehaus.groovy.geelab.linearalgebra.MatrixFactory;
 import org.codehaus.groovy.geelab.osp.numerics.FFT;

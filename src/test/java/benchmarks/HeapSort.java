@@ -6,13 +6,13 @@ public class HeapSort {
 
     public HeapSort() {
         dataSize = 5000000; // 5 million doubles
-        randomizer.resetRandomizer();
+//        randomizer.resetRandomizer();
 
         // create test data array
 
         pArray = new double[dataSize];
-        for (int i=0; i<dataSize; ++i)
-            pArray[i] = randomizer.getRandomValue(1);
+//        for (int i=0; i<dataSize; ++i)
+//            pArray[i] = randomizer.getRandomValue(1);
     }
 
     protected void heapsort(int n, double[] ra) {
