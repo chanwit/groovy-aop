@@ -16,9 +16,12 @@ public class FFTConv {
             ComplexMatrix H = FFTHelper.fft(h);
             ComplexMatrix x = ComplexMatrixHelper.ones(1, N);
             int Nrep = 500;
+            long tic = System.currentTimeMillis();
             for(int i=1; i<=Nrep; i++) {
                 ComplexMatrix y = FFTHelper.ifft(FFTHelper.fft(x).dotMultiply(H));
             }
+            long toc = System.currentTimeMillis() - tic;
+            System.out.printf("Average FFT-convolution %d: %.4f\n", N, (double)toc/Nrep);
         }
     }
 

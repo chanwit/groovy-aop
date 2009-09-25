@@ -7,6 +7,5 @@ for(m in 1..16) {
   Nrep = 500
   tic
   for(i in 1..Nrep) y = ifft(fft(x) .* H)
-  t = toc
-  println "Average FFT-convolution $N: ${t/Nrep}"
+  println "Average FFT-convolution $N: ${toc/Nrep}"
 }

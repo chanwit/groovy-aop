@@ -262,7 +262,8 @@ public class ComplexMatrix {
     }
 
 	public void putAt(int i, int j, double d) {
-		// TODO Auto-generated method stub
+		data[(i-1)*rowspan + 2*(j-1)] = d;
+		data[(i-1)*rowspan + 2*(j-1) + 1] = 0;
 	}
 }
 
