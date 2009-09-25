@@ -318,41 +318,19 @@ public class DefaultGroovyStaticMethods {
     }
 
     public static Object fft(Object self, ComplexMatrix mat) {
-        if(mat.getRows() == 1) {
-            FFT fft = new FFT(mat.getCols());
-            double[] result = mat.getData().clone();
-            fft.transform(result);
-            return new ComplexMatrix(mat.getRows(), mat.getCols(), result);
-        } else if(mat.getRows() == mat.getCols()) {
-            return fft2(self, mat);
-        }
-        throw new RuntimeException("NYI");
+        return FFTHelper.fft(mat);
     }
 
     public static Object ifft(Object self, ComplexMatrix mat) {
-        if(mat.getRows() == 1) {
-            FFT fft = new FFT(mat.getCols());
-            double[] result = mat.getData().clone();
-            fft.inverse(result);
-            return new ComplexMatrix(mat.getRows(), mat.getCols(), result);
-        } else if(mat.getRows() == mat.getCols()) {
-            return ifft2(self, mat);
-        }
-        throw new RuntimeException("NYI");
+        return FFTHelper.ifft(mat);
     }
 
     public static Object fft2(Object self, ComplexMatrix mat) {
-        FFT2D fft2d = new FFT2D(mat.getRows(), mat.getCols());
-        double[] result = mat.getData().clone();
-        fft2d.transform(result);
-        return new ComplexMatrix(mat.getRows(), mat.getCols(), result);
+        return FFTHelper.fft2(mat);
     }
 
     public static Object ifft2(Object self, ComplexMatrix mat) {
-        FFT2D fft2d = new FFT2D(mat.getRows(), mat.getCols());
-        double[] result = mat.getData().clone();
-        fft2d.inverse(result);
-        return new ComplexMatrix(mat.getRows(), mat.getCols(), result);
+        return FFTHelper.ifft2(mat);
     }
 
 }
