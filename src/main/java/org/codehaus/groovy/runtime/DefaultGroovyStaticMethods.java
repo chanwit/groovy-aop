@@ -273,21 +273,15 @@ public class DefaultGroovyStaticMethods {
     }
 
     public static Object zeros(Object self, Integer n) {
-        ComplexMatrix c = new ComplexMatrix(n, n, new double[n*n*2]);
-        c.fill(0, 0);
-        return c;
+        return ComplexMatrixHelper.zeros(n);
     }
 
     public static Object zeros(Object self, Integer n, Integer m) {
-        ComplexMatrix c = new ComplexMatrix(n, m, new double[n*m*2]);
-        c.fill(0, 0);
-        return c;
+        return ComplexMatrixHelper.zeros(n, m);
     }
 
     public static Object ones(Object self, Integer n) {
-        ComplexMatrix c = new ComplexMatrix(n, n, new double[n*n*2]);
-        c.fill(1, 0);
-        return c;
+        return ComplexMatrixHelper.ones(n);
     }
 
     public static Object ones(Object self, Integer n, Integer m) {
@@ -295,12 +289,7 @@ public class DefaultGroovyStaticMethods {
     }
 
     public static Object magic(Object self, Integer n) {
-        double[] data = MagicSquare.magic(n).getRowPackedCopy();
-        double[] complex = new double[data.length*2];
-        for(int i=0,j=0;i<complex.length;i+=2,j++) {
-            complex[i] = data[j];
-        }
-        return new ComplexMatrix(n, n, complex);
+        return ComplexMatrixHelper.magic(n);
     }
 
     public static Object exp(Object self, double o) {
