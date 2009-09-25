@@ -9,9 +9,9 @@ public class FFTConv {
     public static void main(String[] args) {
         for(int m=1; m<=16; m++) {
             int N = (int) Math.pow(2, m);
-            // TODO
-            ComplexMatrix t = new ComplexMatrix(1, N, null);
-            for(int i=0; i<N; i++) t.putAt(1, i+1,(double)i);
+            // TODO create a blank matrix
+            ComplexMatrix t = new ComplexMatrix(1, N, new double[1 * N * 2]);
+            for(int i=0; i<N; i++) t.putAt(1, i+1, (double)i);
             ComplexMatrix h = t.negative().exp();
             ComplexMatrix H = FFTHelper.fft(h);
             ComplexMatrix x = ComplexMatrixHelper.ones(1, N);

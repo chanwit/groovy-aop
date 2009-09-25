@@ -291,9 +291,7 @@ public class DefaultGroovyStaticMethods {
     }
 
     public static Object ones(Object self, Integer n, Integer m) {
-        ComplexMatrix c = new ComplexMatrix(n, m, new double[n*m*2]);
-        c.fill(1, 0);
-        return c;
+        return ComplexMatrixHelper.ones(n, m);
     }
 
     public static Object magic(Object self, Integer n) {
