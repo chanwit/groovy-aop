@@ -1,0 +1,40 @@
+added compilation timing to GCL
+
+From: Chanwit Kaewkasi <chanwit@gmail.com>
+
+
+---
+
+ src/main/groovy/lang/GroovyClassLoader.java |   11 +++++++++++
+ 1 files changed, 11 insertions(+), 0 deletions(-)
+
+
+diff --git a/src/main/groovy/lang/GroovyClassLoader.java b/src/main/groovy/lang/GroovyClassLoader.java
+index 1754adb..9eb52c1 100755
+--- a/src/main/groovy/lang/GroovyClassLoader.java
++++ b/src/main/groovy/lang/GroovyClassLoader.java
+@@ -258,6 +258,11 @@ public class GroovyClassLoader extends URLClassLoader {
+      */
+     public Class parseClass(GroovyCodeSource codeSource, boolean shouldCacheSource) throws CompilationFailedException {
+         synchronized (sourceCache) {
++
++            String timing = System.getProperty("groovy.compile.timing", "false");
++            long start=0;
++            if(timing.equals("true")) start = System.nanoTime();
++
+             Class answer = (Class) sourceCache.get(codeSource.getName());
+             if (answer != null) return answer;
+ 
+@@ -284,6 +289,12 @@ public class GroovyClassLoader extends URLClassLoader {
+                 setClassCacheEntry(clazz);
+             }
+             if (shouldCacheSource) sourceCache.put(codeSource.getName(), answer);
++
++            long stop=0;
++            if(timing.equals("true")) {
++                stop = System.nanoTime();
++                System.out.printf("compile-time: %d\n", stop-start);
++            }
+             return answer;
+         }
+     }

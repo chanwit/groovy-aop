@@ -1,3 +1,4 @@
 # This series applies on GIT commit 1e74a1336e4c8577d26ee034e8c980f2b350081a
 created-support-for-dotplus-an
 added-dotminus-and-dotdiv-oper
+added-compilation-timing-to-gc
