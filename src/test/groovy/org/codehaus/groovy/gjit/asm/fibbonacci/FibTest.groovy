@@ -19,7 +19,7 @@ import groovy.util.GroovyTestCase
         ExpandoMetaClass.enableGlobally()
         def aspect = weave(FibAspect)
         assert aspect != null
-        for(i in 1..4) {
+        for(i in 1..10) {
             Caller.realTest(5)
             Caller.realTest(10)
             Caller.realTest(15)
@@ -27,8 +27,6 @@ import groovy.util.GroovyTestCase
             Caller.realTest(25)
             Caller.realTest(30)
             Caller.realTest(35)
-            Caller.realTest(36)
-            Caller.realTest(37)
         }
         unweave(FibAspect)
     }
