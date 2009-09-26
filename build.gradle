@@ -18,7 +18,7 @@ configurations {
 }
 
 dependencies {
-    groovy		files('lib/groovy-all.jar')
+    groovy		files('lib/groovy-all-1.6.4.jar')
     testCompile group: 'junit',               name: 'junit',          version: '3.8.2'
     textile     group: 'net.java',            name: 'textile-j',      version: '2.2'
     compile(
