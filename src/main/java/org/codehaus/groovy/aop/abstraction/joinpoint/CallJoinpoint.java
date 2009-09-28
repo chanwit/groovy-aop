@@ -68,7 +68,11 @@ public class CallJoinpoint extends JoinpointAdapter {
         this.sender = sender;
         this.methodName = methodName;
         this.target     = args[0];
-        this.receiverClass = target.getClass();
+        if(target != null) {
+        	this.receiverClass = target.getClass();
+        } else {
+        	this.receiverClass = sender;
+        }
 
         if(args.length == 1) {
             this.args     = new Object[]{};

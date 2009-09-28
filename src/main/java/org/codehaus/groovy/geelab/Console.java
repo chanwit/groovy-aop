@@ -4,6 +4,7 @@ import java.util.Map;
 
 import groovy.lang.Closure;
 import groovy.lang.ExpandoMetaClass;
+import groovy.lang.MetaClassImpl;
 import groovy.lang.Script;
 
 import javax.swing.UIManager;
@@ -15,7 +16,7 @@ import org.codehaus.groovy.runtime.InvokerHelper;
 public class Console {
 
     @SuppressWarnings("serial")
-    private static void registerMethods() throws Throwable {
+	public static void registerMethods() throws Throwable {
         ExpandoMetaClass.enableGlobally();
 
         ExpandoMetaClass Script_metaClass = (ExpandoMetaClass) InvokerHelper.getMetaClass(Script.class);
@@ -68,7 +69,12 @@ public class Console {
 
         });
 
-        ExpandoMetaClass Number_metaClass = (ExpandoMetaClass) InvokerHelper.getMetaClass(Number.class);
+        ExpandoMetaClass Number_metaClass;
+        if(InvokerHelper.getMetaClass(Number.class) instanceof MetaClassImpl) {
+        	Number_metaClass = new ExpandoMetaClass(Number.class, true);
+        } else {
+        	Number_metaClass = (ExpandoMetaClass) InvokerHelper.getMetaClass(Number.class);
+        }
         Number_metaClass.registerInstanceMethod("multiply", new Closure(Console.class) {
             @Override
             public Object call(Object[] arguments) {
@@ -110,8 +116,6 @@ public class Console {
     }
 
     public static void main(String[] args) throws Throwable {
-        Console.registerMethods();
-
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         groovy.ui.Console console = new groovy.ui.Console(new GeeBinding());
         console.run();

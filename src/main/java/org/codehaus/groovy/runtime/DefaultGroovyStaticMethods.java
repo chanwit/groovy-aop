@@ -264,6 +264,19 @@ public class DefaultGroovyStaticMethods {
         return TicTocStack.toc();
     }
 
+    public static Object toolbox(Object self, String name) {
+    	try {
+			Class.forName(
+					Character.toUpperCase(name.charAt(0))
+					+ name.substring(1, name.length())
+					+ "Toolbox"
+					);
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException(e);
+		}
+    	return null;
+    }
+
     /**
      * Matlab-like commands
      *
