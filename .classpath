@@ -2,15 +2,14 @@
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" output="build/test-classes" path="src/test/java"/>
-	<classpathentry kind="src" path="src/main/groovy"/>
 	<classpathentry kind="src" path="src/test/groovy"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/kaewkasc.RPC114.000/.gradle/cache/antlr/antlr/jars/antlr-2.7.7.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/kaewkasc.RPC114.000/.gradle/cache/asm/asm-all/jars/asm-all-3.1.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/kaewkasc.RPC114.000/.gradle/cache/junit/junit/jars/junit-3.8.2.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/kaewkasc.RPC114.000/.gradle/cache/org.antlr/antlr-runtime/jars/antlr-runtime-3.1.3.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/kaewkasc.RPC114.000/.gradle/cache/org.antlr/stringtemplate/jars/stringtemplate-3.2.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/kaewkasc.RPC114.000/.gradle/cache/org.aspectj/aspectjweaver/jars/aspectjweaver-1.6.5.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/home/P05/kaewkasc/.gradle/cache/antlr/antlr/jars/antlr-2.7.7.jar"/>
+	<classpathentry kind="lib" path="/home/P05/kaewkasc/.gradle/cache/asm/asm-all/jars/asm-all-3.1.jar"/>
+	<classpathentry kind="lib" path="/home/P05/kaewkasc/.gradle/cache/junit/junit/jars/junit-3.8.2.jar"/>
+	<classpathentry kind="lib" path="/home/P05/kaewkasc/.gradle/cache/org.antlr/antlr-runtime/jars/antlr-runtime-3.1.3.jar"/>
+	<classpathentry kind="lib" path="/home/P05/kaewkasc/.gradle/cache/org.antlr/stringtemplate/jars/stringtemplate-3.2.jar"/>
+	<classpathentry kind="lib" path="/home/P05/kaewkasc/.gradle/cache/org.aspectj/aspectjweaver/jars/aspectjweaver-1.6.5.jar"/>
 	<classpathentry kind="lib" path="lib/groovy-all-1.6.4.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
