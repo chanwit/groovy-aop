@@ -3,7 +3,7 @@
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" output="build/test-classes" path="src/test/java"/>
 	<classpathentry kind="src" path="src/main/groovy"/>
-	<classpathentry kind="src" path="src/test/groovy"/>
+	<classpathentry kind="src" output="build/test-classes" path="src/test/groovy"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk"/>
 	<classpathentry kind="lib" path="C:/Documents and Settings/kaewkasc.RPC114.000/.gradle/cache/antlr/antlr/jars/antlr-2.7.7.jar"/>
 	<classpathentry kind="lib" path="C:/Documents and Settings/kaewkasc.RPC114.000/.gradle/cache/asm/asm-all/jars/asm-all-3.1.jar"/>
