@@ -9,18 +9,10 @@ import org.codehaus.groovy.gjit.benchmarks.Random
 	contributed by Jochen Hinrichsen
 */
 class HeapSort {
-    public static final long IM = 139968
-    public static final long IA =   3877
-    public static final long IC =  29573
 
-    public static long last = 42
-    static gen_random(double max) {
-		max * (last = (last * IA + IC) % IM) / IM
-    }
-
-    static heapsort(int n, double[] ra) {
-		int l, j, ir, i
-		double rra
+    static heapsort(n, ra) {
+		def l, j, ir, i
+		def rra
 
 		l = (n >> 1) + 1
 		ir = n
@@ -61,9 +53,6 @@ class HeapSort {
 		    ary[i] = rndnum.nextDouble()
 		}
 		heapsort(N-1, ary)
-		//println nf.format(ary[0])
-		//println nf.format(ary[N-2])
-		//println nf.format(ary[N-1])
 		println ary[0]
 		println ary[N-2]
 		println ary[N-1]
