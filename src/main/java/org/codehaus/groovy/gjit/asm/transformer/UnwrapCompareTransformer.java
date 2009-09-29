@@ -66,6 +66,7 @@ public class UnwrapCompareTransformer implements Transformer, Opcodes {
                 try {
                     compare = ComparingMethod.valueOf(m.name);
                 } catch (IllegalArgumentException e) {
+                    System.out.println("get compare method failed: " + m.name );                    
                     s = s.getNext();
                     continue;
                 }
@@ -78,9 +79,10 @@ public class UnwrapCompareTransformer implements Transformer, Opcodes {
                 assert array.length == 2;
                 Type t0 = Utils.getType(array[0]);
                 Type t1 = Utils.getType(array[1]);
-//                System.out.println(t0);
-//                System.out.println(t1);
-                if(t0.equals(t1)){
+                // System.out.println(t0);
+                // System.out.println(t1);
+                // not doing anything for java/lang/Object
+                if(t0.equals(t1) && (t0.getDescriptor().equals("Ljava/lang/Object;") == false)) {
                     units.insert(array[0], Utils.getUnboxNodes(t0.getDescriptor()));
                     units.insert(array[1], Utils.getUnboxNodes(t1.getDescriptor()));
 

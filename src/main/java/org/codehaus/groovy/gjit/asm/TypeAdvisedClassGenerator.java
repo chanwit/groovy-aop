@@ -7,15 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.groovy.gjit.asm.transformer.AutoBoxEliminatorTransformer;
-import org.codehaus.groovy.gjit.asm.transformer.CallSiteNameCollector;
-import org.codehaus.groovy.gjit.asm.transformer.ConstantCollector;
-import org.codehaus.groovy.gjit.asm.transformer.DeConstantTransformer;
-import org.codehaus.groovy.gjit.asm.transformer.Transformer;
-import org.codehaus.groovy.gjit.asm.transformer.TypePropagateTransformer;
-import org.codehaus.groovy.gjit.asm.transformer.UnwrapBinOpTransformer;
-import org.codehaus.groovy.gjit.asm.transformer.UnwrapCompareTransformer;
-import org.codehaus.groovy.gjit.asm.transformer.Utils;
+import org.codehaus.groovy.gjit.asm.transformer.*;
+
 import org.codehaus.groovy.runtime.callsite.CallSite;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -40,6 +33,7 @@ public class TypeAdvisedClassGenerator implements Opcodes {
         this.transformers = new Transformer[] {
             new TypePropagateTransformer(),
             new DeConstantTransformer(),
+            new WhileTrueEliminatorTransformer(),
             new UnwrapCompareTransformer(),
             new UnwrapBinOpTransformer(),
             new AutoBoxEliminatorTransformer()
@@ -259,8 +253,9 @@ public class TypeAdvisedClassGenerator implements Opcodes {
 
     private void transformCreateCallSiteArray(MethodNode createCallSiteArray,
             String newInternalClassName) {
+        System.out.println("newInternalClassName: " + newInternalClassName);
         InsnList units = createCallSiteArray.instructions;
-        AbstractInsnNode s = units.getFirst();
+        AbstractInsnNode s = units.getFirst();        
         while(s.getOpcode() != GETSTATIC) s = s.getNext();
         LdcInsnNode newS = new LdcInsnNode(Type.getType("L"+ newInternalClassName+ ";"));
         units.set(s, newS);

@@ -1,6 +1,6 @@
 package org.codehaus.groovy.gjit.asm.transformer;
 
-import java.util.List;
+import java.util.*;
 
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -121,8 +121,10 @@ public class Utils implements Opcodes {
     public static Type getType(AbstractInsnNode node) {
         if(node instanceof MethodInsnNode) {
             return Type.getReturnType(((MethodInsnNode)node).desc);
-        }
-        throw new RuntimeException("NYI");
+        } else if(node.getOpcode() == ALOAD) {
+            return Type.getType("Ljava/lang/Object;");
+        } else
+        throw new RuntimeException("NYI: " + node.getOpcode());
     }
 
     public static Class<?> defineClass(String className, byte[] bytes) {
@@ -151,12 +153,15 @@ public class Utils implements Opcodes {
 
     @SuppressWarnings("unchecked")
     public static void prepareClassInfo(ClassNode classNode) {
+        Map<String, Object> options = new HashMap<String, Object>();
+        options.put("name", classNode.name);
+        
         List<MethodNode> methods = classNode.methods;
         for(MethodNode method: methods) {
             if(method.name.equals("<clinit>")) {
                 new ConstantCollector().internalTransform(method, null);
             } else if(method.name.equals("$createCallSiteArray")) {
-                new CallSiteNameCollector().internalTransform(method, null);
+                new CallSiteNameCollector().internalTransform(method, options);
             }
         }
     }

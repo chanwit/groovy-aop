@@ -379,7 +379,9 @@ public class PartialDefUseAnalyser implements Opcodes {
             case IADD:
             case ISUB:
             case IMUL:
-            case IDIV: {
+            case IDIV:
+            case ISHR:
+            case ISHL: {
                 DefValue arg1 = pop();
                 DefValue arg0 = pop();
                 used.put(insn, new AbstractInsnNode[]{arg0.source, arg1.source});

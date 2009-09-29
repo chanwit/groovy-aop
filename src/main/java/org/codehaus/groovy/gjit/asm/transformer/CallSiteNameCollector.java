@@ -54,7 +54,15 @@ public class CallSiteNameCollector implements Transformer, Opcodes {
             s = s.getNext();
         }
         // System.out.println("owner: " + owner);
-        CallSiteNameHolder.v().put(owner, names.toArray(new String[names.size()]));
+        if(owner != null) {
+            CallSiteNameHolder.v().put(owner, names.toArray(new String[names.size()]));
+        }
+        else {            
+            CallSiteNameHolder.v().put((String)options.get("name"), names.toArray(new String[names.size()]));
+        }
+            // throw new RuntimeException("owner is null: body's name=" + body.name + ": name array size=" + names.size());
+            // else             
+            // do nothing. probably a new generated class
     }
 
 }

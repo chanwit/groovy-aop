@@ -23,17 +23,11 @@ class Fib_fib_x$fib extends AbstractCallSite {
     };
 
     public Fib_fib_x$fib() {
-        //
-        // this should be (generated) Fib_fib_x.class
-        //
-        super(new CallSiteArray(Fib.class, NAMES),1, "fib");
+        super(new CallSiteArray(Fib_fib_x.class, NAMES),1, "fib");
     }
 
     public Fib_fib_x$fib(int i) {
-        //
-        // this should be (generated) Fib_fib_x.class
-        //
-        super(new CallSiteArray(Fib.class, NAMES),i, "fib");
+        super(new CallSiteArray(Fib_fib_x.class, NAMES),i, "fib");
     }
 
 

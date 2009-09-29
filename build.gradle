@@ -55,21 +55,22 @@ task install(dependsOn: libs) << {
     ant.copy( file:"$libsDir/${jar.archiveName}", todir:"C:/groovy/groovy-1.6.4/lib" )
 }
 
-task "test-single"(dependsOn: compileTests) << {
-    //def classToTest = System.getProperty
+task "test-op"(dependsOn: compileTests) << {
     ant.mkdir(dir: testResultsDir)
     ant.junit(fork: true, forkmode: "once", clonevm: true) {
         jvmarg(value: "-server")
-//        jvmarg(value: "-Xmx1G")
-//        jvmarg(value: "-Xms256m")
         jvmarg(value: "-XX:MaxPermSize=256m")
-        classpath(path: dependencies.groovy.asPath)
-        classpath(path: dependencies.compile.asPath)
-        classpath(path: dependencies.testCompile.asPath)
+        classpath(path: configurations.groovy.asPath)
+        classpath(path: configurations.compile.asPath)
+        classpath(path: configurations.testCompile.asPath)
         classpath(location: classesDir)
         classpath(location: testClassesDir)
-        formatter(type: "xml")
-        test(todir: testResultsDir, name: "**/*OptimisationTests")
+        formatter(type: "plain")
+        batchtest(todir: testResultsDir) {
+            fileset(dir: testClassesDir) {
+                include(name:'**/*OptimisationTests.class')
+            }
+        }        
     }   
 }
 

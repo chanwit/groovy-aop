@@ -60,6 +60,7 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
                 MethodInsnNode newInvokeStmt = typePropagate(callSite);
                 replaceCallSite(location, newInvokeStmt);
             } else {
+                // System.out.println("replacing recurion " + callSite);                
                 replaceRecursion(location);
             }
         }
@@ -145,15 +146,17 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
 
     private boolean recursive(Location location, CallSite callSite) {
         String typeOfCall = ((MethodInsnNode)location.invokeStmt).name;
-        // System.out.println(">> recursive");
-        // System.out.println("owner: " + callSite.getArray().owner.getName());
         // owner is Fib_fib_x
         // callSite is Fib_fib_x$fib
         // old callSite is Fib$fib
+        
+        String callSiteClassName = callSite.getArray().owner.getName() + "$" + callSite.getName();
+
+        // System.out.println(">> debug ==");        
+        // System.out.println("name pattern " + callSiteClassName);
+        // System.out.println("type of call " + typeOfCall);
+        
         if(typeOfCall.equals("callStatic")) {
-            // 1. check recursive of callStatic
-            String callSiteClassName = callSite.getArray().owner.getName() + "$" + callSite.getName();
-            // callSite.getClass().getName();
             String names[] = callSiteClassName.split("\\$|_");
             if(names.length != 4) {
                 // System.out.println("Name pattern not support: " + callSiteClassName);
@@ -166,13 +169,17 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
             AbstractInsnNode[] array = location.usedMap.get(location.invokeStmt);
             // array[1] must be an invokestatic returns Class<?>
             names[0] = names[0].replace('.', '/');
-            String classFromFirstArg = convertFromGetClassToInternalName(((MethodInsnNode)array[1]).name);
+            String classFromFirstArg = convertFromGetClassToInternalName(((MethodInsnNode)array[1]).name);                        
             return names[0].equals(classFromFirstArg);
-        } else {
+        } else if(typeOfCall.equals("call")) {
+            System.out.println("call : not check for recursion");
             return false;
-            // 2. check recursive of call, callCurrent
-            // throw new RuntimeException("NYI");
+        } else if(typeOfCall.equals("callCurrent")) {
+            System.out.println("callCurrent : not check for recursion");
+            return false;
         }
+
+        return false;
     }
 
     private String convertFromGetClassToInternalName(String name) {

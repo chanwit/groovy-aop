@@ -38,6 +38,7 @@ public class TypePropagateTransformer implements Transformer, Opcodes {
                     if(v.var-1 >= advisedTypes.length) { s = s.getNext(); continue; }
                     type = advisedTypes[v.var - 1];
                 }
+
                 if(type != null && type.isPrimitive()) {
                     int offset = 4;
                     if(type == int.class   ) offset = 4; else
@@ -49,11 +50,14 @@ public class TypePropagateTransformer implements Transformer, Opcodes {
                     units.insert(newS, Utils.getBoxNode(type));
                     s = newS.getNext().getNext();
                     continue;
+                } else if(type != null && type.isArray()) {                    
+                    // leave it normally
+                    // an array is managed as an object
                 } else if(type != null) {
-                    throw new RuntimeException("NYI");
+                    throw new RuntimeException("NYI for type=" + type);
                 }
             } else if (s.getOpcode() == ARETURN) {
-                if(advisedReturnType != null && advisedReturnType.isPrimitive()) {
+                if(advisedReturnType != null && advisedReturnType.isPrimitive() && advisedReturnType != void.class) {
                     int offset = 4;
                     if(advisedReturnType == int.class   ) offset = 4; else
                     if(advisedReturnType == long.class  ) offset = 3; else
@@ -64,7 +68,14 @@ public class TypePropagateTransformer implements Transformer, Opcodes {
                     units.insertBefore(newS, Utils.getUnboxNodes(advisedReturnType));
                     s = newS.getNext();
                     continue;
-                } else if (advisedReturnType != null) {
+                }  else if (advisedReturnType != null && advisedReturnType == void.class) {
+                    // ARETURN -> POP, RETURN
+                    InsnNode pop  = new InsnNode(POP);
+                    InsnNode newS = new InsnNode(RETURN);
+                    units.set(s, newS);
+                    units.insertBefore(newS, pop);
+                    s = newS.getNext();
+                }  else if (advisedReturnType != null) {
                     throw new RuntimeException("NYI");
                 }
             }
