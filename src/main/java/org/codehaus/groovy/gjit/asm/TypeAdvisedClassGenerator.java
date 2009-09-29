@@ -36,6 +36,7 @@ public class TypeAdvisedClassGenerator implements Opcodes {
             new WhileTrueEliminatorTransformer(),
             new UnwrapCompareTransformer(),
             new UnwrapBinOpTransformer(),
+            new GetAtPutAtTransformer(),
             new AutoBoxEliminatorTransformer()
         };
     }
@@ -167,8 +168,17 @@ public class TypeAdvisedClassGenerator implements Opcodes {
         // The main transformation is TypePropagateTransformer
         //
         Map<String, Object> options = new HashMap<String, Object>();
-        options.put("advisedTypes",      advisedTypes);
-        options.put("advisedReturnType", advisedReturnType);
+        // TODO: unify them
+        // The followings give the similar information
+        // They should be merged together
+        //
+        // 1) used by type propagatation
+        options.put("advisedTypes", advisedTypes);
+        options.put("advisedReturnType", advisedReturnType);         
+        //
+        // 2) used by getAt/putAt
+        options.put("argTypes",   argumentTypes);
+        options.put("returnType", returnType);
         for (int i = 0; i < transformers.length; i++) {
             transformers[i].internalTransform(targetMN, options);
         }
