@@ -17,7 +17,7 @@ class HeapSort {
         l = (n >> 1) + 1
         ir = n
         while (true) {
-            ra[l] = 10
+            rra = ra[l]
             return
 //            if (l > 1) {
 //                rra = ra[--l]
