@@ -57,8 +57,12 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
         // index:      0 1 2 3 4 5 6
         // old values: 1 1 1 1 2 1 1
         // new values: 0 1 2 3 4 6 7
+        int old = localMarker[0];
+        localMarker[0] = 0;
         for(int i=1; i<localMarker.length; i++) {
-            localMarker[i] = localMarker[i-1] + localMarker[i];
+            int temp = localMarker[i];
+            localMarker[i] = localMarker[i-1] + old;
+            old = temp;
         }
 
         s = units.getFirst();
