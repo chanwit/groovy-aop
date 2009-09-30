@@ -20,7 +20,7 @@ public class HeapSortOptimisationTests extends GroovyTestCase implements Opcodes
         def aatf = new AspectAwareTransformer(
             advisedTypes:[int, double[]] as Class[],
             advisedReturnType: void,
-            callSite: new HeapSort$heapsort(15),
+            callSite: new HeapSort$heapsort(16),
             withInMethodName: "main"
         )
         sco.transformers = [
