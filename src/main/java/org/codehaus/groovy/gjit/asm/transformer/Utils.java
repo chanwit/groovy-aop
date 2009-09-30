@@ -126,7 +126,11 @@ public class Utils implements Opcodes {
             return Type.getReturnType(((MethodInsnNode)node).desc);
         } else if(node.getOpcode() == ALOAD) {
             return Type.getType("Ljava/lang/Object;");
-        } else
+        } else if(node.getOpcode() >= ICONST_M1 && node.getOpcode() <= ICONST_5) {
+            return Type.getType("I");
+        } else if(node.getOpcode() == BIPUSH || node.getOpcode() == SIPUSH) {
+            return Type.getType("I");
+        }
         throw new RuntimeException("NYI: " + node.getOpcode());
     }
 

@@ -89,7 +89,12 @@ public class GetAtPutAtTransformer implements Transformer, Opcodes {
                     case Type.DOUBLE: {
                         if(callSiteName.equals("getAt")) {
                             // array[2] must be unboxed to "int" for indexing
-                            units.insert(array[2], Utils.getUnboxNodes(int.class));
+                            // if it's an object, do boxing
+                            if(Utils.getType(array[2]).getSort() == Type.OBJECT) {
+                                units.insert(array[2], Utils.getUnboxNodes(int.class));
+                            } else {
+                                throw new RuntimeException("NYI");
+                            }
                             InsnNode newS = new InsnNode(DALOAD);
                             units.set(m, newS);
                             units.insert(newS, Utils.getBoxNode(elemType));
