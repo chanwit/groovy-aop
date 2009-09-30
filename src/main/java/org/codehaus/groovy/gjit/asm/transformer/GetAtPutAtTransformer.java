@@ -91,12 +91,13 @@ public class GetAtPutAtTransformer implements Transformer, Opcodes {
                             // array[2] must be unboxed to "int" for indexing
                             // if it's an object, do boxing
                             if(Utils.getType(array[2]).getSort() == Type.OBJECT) {
+                                AbstractInsnNode dup = array[2].getNext();
+                                if(dup.getOpcode() == DUP) {
+                                    units.insert(dup, Utils.getBoxNode(int.class));
+                                }
                                 units.insert(array[2], Utils.getUnboxNodes(int.class));
                                 // TODO special case, when it also makes itself into TOS
-                                // need checking for anther opcode
-                                if(array[2].getOpcode() == DUP) {
-                                    units.insertAfter(array[2], Utils.getBoxNode(int.class));
-                                }
+                                // need checking for anther opcode                                
                             } else {
                                 throw new RuntimeException("NYI");
                             }
