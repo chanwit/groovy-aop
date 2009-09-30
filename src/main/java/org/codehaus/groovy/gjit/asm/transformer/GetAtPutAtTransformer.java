@@ -124,6 +124,15 @@ public class GetAtPutAtTransformer implements Transformer, Opcodes {
                             units.remove(start);
                             
                             s = newS.getNext();
+                            // this POP is the result from calling "putAt"
+                            // as the "putAt"'s signature returns Ljava/lang/Object;
+                            // it's always discarded,
+                            // but xDSTORE does not need it.
+                            if(s.getOpcode() == POP) { // unused POP
+                                newS = s;
+                                s = s.getNext();
+                                units.remove(newS);
+                            }
                             continue;
                         }
                     }
