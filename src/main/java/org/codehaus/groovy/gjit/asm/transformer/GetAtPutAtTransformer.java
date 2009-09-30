@@ -129,9 +129,9 @@ public class GetAtPutAtTransformer implements Transformer, Opcodes {
                             // it's always discarded,
                             // but xDSTORE does not need it.
                             if(s.getOpcode() == POP) { // unused POP
-                                newS = s;
+                                AbstractInsnNode oldS = s;
                                 s = s.getNext();
-                                units.remove(newS);
+                                units.remove(oldS);
                             }
                             continue;
                         }
