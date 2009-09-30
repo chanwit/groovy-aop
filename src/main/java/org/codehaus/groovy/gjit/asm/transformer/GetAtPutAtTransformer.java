@@ -55,7 +55,7 @@ public class GetAtPutAtTransformer implements Transformer, Opcodes {
             if(s.getOpcode() != INVOKEINTERFACE) { s = s.getNext(); continue; }
             MethodInsnNode m = (MethodInsnNode)s;
             if(m.name.equals("call")==false) { s = s.getNext(); continue; }
-            if(m.desc.equals("(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;")==false) { s = s.getNext(); continue; }
+            // if(m.desc.equals("(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;")==false) { s = s.getNext(); continue; }
             if(m.owner.equals("org/codehaus/groovy/runtime/callsite/CallSite")==false) { s = s.getNext(); continue; }
 
             ReverseStackDistance rsd = new ReverseStackDistance(m);
