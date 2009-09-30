@@ -87,7 +87,7 @@ public class GetAtPutAtTransformer implements Transformer, Opcodes {
                 Type elemType = t0.getElementType();
                 switch(elemType.getSort()) {
                     case Type.DOUBLE: {
-                        if(callSite.equals("getAt")) {
+                        if(callSiteName.equals("getAt")) {
                             // array[2] must be unboxed to "int" for indexing
                             units.insert(array[2], Utils.getUnboxNodes(int.class));
                             InsnNode newS = new InsnNode(DALOAD);
@@ -101,7 +101,7 @@ public class GetAtPutAtTransformer implements Transformer, Opcodes {
                             
                             s = newS.getNext();
                             continue;
-                        } else if (callSite.equals("putAt")) {
+                        } else if (callSiteName.equals("putAt")) {
                             
                         }
                     }
