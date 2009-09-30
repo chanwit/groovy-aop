@@ -38,7 +38,9 @@ public class HeapSortOptimisationTests extends GroovyTestCase implements Opcodes
 
         def heapsort_x_body = ClassBodyCache.v().get(HEAPSORT_X)
         cr = new ClassReader(heapsort_x_body)
-        CheckClassAdapter.verify(cr, true, new PrintWriter(System.out))
+        CheckClassAdapter.verify(cr, false, new PrintWriter(System.out))
+        def tcv = new TraceClassVisitor(new PrintWriter(System.out))
+        cr.accept tcv, 0
     }
 
 }

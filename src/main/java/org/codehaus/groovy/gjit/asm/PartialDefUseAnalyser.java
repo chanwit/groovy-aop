@@ -381,7 +381,8 @@ public class PartialDefUseAnalyser implements Opcodes {
             case IMUL:
             case IDIV:
             case ISHR:
-            case ISHL: {
+            case ISHL:
+            case IALOAD: {
                 DefValue arg1 = pop();
                 DefValue arg0 = pop();
                 used.put(insn, new AbstractInsnNode[]{arg0.source, arg1.source});
@@ -391,7 +392,8 @@ public class PartialDefUseAnalyser implements Opcodes {
             case LADD:
             case LSUB:
             case LMUL:
-            case LDIV: {
+            case LDIV:
+            case LALOAD: {
                 DefValue arg1 = pop();
                 DefValue arg0 = pop();
                 used.put(insn, new AbstractInsnNode[]{arg0.source, arg1.source});
@@ -401,7 +403,8 @@ public class PartialDefUseAnalyser implements Opcodes {
             case DADD:
             case DSUB:
             case DMUL:
-            case DDIV: {
+            case DDIV:
+            case DALOAD: {
                 DefValue arg1 = pop();
                 DefValue arg0 = pop();
                 used.put(insn, new AbstractInsnNode[]{arg0.source, arg1.source});
@@ -411,7 +414,8 @@ public class PartialDefUseAnalyser implements Opcodes {
             case FADD:
             case FSUB:
             case FMUL:
-            case FDIV: {
+            case FDIV:
+            case FALOAD: {
                 DefValue arg1 = pop();
                 DefValue arg0 = pop();
                 used.put(insn, new AbstractInsnNode[]{arg0.source, arg1.source});
