@@ -8,12 +8,12 @@ import org.objectweb.asm.tree.*;
 import org.codehaus.groovy.gjit.asm.*;
 
 public class GetAtPutAtTransformer implements Transformer, Opcodes {
-    
+
     @Override
     public void internalTransform(MethodNode body, Map<String, Object> options) {
         Type[] argTypes   = (Type[])options.get("argTypes");
         Type   returnType = (Type)  options.get("returnType");
-        
+
         InsnList units = body.instructions;
         AbstractInsnNode s = units.getFirst();
 
@@ -68,10 +68,10 @@ public class GetAtPutAtTransformer implements Transformer, Opcodes {
             int callSiteIndex = (Integer)((LdcInsnNode)callSiteIndexHolder).cst;
             String callSiteName = names[callSiteIndex];
 
-            // not getAt, not putAt then continue            
+            // not getAt, not putAt then continue
             if(!(callSiteName.equals("getAt") || callSiteName.equals("putAt"))) { s = s.getNext(); continue; }
 
-            // doing analysis to get 
+            // doing analysis to get
             // - array[0], the call site object
             // - array[1], the object
             // - array[2], the index
@@ -79,31 +79,37 @@ public class GetAtPutAtTransformer implements Transformer, Opcodes {
             Map<AbstractInsnNode, AbstractInsnNode[]> usedMap = pdua.analyse();
             AbstractInsnNode[] array = usedMap.get(m);
 
-            // special call of getType to also obtain type information from advisedTypes
+            // special call of getType to also obtain type information from argTypes
             // for example, if it's [D then
             Type t0 = Utils.getType(array[1], argTypes);
             if(t0.getSort() == Type.ARRAY) {
                 // [D -> elemType is D
                 Type elemType = t0.getElementType();
-                
-                // array[2] must be unboxed to "int" for indexing
-                System.out.println("found " + callSiteName);
-                System.out.println("its type is " + t0.getDescriptor());
+                switch(elemType.getSort()) {
+                    case Type.DOUBLE: {
+                        if(callSite.equals("getAt")) {
+                            // array[2] must be unboxed to "int" for indexing
+                            units.insert(array[2], Utils.getUnboxNodes(int.class));
+                            InsnNode newS = new InsnNode(DALOAD);
+                            units.set(m, newS);
+                            units.insert(newS, Utils.getBoxNode(t0));
+                            
+                            // clean up
+                            units.remove(start.getNext().getNext());
+                            units.remove(start.getNext());
+                            units.remove(start);
+                            
+                            s = newS.getNext();
+                            continue;
+                        } else if (callSite.equals("putAt")) {
+                            
+                        }
+                    }
+                }
             }
-            
-            // form: a[0].call(ra, l)
-            if(callSiteName.equals("getAt")) {                
-                
-                // TODO continue here for unwrapping getAt and putAt
-                // [D + getAt => AALOAD  and WRAP
-                // [D + putAt => AASTORE with unboxing before storing
-            } else if(callSiteName.equals("putAt")) {
-                
-            }
-            
             s = s.getNext();
         }
 
-    }    
-    
+    }
+
 }
