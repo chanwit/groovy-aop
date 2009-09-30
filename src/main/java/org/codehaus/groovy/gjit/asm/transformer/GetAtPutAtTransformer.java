@@ -107,7 +107,24 @@ public class GetAtPutAtTransformer implements Transformer, Opcodes {
                             s = newS.getNext();
                             continue;
                         } else if (callSiteName.equals("putAt")) {
+                            // array[2] must be the "int" index
+                            // array[3] must be a value of elemType, if it's [D, then D
+                            if(Utils.getType(array[2]).getSort() == Type.OBJECT) {
+                                units.insert(array[2], Utils.getUnboxNodes(int.class));
+                            } else {
+                                throw new RuntimeException("NYI");
+                            }                            
+                            InsnNode newS = new InsnNode(DASTORE);
+                            units.set(m, newS);                            
+                            units.insert(array[3], Utils.getUnboxNodes(elemType));
+
+                            // clean up
+                            units.remove(start.getNext().getNext());
+                            units.remove(start.getNext());
+                            units.remove(start);
                             
+                            s = newS.getNext();
+                            continue;
                         }
                     }
                 }
