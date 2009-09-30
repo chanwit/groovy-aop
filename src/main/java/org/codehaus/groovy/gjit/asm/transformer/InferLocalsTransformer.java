@@ -87,7 +87,7 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
                     } else if (vOpcode == ALOAD) {
                         newS = new VarInsnNode(ILOAD, localMarker[v.var]);
                         units.set(s, newS);
-                        units.insert(newS, Utils.getBoxNode(int.class);
+                        units.insert(newS, Utils.getBoxNode(int.class));
                     } break;
                     case Type.LONG: if(vOpcode == ASTORE) {
                         newS = new VarInsnNode(LSTORE, localMarker[v.var]);
@@ -96,7 +96,7 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
                     } else if (vOpcode == ALOAD) {
                         newS = new VarInsnNode(LLOAD, localMarker[v.var]);
                         units.set(s, newS);
-                        units.insert(newS, Utils.getBoxNode(long.class);
+                        units.insert(newS, Utils.getBoxNode(long.class));
                     } break;
                     case Type.FLOAT: if(vOpcode == ASTORE) {
                         newS = new VarInsnNode(FSTORE, localMarker[v.var]);
@@ -105,7 +105,7 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
                     } else if (vOpcode == ALOAD) {
                         newS = new VarInsnNode(FLOAD, localMarker[v.var]);
                         units.set(s, newS);
-                        units.insert(newS, Utils.getBoxNode(float.class);
+                        units.insert(newS, Utils.getBoxNode(float.class));
                     } break;
                     case Type.DOUBLE: if(vOpcode == ASTORE) {
                         newS = new VarInsnNode(DSTORE, localMarker[v.var]);
@@ -114,7 +114,7 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
                     } else if (vOpcode == ALOAD) {
                         newS = new VarInsnNode(DLOAD, localMarker[v.var]);
                         units.set(s, newS);
-                        units.insert(newS, Utils.getBoxNode(float.class);
+                        units.insert(newS, Utils.getBoxNode(double.class));
                     } break;
                 }
                 if(newS == null) 
