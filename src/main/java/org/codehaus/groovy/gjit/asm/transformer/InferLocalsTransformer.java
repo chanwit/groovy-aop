@@ -30,7 +30,7 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
             if(m0.name.equals("valueOf")==false) { s = s.getNext(); continue; }
 
             // (I)Ljava/lang/Integer; -> I
-            char type = m.desc.charAt(1);
+            char type = m0.desc.charAt(1);
 
             VarInsnNode v = (VarInsnNode)s;
             AbstractInsnNode newS = null;
