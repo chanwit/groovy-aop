@@ -15,7 +15,7 @@ import org.objectweb.asm.tree.*
 import groovy.lang.ExpandoMetaClass;
 import groovy.util.GroovyTestCase
 
-public class AsmSingleClassOptimiserTests extends GroovyTestCase implements Opcodes {
+public class FibonacciOptimisationTests extends GroovyTestCase implements Opcodes {
 
     static FIB_FIB_X = "org/codehaus/groovy/gjit/soot/fibbonacci/Fib_fib_x"
 

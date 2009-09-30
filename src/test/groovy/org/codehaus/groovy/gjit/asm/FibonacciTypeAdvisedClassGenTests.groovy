@@ -16,7 +16,7 @@ import org.objectweb.asm.*
 import org.objectweb.asm.tree.*
 import org.objectweb.asm.util.*
 
-class AsmTypeAdvisedClassGenTests extends GroovyTestCase implements Opcodes {
+class FibonacciTypeAdvisedClassGenTests extends GroovyTestCase implements Opcodes {
 
     static FIB_NAME     = "org/codehaus/groovy/gjit/soot/fibbonacci/Fib"
     static FIB_NEW_NAME = "org/codehaus/groovy/gjit/soot/fibbonacci/Fib_fib_x"
