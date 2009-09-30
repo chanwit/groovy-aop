@@ -13,7 +13,11 @@ class HeapSort$heapsort extends AbstractCallSite {
     };
 
     public HeapSort$heapsort() {
-        super(new CallSiteArray(HeapSort.class, NAMES),37, "heapsort");
+        super(new CallSiteArray(HeapSort.class, NAMES), 37, "heapsort");
+    }
+
+    public HeapSort$heapsort(int index) {
+        super(new CallSiteArray(HeapSort.class, NAMES), index, "heapsort");
     }
 
 }

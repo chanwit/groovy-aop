@@ -52,7 +52,8 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
 
             VarInsnNode acallsite = findCallSiteArray(units);
             Location location = locateCallSiteByIndex(units, acallsite, callSite.getIndex());
-            if(location.invokeStmt== null) return;
+            if(location == null) return;
+            if(location.invokeStmt == null) return;
             DGMResult dmg = isDGMCallSite(callSite);
             if(dmg != null) {
                 replaceBinaryCallSite(location, dmg);
