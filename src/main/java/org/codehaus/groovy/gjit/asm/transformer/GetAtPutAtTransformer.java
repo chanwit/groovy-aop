@@ -92,7 +92,7 @@ public class GetAtPutAtTransformer implements Transformer, Opcodes {
                             units.insert(array[2], Utils.getUnboxNodes(int.class));
                             InsnNode newS = new InsnNode(DALOAD);
                             units.set(m, newS);
-                            units.insert(newS, Utils.getBoxNode(t0));
+                            units.insert(newS, Utils.getBoxNode(elemType));
                             
                             // clean up
                             units.remove(start.getNext().getNext());
