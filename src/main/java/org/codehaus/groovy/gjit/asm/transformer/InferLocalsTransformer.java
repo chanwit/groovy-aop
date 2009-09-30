@@ -19,6 +19,8 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
     public void internalTransform(MethodNode body, Map<String, Object> options) {
         int[] localMarker = new int[body.maxLocals];
         for(int i=0; i<localMarker.length; i++) localMarker[i] = 1;
+        int[] localTypes = new int[body.maxLocals];
+        for(int i=0; i<localTypes.length; i++) localTypes[i] = -1;
 
         InsnList units = body.instructions;
         AbstractInsnNode s = units.getFirst();
@@ -35,13 +37,19 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
             VarInsnNode v = (VarInsnNode)s;
             AbstractInsnNode newS = null;
             switch(type) {
-                case 'I': newS = new VarInsnNode(ISTORE, v.var); break;
+                case 'I': newS = new VarInsnNode(ISTORE, v.var);
+                          localTypes[v.var] = Type.INT;
+                          break;
                 case 'L': newS = new VarInsnNode(LSTORE, v.var);
                           localMarker[v.var] = 2;
+                          localTypes[v.var] = Type.LONG;
                           break;
-                case 'F': newS = new VarInsnNode(FSTORE, v.var); break;
+                case 'F': newS = new VarInsnNode(FSTORE, v.var); 
+                          localTypes[v.var] = Type.FLOAT;
+                          break;
                 case 'D': newS = new VarInsnNode(DSTORE, v.var);
                           localMarker[v.var] = 2;
+                          localTypes[v.var] = Type.DOUBLE;
                           break;
             }
             if(newS == null) {
@@ -69,9 +77,50 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
         while(s != null) {
             if(s instanceof VarInsnNode) {
                 VarInsnNode v = (VarInsnNode)s;
-                AbstractInsnNode newS = new VarInsnNode(v.getOpcode(), localMarker[v.var]);
-                units.set(s, newS);
-                s = newS.getNext();
+                int vOpcode = v.getOpcode();
+                AbstractInsnNode newS = null;
+                switch(localTypes[v.var]) {
+                    case Type.INT: if(vOpcode == ASTORE) {
+                        newS = new VarInsnNode(ISTORE, localMarker[v.var]);
+                        units.set(s, newS);
+                        units.insertBefore(newS, Utils.getUnboxNodes(int.class));
+                    } else if (vOpcode == ALOAD) {
+                        newS = new VarInsnNode(ILOAD, localMarker[v.var]);
+                        units.set(s, newS);
+                        units.insert(newS, Utils.getBoxNode(int.class);
+                    } break;
+                    case Type.LONG: if(vOpcode == ASTORE) {
+                        newS = new VarInsnNode(LSTORE, localMarker[v.var]);
+                        units.set(s, newS);
+                        units.insertBefore(newS, Utils.getUnboxNodes(long.class));
+                    } else if (vOpcode == ALOAD) {
+                        newS = new VarInsnNode(LLOAD, localMarker[v.var]);
+                        units.set(s, newS);
+                        units.insert(newS, Utils.getBoxNode(long.class);
+                    } break;
+                    case Type.FLOAT: if(vOpcode == ASTORE) {
+                        newS = new VarInsnNode(FSTORE, localMarker[v.var]);
+                        units.set(s, newS);
+                        units.insertBefore(newS, Utils.getUnboxNodes(float.class));
+                    } else if (vOpcode == ALOAD) {
+                        newS = new VarInsnNode(FLOAD, localMarker[v.var]);
+                        units.set(s, newS);
+                        units.insert(newS, Utils.getBoxNode(float.class);
+                    } break;
+                    case Type.DOUBLE: if(vOpcode == ASTORE) {
+                        newS = new VarInsnNode(DSTORE, localMarker[v.var]);
+                        units.set(s, newS);
+                        units.insertBefore(newS, Utils.getUnboxNodes(double.class));
+                    } else if (vOpcode == ALOAD) {
+                        newS = new VarInsnNode(DLOAD, localMarker[v.var]);
+                        units.set(s, newS);
+                        units.insert(newS, Utils.getBoxNode(float.class);
+                    } break;
+                }
+                if(newS == null) 
+                    s = s.getNext();
+                else
+                    s = newS.getNext();
             } else {
                 s = s.getNext();
             }
