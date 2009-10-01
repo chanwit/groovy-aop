@@ -134,7 +134,7 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
                 newS = new VarInsnNode(ILOAD + offset, localMarker[v.var]);
                 units.set(s, newS);
                 units.insert(newS, Utils.getBoxNode(clazz));
-            } else if(vOpcode >= ISTORE && vOpcode <= DSTORE || vOpcode >= ILOAD && vOpcode <= DLOAD) {
+            } else if((vOpcode >= ISTORE && vOpcode <= DSTORE) || (vOpcode >= ILOAD && vOpcode <= DLOAD)) {
                 newS = new VarInsnNode(vOpcode, localMarker[v.var]);
                 units.set(s, newS);
             }
