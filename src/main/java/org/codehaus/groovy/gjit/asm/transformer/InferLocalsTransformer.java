@@ -25,6 +25,8 @@ import java.util.*;
 //  ISTORE 5
 //
 public class InferLocalsTransformer implements Transformer, Opcodes {
+    
+    private static final int OPTIMISE_TIMES = 3;
 
     @Override
     public void internalTransform(MethodNode body, Map<String, Object> options) {
@@ -33,45 +35,49 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
         int[] localTypes = new int[body.maxLocals];
         for(int i=0; i<localTypes.length; i++) localTypes[i] = -1;
 
-        InsnList units = body.instructions;
-        AbstractInsnNode s = units.getFirst();
-        while(s != null) {
-            if(s.getOpcode()  != ASTORE)         { s = s.getNext(); continue; }
-            AbstractInsnNode p0 = s.getPrevious();
-            if(p0.getOpcode() == DUP) p0 = p0.getPrevious();
-            if(p0.getOpcode() != INVOKESTATIC)   { s = s.getNext(); continue; }
-            MethodInsnNode m0 = (MethodInsnNode)p0;
-            if(m0.name.equals("valueOf")==false) { s = s.getNext(); continue; }
-
-            // (I)Ljava/lang/Integer; -> I
-            char type = m0.desc.charAt(1);
-
-            VarInsnNode v = (VarInsnNode)s;
-            AbstractInsnNode newS = null;
-            switch(type) {
-                case 'I': newS = new VarInsnNode(ISTORE, v.var);
-                          localTypes[v.var] = Type.INT;
-                          break;
-                case 'L': newS = new VarInsnNode(LSTORE, v.var);
-                          localMarker[v.var] = 2;
-                          localTypes[v.var] = Type.LONG;
-                          break;
-                case 'F': newS = new VarInsnNode(FSTORE, v.var);
-                          localTypes[v.var] = Type.FLOAT;
-                          break;
-                case 'D': newS = new VarInsnNode(DSTORE, v.var);
-                          localMarker[v.var] = 2;
-                          localTypes[v.var] = Type.DOUBLE;
-                          break;
+        InsnList units = body.instructions;                
+        AbstractInsnNode s = null;
+        
+        for(int i=0; i < OPTIMISE_TIMES; i++) {
+            s = units.getFirst();
+            while(s != null) {
+                if(s.getOpcode()  != ASTORE)         { s = s.getNext(); continue; }
+                AbstractInsnNode p0 = s.getPrevious();
+                if(p0.getOpcode() == DUP) p0 = p0.getPrevious();
+                if(p0.getOpcode() != INVOKESTATIC)   { s = s.getNext(); continue; }
+                MethodInsnNode m0 = (MethodInsnNode)p0;
+                if(m0.name.equals("valueOf")==false) { s = s.getNext(); continue; }
+    
+                // (I)Ljava/lang/Integer; -> I
+                char type = m0.desc.charAt(1);
+    
+                VarInsnNode v = (VarInsnNode)s;
+                AbstractInsnNode newS = null;
+                switch(type) {
+                    case 'I': newS = new VarInsnNode(ISTORE, v.var);
+                              localTypes[v.var] = Type.INT;
+                              break;
+                    case 'L': newS = new VarInsnNode(LSTORE, v.var);
+                              localMarker[v.var] = 2;
+                              localTypes[v.var] = Type.LONG;
+                              break;
+                    case 'F': newS = new VarInsnNode(FSTORE, v.var);
+                              localTypes[v.var] = Type.FLOAT;
+                              break;
+                    case 'D': newS = new VarInsnNode(DSTORE, v.var);
+                              localMarker[v.var] = 2;
+                              localTypes[v.var] = Type.DOUBLE;
+                              break;
+                }
+                if(newS == null) {
+                    // throw new RuntimeException("NYI");
+                    s = s.getNext();
+                    continue;
+                }
+                units.set(s, newS);
+                units.insertBefore(newS, Utils.getUnboxNodes("L"+m0.owner+";"));
+                s = newS.getNext();
             }
-            if(newS == null) {
-                // throw new RuntimeException("NYI");
-                s = s.getNext();
-                continue;
-            }
-            units.set(s, newS);
-            units.insertBefore(newS, Utils.getUnboxNodes("L"+m0.owner+";"));
-            s = newS.getNext();
         }
 
         System.out.print("before = ");
