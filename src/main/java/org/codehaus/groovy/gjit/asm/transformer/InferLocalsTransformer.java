@@ -26,14 +26,22 @@ import java.util.*;
 //
 public class InferLocalsTransformer implements Transformer, Opcodes {
     
-    private static final int OPTIMISE_TIMES = 3;
+    private static final int OPTIMISE_TIMES = 2;
 
     @Override
     public void internalTransform(MethodNode body, Map<String, Object> options) {
+        //
+        // This algorithm works only for unoptimised codes
+        // where every local is object, i.e., ASTORE/ALOAD are used.
+        // Because it assumes that size of each local is 1 from the beginning.
+        //
+        // This algorithm will not work for partial optimised codes
+        // i.e. some long and double exists (LSTORE/LLOAD, DSTORE/DLOAD).
+        //
         int[] localMarker = new int[body.maxLocals];
-        for(int i=0; i<localMarker.length; i++) localMarker[i] = 1;
+        for(int i = 0; i < localMarker.length; i++) localMarker[i] =  1;
         int[] localTypes = new int[body.maxLocals];
-        for(int i=0; i<localTypes.length; i++) localTypes[i] = -1;
+        for(int i = 0; i < localTypes.length ; i++) localTypes[i]  = -1;
 
         InsnList units = body.instructions;                
         AbstractInsnNode s = null;
@@ -41,12 +49,12 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
         for(int i=0; i < OPTIMISE_TIMES; i++) {
             s = units.getFirst();
             while(s != null) {
-                if(s.getOpcode()  != ASTORE)         { s = s.getNext(); continue; }
+                if(s.getOpcode()  != ASTORE)           { s = s.getNext(); continue; }
                 AbstractInsnNode p0 = s.getPrevious();
                 if(p0.getOpcode() == DUP) p0 = p0.getPrevious();
-                if(p0.getOpcode() != INVOKESTATIC)   { s = s.getNext(); continue; }
+                if(p0.getOpcode() != INVOKESTATIC)     { s = s.getNext(); continue; }
                 MethodInsnNode m0 = (MethodInsnNode)p0;
-                if(m0.name.equals("valueOf")==false) { s = s.getNext(); continue; }
+                if(m0.name.equals("valueOf") == false) { s = s.getNext(); continue; }
     
                 // (I)Ljava/lang/Integer; -> I
                 char type = m0.desc.charAt(1);
@@ -55,18 +63,18 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
                 AbstractInsnNode newS = null;
                 switch(type) {
                     case 'I': newS = new VarInsnNode(ISTORE, v.var);
-                              localTypes[v.var] = Type.INT;
+                              localTypes[v.var]  = Type.INT;
                               break;
                     case 'L': newS = new VarInsnNode(LSTORE, v.var);
                               localMarker[v.var] = 2;
-                              localTypes[v.var] = Type.LONG;
+                              localTypes[v.var]  = Type.LONG;
                               break;
                     case 'F': newS = new VarInsnNode(FSTORE, v.var);
-                              localTypes[v.var] = Type.FLOAT;
+                              localTypes[v.var]  = Type.FLOAT;
                               break;
                     case 'D': newS = new VarInsnNode(DSTORE, v.var);
                               localMarker[v.var] = 2;
-                              localTypes[v.var] = Type.DOUBLE;
+                              localTypes[v.var]  = Type.DOUBLE;
                               break;
                 }
                 if(newS == null) {
@@ -75,7 +83,7 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
                     continue;
                 }
                 units.set(s, newS);
-                units.insertBefore(newS, Utils.getUnboxNodes("L"+m0.owner+";"));
+                units.insertBefore(newS, Utils.getUnboxNodes("L" + m0.owner + ";"));
                 s = newS.getNext();
             }
 
@@ -134,7 +142,7 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
         // new values: 0 1 2 3 4 6 7
         int old = localMarker[0];
         localMarker[0] = 0;
-        for(int i=1; i<localMarker.length; i++) {
+        for(int i = 1; i < localMarker.length; i++) {
             int temp = localMarker[i];
             localMarker[i] = localMarker[i-1] + old;
             old = temp;
