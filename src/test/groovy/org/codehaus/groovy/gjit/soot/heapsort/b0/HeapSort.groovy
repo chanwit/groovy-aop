@@ -17,7 +17,9 @@ class HeapSort {
         l = (n >> 1) + 1
         ir = n
         while (true) {
-        	ra[ir] = ra[1]
+            if (l > 1) {
+        	    ra[ir] = ra[1]
+    	    }
         }
     }
 
