@@ -27,18 +27,6 @@ class HeapSort {
                     return
                 }
             }
-            i = l
-            j = l << 1
-            while (j <= ir) {
-                if (j < ir && ra[j] < ra[j+1]) { ++j }
-                if (rra < ra[j]) {
-                    ra[i] = ra[j]
-                    j += (i = j)
-                } else {
-                    j = ir + 1
-                }
-            }
-            ra[i] = rra
         }
     }
 
