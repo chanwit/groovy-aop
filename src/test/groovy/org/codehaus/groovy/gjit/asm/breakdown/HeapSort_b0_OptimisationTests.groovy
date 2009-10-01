@@ -11,7 +11,7 @@ import org.codehaus.groovy.gjit.asm.transformer.*
 
 public class HeapSort_b0_OptimisationTests extends GroovyTestCase implements Opcodes {
 
-    static HEAPSORT_X = "org/codehaus/groovy/gjit/soot/heapsort/b1/HeapSort_heapsort_x"
+    static HEAPSORT_X = "org/codehaus/groovy/gjit/soot/heapsort/b0/HeapSort_heapsort_x"
 
     void testOptimiseOnHeapSort_b1() {
         InsnListHelper.install()
