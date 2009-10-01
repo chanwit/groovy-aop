@@ -7,7 +7,7 @@ class HeapSortAspect {
 		typing(pc) {
 			n >> int
 			data >> double[]
-            return void
+            return void.class
 		}
         def pc2 = (pcall("java.lang.Integer.plus" ) |
                    pcall("java.lang.Integer.minus") ) & args(i, j)

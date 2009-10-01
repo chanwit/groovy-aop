@@ -38,11 +38,11 @@ public class TypeAdvisedClassGenerator implements Opcodes {
             new UnwrapBinOpTransformer(),
             new GetAtPutAtTransformer(),
             new DupAstorePopEliminatorTransformer(),
-//            new InferLocalsTransformer(),
-//            new NullInitToZeroTransformer(),
-//            new AutoBoxEliminatorTransformer(),
+            new InferLocalsTransformer(),
+            new NullInitToZeroTransformer(),
+            new AutoBoxEliminatorTransformer(),
 //            new UnwrapBinOpTransformer(),
-            new AutoBoxEliminatorTransformer()
+//            new AutoBoxEliminatorTransformer()
         };
     }
 
@@ -166,6 +166,8 @@ public class TypeAdvisedClassGenerator implements Opcodes {
         if(advisedReturnType != null) {
             returnType = Type.getType(advisedReturnType);
         }
+        System.out.println("advised return type : " + advisedReturnType);
+        System.out.println("return type : " + returnType);
 
         //
         // Prepare required information and

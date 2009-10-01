@@ -61,7 +61,7 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
                 MethodInsnNode newInvokeStmt = typePropagate(callSite);
                 replaceCallSite(location, newInvokeStmt);
             } else {
-                // System.out.println("replacing recurion " + callSite);                
+                // System.out.println("replacing recurion " + callSite);
                 replaceRecursion(location);
             }
         }
@@ -78,6 +78,15 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
 
             AbstractInsnNode[] array = location.usedMap.get(location.invokeStmt);
 
+            AbstractInsnNode mayBeDup;
+            mayBeDup = array[1].getNext();
+			if(mayBeDup.getOpcode() == DUP) {
+            	units.insert(mayBeDup, Utils.getBoxNode(dmg.operand1));
+            }
+            mayBeDup = array[2].getNext();
+			if(mayBeDup.getOpcode() == DUP) {
+            	units.insert(mayBeDup, Utils.getBoxNode(dmg.operand2));
+            }
             units.insert(array[1], Utils.getUnboxNodes(dmg.operand1));
             units.insert(array[2], Utils.getUnboxNodes(dmg.operand2));
 
@@ -150,13 +159,13 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
         // owner is Fib_fib_x
         // callSite is Fib_fib_x$fib
         // old callSite is Fib$fib
-        
+
         String callSiteClassName = callSite.getArray().owner.getName() + "$" + callSite.getName();
 
-        // System.out.println(">> debug ==");        
+        // System.out.println(">> debug ==");
         // System.out.println("name pattern " + callSiteClassName);
         // System.out.println("type of call " + typeOfCall);
-        
+
         if(typeOfCall.equals("callStatic")) {
             String names[] = callSiteClassName.split("\\$|_");
             if(names.length != 4) {
@@ -170,7 +179,7 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
             AbstractInsnNode[] array = location.usedMap.get(location.invokeStmt);
             // array[1] must be an invokestatic returns Class<?>
             names[0] = names[0].replace('.', '/');
-            String classFromFirstArg = convertFromGetClassToInternalName(((MethodInsnNode)array[1]).name);                        
+            String classFromFirstArg = convertFromGetClassToInternalName(((MethodInsnNode)array[1]).name);
             return names[0].equals(classFromFirstArg);
         } else if(typeOfCall.equals("call")) {
             System.out.println("call : not check for recursion");

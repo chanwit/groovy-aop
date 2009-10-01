@@ -131,10 +131,20 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
                     case leftShift:  newS = new InsnNode(ISHL + offset); break;
                     case rightShift: newS = new InsnNode(ISHR + offset); break;
                 }
+
                 //
                 // we always assume that inputs are object,
                 // so that unboxing them before proceed.
                 //
+                AbstractInsnNode mayBeDup;
+                mayBeDup = array[1].getNext();
+				if(mayBeDup.getOpcode() == DUP) {
+                	units.insert(mayBeDup, Utils.getBoxNode(t1.getDescriptor()));
+                }
+                mayBeDup = array[2].getNext();
+				if(mayBeDup.getOpcode() == DUP) {
+                	units.insert(mayBeDup, Utils.getBoxNode(t2.getDescriptor()));
+                }
                 units.insert(array[1], Utils.getUnboxNodes(t1.getDescriptor()));
                 units.insert(array[2], Utils.getUnboxNodes(t2.getDescriptor()));
 

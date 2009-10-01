@@ -25,8 +25,8 @@ import java.util.*;
 //  ISTORE 5
 //
 public class InferLocalsTransformer implements Transformer, Opcodes {
-    
-    private static final int OPTIMISE_TIMES = 2;
+
+    private static final int OPTIMISE_TIMES = 1;
 
     @Override
     public void internalTransform(MethodNode body, Map<String, Object> options) {
@@ -43,9 +43,9 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
         int[] localTypes = new int[body.maxLocals];
         for(int i = 0; i < localTypes.length ; i++) localTypes[i]  = -1;
 
-        InsnList units = body.instructions;                
+        InsnList units = body.instructions;
         AbstractInsnNode s = null;
-        
+
         for(int i=0; i < OPTIMISE_TIMES; i++) {
             s = units.getFirst();
             while(s != null) {
@@ -55,10 +55,10 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
                 if(p0.getOpcode() != INVOKESTATIC)     { s = s.getNext(); continue; }
                 MethodInsnNode m0 = (MethodInsnNode)p0;
                 if(m0.name.equals("valueOf") == false) { s = s.getNext(); continue; }
-    
+
                 // (I)Ljava/lang/Integer; -> I
                 char type = m0.desc.charAt(1);
-    
+
                 VarInsnNode v = (VarInsnNode)s;
                 AbstractInsnNode newS = null;
                 switch(type) {
@@ -90,7 +90,7 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
             s = units.getFirst();
             while(s != null) {
                 if(s instanceof VarInsnNode == false) { s = s.getNext(); continue; }
-    
+
                 VarInsnNode v = (VarInsnNode)s;
                 int vOpcode = v.getOpcode();
                 AbstractInsnNode newS = null;
@@ -153,7 +153,7 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
             System.out.print(localMarker[i] + " ");
         }
         System.out.println();
-        
+
         s = units.getFirst();
         while(s != null) {
             if(s instanceof VarInsnNode) {
