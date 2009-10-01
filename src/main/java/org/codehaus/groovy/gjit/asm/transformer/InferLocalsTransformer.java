@@ -44,7 +44,7 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
                           localMarker[v.var] = 2;
                           localTypes[v.var] = Type.LONG;
                           break;
-                case 'F': newS = new VarInsnNode(FSTORE, v.var); 
+                case 'F': newS = new VarInsnNode(FSTORE, v.var);
                           localTypes[v.var] = Type.FLOAT;
                           break;
                 case 'D': newS = new VarInsnNode(DSTORE, v.var);
@@ -75,55 +75,40 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
 
         s = units.getFirst();
         while(s != null) {
-            if(s instanceof VarInsnNode) {
-                VarInsnNode v = (VarInsnNode)s;
-                int vOpcode = v.getOpcode();
-                AbstractInsnNode newS = null;
-                switch(localTypes[v.var]) {
-                    case Type.INT: if(vOpcode == ASTORE) {
-                        newS = new VarInsnNode(ISTORE, localMarker[v.var]);
-                        units.set(s, newS);
-                        units.insertBefore(newS, Utils.getUnboxNodes(int.class));
-                    } else if (vOpcode == ALOAD) {
-                        newS = new VarInsnNode(ILOAD, localMarker[v.var]);
-                        units.set(s, newS);
-                        units.insert(newS, Utils.getBoxNode(int.class));
-                    } break;
-                    case Type.LONG: if(vOpcode == ASTORE) {
-                        newS = new VarInsnNode(LSTORE, localMarker[v.var]);
-                        units.set(s, newS);
-                        units.insertBefore(newS, Utils.getUnboxNodes(long.class));
-                    } else if (vOpcode == ALOAD) {
-                        newS = new VarInsnNode(LLOAD, localMarker[v.var]);
-                        units.set(s, newS);
-                        units.insert(newS, Utils.getBoxNode(long.class));
-                    } break;
-                    case Type.FLOAT: if(vOpcode == ASTORE) {
-                        newS = new VarInsnNode(FSTORE, localMarker[v.var]);
-                        units.set(s, newS);
-                        units.insertBefore(newS, Utils.getUnboxNodes(float.class));
-                    } else if (vOpcode == ALOAD) {
-                        newS = new VarInsnNode(FLOAD, localMarker[v.var]);
-                        units.set(s, newS);
-                        units.insert(newS, Utils.getBoxNode(float.class));
-                    } break;
-                    case Type.DOUBLE: if(vOpcode == ASTORE) {
-                        newS = new VarInsnNode(DSTORE, localMarker[v.var]);
-                        units.set(s, newS);
-                        units.insertBefore(newS, Utils.getUnboxNodes(double.class));
-                    } else if (vOpcode == ALOAD) {
-                        newS = new VarInsnNode(DLOAD, localMarker[v.var]);
-                        units.set(s, newS);
-                        units.insert(newS, Utils.getBoxNode(double.class));
-                    } break;
-                }
-                if(newS == null) 
-                    s = s.getNext();
-                else
-                    s = newS.getNext();
-            } else {
-                s = s.getNext();
+            if(s instanceof VarInsnNode == false) { s = s.getNext(); continue; }
+            
+            VarInsnNode v = (VarInsnNode)s;
+            int vOpcode = v.getOpcode();
+            AbstractInsnNode newS = null;
+            int offset = -1;
+            Class<?> clazz = null;
+            switch(localTypes[v.var]) {
+                case Type.INT:
+                        offset = 0; clazz  = int.class;
+                        break;
+                case Type.LONG:
+                        offset = 1; clazz  = long.class;
+                        break;
+                case Type.FLOAT:
+                        offset = 2; clazz  = float.class;
+                        break;
+                case Type.DOUBLE:
+                        offset = 3; clazz  = double.class;
+                        break;
             }
+            if(offset == -1 || clazz == null) {
+                throw new RuntimeException("NYI");
+            }
+            if(vOpcode == ASTORE) {
+                newS = new VarInsnNode(ISTORE + offset, localMarker[v.var]);
+                units.set(s, newS);
+                units.insertBefore(newS, Utils.getUnboxNodes(clazz));
+            } else if(vOpcode == ALOAD) {
+                newS = new VarInsnNode(ILOAD + offset, localMarker[v.var]);
+                units.set(s, newS);
+                units.insert(newS, Utils.getBoxNode(clazz));
+            }
+            s = newS == null? s.getNext(): newS.getNext();
         }
     }
 }
