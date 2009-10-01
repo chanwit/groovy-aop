@@ -52,17 +52,17 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
                 case 'I': newS = new VarInsnNode(ISTORE, v.var);
                           localTypes[v.var] = Type.INT;
                           break;
-//                case 'L': newS = new VarInsnNode(LSTORE, v.var);
-//                          localMarker[v.var] = 2;
-//                          localTypes[v.var] = Type.LONG;
-//                          break;
+                case 'L': newS = new VarInsnNode(LSTORE, v.var);
+                          localMarker[v.var] = 2;
+                          localTypes[v.var] = Type.LONG;
+                          break;
                 case 'F': newS = new VarInsnNode(FSTORE, v.var);
                           localTypes[v.var] = Type.FLOAT;
                           break;
-//                case 'D': newS = new VarInsnNode(DSTORE, v.var);
-//                          localMarker[v.var] = 2;
-//                          localTypes[v.var] = Type.DOUBLE;
-//                          break;
+                case 'D': newS = new VarInsnNode(DSTORE, v.var);
+                          localMarker[v.var] = 2;
+                          localTypes[v.var] = Type.DOUBLE;
+                          break;
             }
             if(newS == null) {
                 // throw new RuntimeException("NYI");
@@ -93,7 +93,7 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
             old = temp;
         }
 
-        System.out.print("after = ");
+        System.out.print("after  = ");
         for(int i=0; i<localMarker.length; i++) {
             System.out.print(localMarker[i] + " ");
         }
