@@ -9,7 +9,7 @@ import org.codehaus.groovy.gjit.soot.heapsort.b1.*
 import org.codehaus.groovy.gjit.asm.*
 import org.codehaus.groovy.gjit.asm.transformer.*
 
-public class HeapSortBreakdownOptimisationTests extends GroovyTestCase implements Opcodes {
+public class HeapSort_b1_OptimisationTests extends GroovyTestCase implements Opcodes {
 
     static HEAPSORT_X = "org/codehaus/groovy/gjit/soot/heapsort/b1/HeapSort_heapsort_x"
 
