@@ -97,7 +97,7 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
                         break;
             }
             if(offset == -1 || clazz == null) {
-                throw new RuntimeException("NYI");
+                s = s .getNext(); continue;
             }
             if(vOpcode == ASTORE) {
                 newS = new VarInsnNode(ISTORE + offset, localMarker[v.var]);
