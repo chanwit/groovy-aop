@@ -65,7 +65,9 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
 //                          break;
             }
             if(newS == null) {
-                throw new RuntimeException("NYI");
+                // throw new RuntimeException("NYI");
+                s = s.getNext();
+                continue;
             }
             units.set(s, newS);
             units.insertBefore(newS, Utils.getUnboxNodes("L"+m0.owner+";"));
