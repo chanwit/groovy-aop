@@ -22,10 +22,10 @@ class HeapSort {
             } else {
                 rra = ra[ir]
                 ra[ir] = ra[1]
-                if (--ir == 1) {
-                    ra[1] = rra
-                    return
-                }
+//                if (--ir == 1) {
+//                    ra[1] = rra
+//                    return
+//                }
             }
         }
     }
