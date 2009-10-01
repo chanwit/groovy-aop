@@ -17,7 +17,8 @@ class HeapSort {
         l = (n >> 1) + 1
         ir = n
         while (true) {
-            if (l > 1) {
+            rra = ra[--l]
+/*            if (l > 1) {
                 rra = ra[--l]
             } else {
                 rra = ra[ir]
@@ -40,7 +41,7 @@ class HeapSort {
             }
             ra[i] = rra
         }
-    }
+*/    }
 
     static void main(args) {
         def N = (args.length == 0) ? 1000 : args[0].toInteger()
