@@ -21,7 +21,7 @@ public class HeapSort_b2_OptimisationTests extends GroovyTestCase implements Opc
         def aatf = new AspectAwareTransformer(
             advisedTypes:[int, double[]] as Class[],
             advisedReturnType: void,
-            callSite: new HeapSort$heapsort(19),
+            callSite: new HeapSort$heapsort(21),
             withInMethodName: "main"
         )
         sco.transformers = [
