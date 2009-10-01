@@ -13,6 +13,17 @@ import java.util.*;
 //  unbox
 //  ISTORE 5
 //
+
+//  INVOKESTATIC java/lang/Integer.valueOf (I)Ljava/lang/Integer;
+//  DUP
+//  ASTORE 5
+// to
+//  INVOKESTATIC java/lang/Integer.valueOf (I)Ljava/lang/Integer;
+//  DUP
+//  CHECKCAST Integer
+//  unbox
+//  ISTORE 5
+//
 public class InferLocalsTransformer implements Transformer, Opcodes {
 
     @Override
@@ -27,6 +38,7 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
         while(s != null) {
             if(s.getOpcode()  != ASTORE)         { s = s.getNext(); continue; }
             AbstractInsnNode p0 = s.getPrevious();
+            if(p0.getOpcode() == DUP) p0 = p0.getPrevious();
             if(p0.getOpcode() != INVOKESTATIC)   { s = s.getNext(); continue; }
             MethodInsnNode m0 = (MethodInsnNode)p0;
             if(m0.name.equals("valueOf")==false) { s = s.getNext(); continue; }
