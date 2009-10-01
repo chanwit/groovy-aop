@@ -130,18 +130,18 @@ public class GetAtPutAtTransformer implements Transformer, Opcodes {
                             units.remove(start);
 
                             // simulate return value of putAt
-                            units.insert(newS, new InsnNode(ACONST_NULL));
+                            // units.insert(newS, new InsnNode(ACONST_NULL));
 
                             s = newS.getNext();
                             // this POP is the result from calling "putAt"
                             // as the "putAt"'s signature returns Ljava/lang/Object;
                             // it's always discarded,
                             // but xDSTORE does not need it.
-//                            if(s.getOpcode() == POP) { // unused POP
-//                                AbstractInsnNode oldS = s;
-//                                s = s.getNext();
-//                                units.remove(oldS);
-//                            }
+                            if(s.getOpcode() == POP) { // unused POP
+                                AbstractInsnNode oldS = s;
+                                s = s.getNext();
+                                units.remove(oldS);
+                            }
                             continue;
                         }
                     }
