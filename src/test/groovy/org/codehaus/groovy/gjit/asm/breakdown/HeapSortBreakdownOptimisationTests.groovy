@@ -21,7 +21,7 @@ public class HeapSortBreakdownOptimisationTests extends GroovyTestCase implement
         def aatf = new AspectAwareTransformer(
             advisedTypes:[int, double[]] as Class[],
             advisedReturnType: void,
-            callSite: new HeapSort$heapsort(),
+            callSite: new HeapSort$heapsort(19),
             withInMethodName: "main"
         )
         sco.transformers = [
@@ -38,6 +38,8 @@ public class HeapSortBreakdownOptimisationTests extends GroovyTestCase implement
         // CheckClassAdapter.verify(cr, false, new PrintWriter(System.out))
 
         def heapsort_x_body = ClassBodyCache.v().get(HEAPSORT_X)
+        assert heapsort_x_body != null
+        
         cr = new ClassReader(heapsort_x_body)
         CheckClassAdapter.verify(cr, false, new PrintWriter(System.out))
         def tcv = new TraceClassVisitor(new PrintWriter(System.out))
