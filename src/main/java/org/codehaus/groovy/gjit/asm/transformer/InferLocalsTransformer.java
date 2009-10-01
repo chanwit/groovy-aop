@@ -74,6 +74,12 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
             s = newS.getNext();
         }
 
+        System.out.print("before = ");
+        for(int i=0; i<localMarker.length; i++) {
+            System.out.print(localMarker[i] + " ");
+        }
+        System.out.println();
+
         // Index Relocation Algorithm
         // relocate L and D
         // index:      0 1 2 3 4 5 6
@@ -87,10 +93,17 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
             old = temp;
         }
 
+        System.out.print("after = ");
+        for(int i=0; i<localMarker.length; i++) {
+            System.out.print(localMarker[i] + " ");
+        }
+        System.out.println();
+
+
         s = units.getFirst();
         while(s != null) {
             if(s instanceof VarInsnNode == false) { s = s.getNext(); continue; }
-            
+
             VarInsnNode v = (VarInsnNode)s;
             int vOpcode = v.getOpcode();
             AbstractInsnNode newS = null;
