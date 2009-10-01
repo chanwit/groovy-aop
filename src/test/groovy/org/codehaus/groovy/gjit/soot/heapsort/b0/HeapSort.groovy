@@ -19,6 +19,8 @@ class HeapSort {
         while (true) {
             if (l > 1) {
         	    ra[ir] = ra[1]
+    	    } else {
+    	        ra[ir] = ra[1]
     	    }
         }
     }
