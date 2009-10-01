@@ -30,6 +30,7 @@ public class TypeAdvisedClassGenerator implements Opcodes {
     private Transformer[] transformers;
 
     public TypeAdvisedClassGenerator() {
+        InferLocalsTransformer infer = new InferLocalsTransformer();
         this.transformers = new Transformer[] {
             new TypePropagateTransformer(),
             new DeConstantTransformer(),
@@ -38,9 +39,12 @@ public class TypeAdvisedClassGenerator implements Opcodes {
             new UnwrapBinOpTransformer(),
             new GetAtPutAtTransformer(),
             new DupAstorePopEliminatorTransformer(),
-            new InferLocalsTransformer(),
+            infer,
             new NullInitToZeroTransformer(),
-            new AutoBoxEliminatorTransformer()
+            new AutoBoxEliminatorTransformer(),
+            infer,
+            new NullInitToZeroTransformer(),
+            new AutoBoxEliminatorTransformer()            
         };
     }
 
