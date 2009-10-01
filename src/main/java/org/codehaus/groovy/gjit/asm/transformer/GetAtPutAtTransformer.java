@@ -104,12 +104,12 @@ public class GetAtPutAtTransformer implements Transformer, Opcodes {
                             InsnNode newS = new InsnNode(DALOAD);
                             units.set(m, newS);
                             units.insert(newS, Utils.getBoxNode(elemType));
-                            
+
                             // clean up
                             units.remove(start.getNext().getNext());
                             units.remove(start.getNext());
                             units.remove(start);
-                            
+
                             s = newS.getNext();
                             continue;
                         } else if (callSiteName.equals("putAt")) {
@@ -119,26 +119,29 @@ public class GetAtPutAtTransformer implements Transformer, Opcodes {
                                 units.insert(array[2], Utils.getUnboxNodes(int.class));
                             } else {
                                 throw new RuntimeException("NYI");
-                            }                            
+                            }
                             InsnNode newS = new InsnNode(DASTORE);
-                            units.set(m, newS);                            
+                            units.set(m, newS);
                             units.insert(array[3], Utils.getUnboxNodes(elemType));
 
                             // clean up
                             units.remove(start.getNext().getNext());
                             units.remove(start.getNext());
                             units.remove(start);
-                            
+
+                            // simulate return value of putAt
+                            units.insert(newS, new InsnNode(ACONST_NULL));
+
                             s = newS.getNext();
                             // this POP is the result from calling "putAt"
                             // as the "putAt"'s signature returns Ljava/lang/Object;
                             // it's always discarded,
                             // but xDSTORE does not need it.
-                            if(s.getOpcode() == POP) { // unused POP
-                                AbstractInsnNode oldS = s;
-                                s = s.getNext();
-                                units.remove(oldS);
-                            }
+//                            if(s.getOpcode() == POP) { // unused POP
+//                                AbstractInsnNode oldS = s;
+//                                s = s.getNext();
+//                                units.remove(oldS);
+//                            }
                             continue;
                         }
                     }
