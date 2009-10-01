@@ -21,7 +21,6 @@ class HeapSort {
                 rra = ra[--l]
             } else {
                 rra = ra[ir]
-//                ra[ir] = ra[1]
             }
         }
     }
