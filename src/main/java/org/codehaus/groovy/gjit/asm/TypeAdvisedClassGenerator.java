@@ -37,7 +37,7 @@ public class TypeAdvisedClassGenerator implements Opcodes {
             new UnwrapCompareTransformer(),
             new UnwrapBinOpTransformer(),
             new GetAtPutAtTransformer(),
-            new DupAstorePopEliminatorTransformer(),
+            //new DupAstorePopEliminatorTransformer(),
             new InferLocalsTransformer(),
             new NullInitToZeroTransformer(),
             new AutoBoxEliminatorTransformer()
@@ -177,7 +177,7 @@ public class TypeAdvisedClassGenerator implements Opcodes {
         //
         // 1) used by type propagatation
         options.put("advisedTypes", advisedTypes);
-        options.put("advisedReturnType", advisedReturnType);         
+        options.put("advisedReturnType", advisedReturnType);
         //
         // 2) used by getAt/putAt
         options.put("argTypes",   argumentTypes);
@@ -268,7 +268,7 @@ public class TypeAdvisedClassGenerator implements Opcodes {
             String newInternalClassName) {
         System.out.println("newInternalClassName: " + newInternalClassName);
         InsnList units = createCallSiteArray.instructions;
-        AbstractInsnNode s = units.getFirst();        
+        AbstractInsnNode s = units.getFirst();
         while(s.getOpcode() != GETSTATIC) s = s.getNext();
         LdcInsnNode newS = new LdcInsnNode(Type.getType("L"+ newInternalClassName+ ";"));
         units.set(s, newS);
