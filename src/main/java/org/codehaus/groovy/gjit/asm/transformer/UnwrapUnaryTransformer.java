@@ -11,7 +11,7 @@ public class UnwrapUnaryTransformer implements Transformer, Opcodes {
     private static final int NEXT     =  1;
 
     @Override
-    public internalTransform(MethodNode body, Map<String, Object> options) {
+    public void internalTransform(MethodNode body, Map<String, Object> options) {
         InsnList units = body.instructions;
         AbstractInsnNode s = units.getFirst();
 
