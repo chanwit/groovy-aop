@@ -19,7 +19,7 @@ public class HeapSortOptimisationTests extends GroovyTestCase implements Opcodes
         def sco  = new AsmSingleClassOptimizer()
         def aatf = new AspectAwareTransformer(
             advisedTypes:[int, double[]] as Class[],
-            advisedReturnType: void,
+            advisedReturnType: null,
             callSite: new HeapSort$heapsort(),
             withInMethodName: "main"
         )
@@ -37,6 +37,7 @@ public class HeapSortOptimisationTests extends GroovyTestCase implements Opcodes
         // CheckClassAdapter.verify(cr, false, new PrintWriter(System.out))
 
         def heapsort_x_body = ClassBodyCache.v().get(HEAPSORT_X)
+        assert heapsort_x_body != null
         cr = new ClassReader(heapsort_x_body)
         CheckClassAdapter.verify(cr, false, new PrintWriter(System.out))
         def tcv = new TraceClassVisitor(new PrintWriter(System.out))

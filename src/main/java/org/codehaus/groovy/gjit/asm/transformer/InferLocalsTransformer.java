@@ -26,7 +26,7 @@ import java.util.*;
 //
 public class InferLocalsTransformer implements Transformer, Opcodes {
 
-    private static final int OPTIMISE_TIMES = 1;
+    private static final int OPTIMISE_TIMES = 2;
 
     @Override
     public void internalTransform(MethodNode body, Map<String, Object> options) {
@@ -127,6 +127,13 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
                 }
                 s = newS == null? s.getNext(): newS.getNext();
             }
+
+            new UnwrapCompareTransformer().internalTransform(body, options);
+            new UnwrapBinOpTransformer().internalTransform(body, options);
+            new UnwrapUnaryTransformer().internalTransform(body, options);
+            new NullInitToZeroTransformer().internalTransform(body, options);
+            new AutoBoxEliminatorTransformer().internalTransform(body, options);
+
         }
 
         System.out.print("before = ");

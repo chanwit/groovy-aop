@@ -66,7 +66,7 @@ public class UnwrapCompareTransformer implements Transformer, Opcodes {
                 try {
                     compare = ComparingMethod.valueOf(m.name);
                 } catch (IllegalArgumentException e) {
-                    System.out.println("get compare method failed: " + m.name );                    
+                    System.out.println("get compare method failed: " + m.name );
                     s = s.getNext();
                     continue;
                 }
@@ -93,8 +93,16 @@ public class UnwrapCompareTransformer implements Transformer, Opcodes {
                         s = oldIf.getNext();
                         units.remove(oldIf);
                         continue;
+                    } else if(t0.getDescriptor().equals("Ljava/lang/Double;")) {
+                    	AbstractInsnNode[] newNodes = convertCompare(DCMPL, compare, s);
+                    	units.set(s, newNodes[0]);
+                    	units.insert(newNodes[0], newNodes[1]);
+                    	AbstractInsnNode oldIf = newNodes[1].getNext();
+                    	s = oldIf.getNext();
+                    	units.remove(oldIf);
+                    	continue;
                     } else
-                        throw new RuntimeException("NYI");
+                        throw new RuntimeException("NYI "+ t0 + ", " +t1);
 
 //                    switch(t0.getSort()) {
 //                        case Type.INT: {
