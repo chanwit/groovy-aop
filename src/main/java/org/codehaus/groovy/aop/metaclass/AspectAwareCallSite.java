@@ -1995,6 +1995,7 @@ public class AspectAwareCallSite implements CallSite {
                     aatf.setAdvisedTypes(tic.getArgTypeOfBinding());
                     aatf.setAdvisedReturnType(returnType);
                     aatf.setCallSite(callSite);
+                    aatf.setGeneratedClass(true);
                     System.out.print("re-transform by callsite: ");
                     System.out.print(callSite.getIndex() + ", ");
                     System.out.println(callSite.getName());

@@ -40,6 +40,7 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
     private MethodNode body;
     private InsnList units;
     private CallSite callSite;
+    private boolean generatedClass = false;
 
     private Class<?> advisedReturnType;
     private Class<?>[] advisedTypes;
@@ -68,6 +69,12 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
     }
 
     private void replaceBinaryCallSite(Location location, DGMResult dmg) {
+
+        //
+        // DGM works only within a generated one;
+        //
+        if(generatedClass == false) return;
+
         if(dmg.desc.equals("II")) {
             int opcode;
             final String op = dmg.op;
@@ -204,6 +211,12 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
     }
 
     private void replaceRecursion(Location location) {
+        
+        //
+        // replaceRecursion works only within a generated one;
+        //
+        if(generatedClass == false) return;
+        
         String owner = callSite.getArray().owner.getName().replace('.', '/');
         //System.out.println("call site to replace: " + owner);
         MethodInsnNode newInvokeStmt = new MethodInsnNode(INVOKESTATIC, owner, body.name, body.desc);
@@ -420,6 +433,10 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
 
     public void setWithInMethodName(String withInMethodName) {
         this.withInMethodName = withInMethodName;
+    }
+    
+    public void setGeneratedClass(boolean value) {
+        this.generatedClass = value;
     }
 
 }
