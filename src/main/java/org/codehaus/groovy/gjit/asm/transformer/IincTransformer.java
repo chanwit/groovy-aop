@@ -53,7 +53,7 @@ public class IincTransformer implements Transformer, Opcodes {
             VarInsnNode v2 = (VarInsnNode)s2;
             if(v.var != v2.var) { s = s.getNext(); continue; }
 
-            AbstractInsnNode newS = new IincInsnNode(v.var, ICONST_0-s0.getOpcode());
+            AbstractInsnNode newS = new IincInsnNode(v.var, s0.getOpcode()-ICONST_0);
             units.insertBefore(s, newS);
             if(!dup) {
                 units.remove(s);
