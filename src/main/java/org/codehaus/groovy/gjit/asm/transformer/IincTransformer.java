@@ -4,11 +4,13 @@ import java.util.Map;
 
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.IincInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
+import org.objectweb.asm.tree.VarInsnNode;
 
 public class IincTransformer implements Transformer, Opcodes {
 
@@ -16,7 +18,7 @@ public class IincTransformer implements Transformer, Opcodes {
 //    ICONST_1
 //    IADD
 //    ISTORE 4
-//      to 
+//      to
 //    IINC 4, 1
 
 //    ILOAD 3
@@ -46,12 +48,12 @@ public class IincTransformer implements Transformer, Opcodes {
                 s2 = s2.getNext();
             }
             if(s2.getOpcode() != ISTORE) { s = s.getNext(); continue; }
-            
+
             VarInsnNode v =  (VarInsnNode)s;
             VarInsnNode v2 = (VarInsnNode)s2;
-            if(v1.var != v2.var) { s = s.getNext(); continue; }
-            
-            AbstractInsnNode newS = new IincInsnNode(v1.var, ICONST_0-s0.getOpcode());
+            if(v.var != v2.var) { s = s.getNext(); continue; }
+
+            AbstractInsnNode newS = new IincInsnNode(v.var, ICONST_0-s0.getOpcode());
             units.insert(s, newS);
             if(!dup) {
                 units.remove(s);
