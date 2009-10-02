@@ -2026,12 +2026,12 @@ public class AspectAwareCallSite implements CallSite {
                         //TraceClassVisitor tcv = new TraceClassVisitor(new PrintWriter(System.out));
                         //new ClassReader(bytes).accept(tcv, 0);
                         //CheckClassAdapter.verify(new ClassReader(bytes), true, new PrintWriter(System.out));
-                        Utils.log(bytes);
                     }
                 } catch (Throwable e) {
                     //
                     // TODO if production, should print stack trace and continue
                     //
+                	Utils.log(bytes);
                     e.printStackTrace();
                     // CheckClassAdapter.verify(new ClassReader(bytes), true, new PrintWriter(System.out));
                     // throw new RuntimeException("Error while optimising class " + sender.getName(), e);
