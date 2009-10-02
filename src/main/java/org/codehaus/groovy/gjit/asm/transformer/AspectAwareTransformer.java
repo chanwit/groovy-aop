@@ -108,16 +108,16 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
             int var1, var2 = -1;
             if(array[1].getOpcode() == ALOAD) {
                 VarInsnNode v = (VarInsnNode)array[1];
-                AbstractInsnNode newS = new VarInsnNode(ILOAD, v.var);
-                units.set(array[1], newS);
-                units.insert(newS, Utils.getBoxNode(int.class));
+                AbstractInsnNode newV = new VarInsnNode(ILOAD, v.var);
+                units.set(array[1], newV);
+                units.insert(newV, Utils.getBoxNode(int.class));
                 var1 = v.var;
             }
             if(array[2].getOpcode() == ALOAD) {
                 VarInsnNode v = (VarInsnNode)array[2];
-                AbstractInsnNode newS = new VarInsnNode(ILOAD, v.var);
-                units.set(array[2], newS);
-                units.insert(newS, Utils.getBoxNode(int.class));
+                AbstractInsnNode newV = new VarInsnNode(ILOAD, v.var);
+                units.set(array[2], newV);
+                units.insert(newV, Utils.getBoxNode(int.class));
                 var2 = v.var;
             }
             if(var1 != -1)
