@@ -10,6 +10,7 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
@@ -88,8 +89,8 @@ public class UnwrapCompareTransformer implements Transformer, Opcodes {
                     units.insert(array[1], Utils.getUnboxNodes(t1.getDescriptor()));
 
                     if(t0.getDescriptor().equals("Ljava/lang/Integer;")) {
-                        if(compare == compareEqual) {
-                            JumpInsnNode oldIf = (JumpInsnNode)(newS.getNext());
+                        if(compare == ComparingMethod.compareEqual) {
+                            JumpInsnNode oldIf = (JumpInsnNode)(s.getNext());
                             LabelNode trueLabel = (LabelNode)(oldIf.getNext());
                             AbstractInsnNode newS = new JumpInsnNode(IF_ICMPEQ, trueLabel);
                             units.set(s, newS);
