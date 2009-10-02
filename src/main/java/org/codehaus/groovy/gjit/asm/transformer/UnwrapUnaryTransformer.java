@@ -83,8 +83,7 @@ public class UnwrapUnaryTransformer implements Transformer, Opcodes {
 
                 //
                 // manage DUP
-                AbstractInsnNode mayBeDup;
-                mayBeDup = array[1].getNext();
+                AbstractInsnNode mayBeDup = s.getNext();
                 if(mayBeDup.getOpcode() == DUP) {
                     units.insert(mayBeDup, Utils.getBoxNode(int.class));
                 }
