@@ -138,12 +138,12 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
                 //
                 AbstractInsnNode mayBeDup;
                 mayBeDup = array[1].getNext();
-				if(mayBeDup.getOpcode() == DUP) {
-                	units.insert(mayBeDup, Utils.getBoxNode(t1.getDescriptor()));
+                if(mayBeDup.getOpcode() == DUP) {
+                    units.insert(mayBeDup, Utils.getBoxNode(t1.getDescriptor()));
                 }
                 mayBeDup = array[2].getNext();
-				if(mayBeDup.getOpcode() == DUP) {
-                	units.insert(mayBeDup, Utils.getBoxNode(t2.getDescriptor()));
+                if(mayBeDup.getOpcode() == DUP) {
+                    units.insert(mayBeDup, Utils.getBoxNode(t2.getDescriptor()));
                 }
                 units.insert(array[1], Utils.getUnboxNodes(t1.getDescriptor()));
                 units.insert(array[2], Utils.getUnboxNodes(t2.getDescriptor()));

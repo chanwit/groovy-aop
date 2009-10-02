@@ -80,6 +80,14 @@ public class UnwrapUnaryTransformer implements Transformer, Opcodes {
             System.out.println("unary type: " + type);
             System.out.println("call site index: " + callSiteIndex);
             if(type.getDescriptor().equals("Ljava/lang/Integer;")) {
+
+                //
+                // manage DUP
+                AbstractInsnNode mayBeDup;
+                mayBeDup = array[1].getNext();
+                if(mayBeDup.getOpcode() == DUP) {
+                    units.insert(mayBeDup, Utils.getBoxNode(int.class));
+                }
                 //
                 // unbox(int)
                 // ICONST_x
