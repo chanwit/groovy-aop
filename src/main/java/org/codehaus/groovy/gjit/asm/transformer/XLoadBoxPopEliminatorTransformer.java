@@ -29,13 +29,13 @@ public class XLoadBoxPopEliminatorTransformer implements Transformer, Opcodes {
             AbstractInsnNode p1 = p0.getPrevious();
             if(!(p1.getOpcode() >= ILOAD && p1.getOpcode() <= DLOAD))
                  { s = s.getNext(); continue; }
-            
+
             MethodInsnNode m0 = (MethodInsnNode)p0;
             if(m0.name.equals("valueOf") == false) { s = s.getNext(); continue; }
-            
+
             char type  = m0.desc.charAt(1);
-            int opcode = o1.getOpcode();
-            
+            int opcode = p1.getOpcode();
+
             if(type == 'I' && opcode == ILOAD ||
                type == 'L' && opcode == LLOAD ||
                type == 'F' && opcode == FLOAD ||
@@ -47,7 +47,7 @@ public class XLoadBoxPopEliminatorTransformer implements Transformer, Opcodes {
                 continue;
             }
 
-            s = s.getNext();            
+            s = s.getNext();
         }
     }
 }
