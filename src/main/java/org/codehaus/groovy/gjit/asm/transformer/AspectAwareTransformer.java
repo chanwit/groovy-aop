@@ -134,9 +134,9 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
 
         } else throw new RuntimeException("NYI");
     }
-    
+
     //
-    // For example, 
+    // For example,
     // ALOAD i
     //  to
     // ILOAD i
@@ -146,7 +146,7 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
     // ASTORE i
     //  to
     // unbox(int)
-    // ISTORE i    
+    // ISTORE i
     private void replaceLocal(int index, int load, int store, Class<?> type) {
         AbstractInsnNode s = units.getFirst();
         while(s != null) {
@@ -193,6 +193,9 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
         // NumberNumberPlus$IntegerInteger
         // System.out.println("DGM detected");
         String name = callSite.getClass().getName();
+        System.out.println("checking DGM: " + name);
+        System.out.println("call site index: " + callSite.getIndex());
+        System.out.println("call site name : " + callSite.getName());
         String[] names = name.split("\\.|\\$");
         int len = names.length;
         String operator = names[len-2];
@@ -211,12 +214,12 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
     }
 
     private void replaceRecursion(Location location) {
-        
+
         //
         // replaceRecursion works only within a generated one;
         //
         if(generatedClass == false) return;
-        
+
         String owner = callSite.getArray().owner.getName().replace('.', '/');
         //System.out.println("call site to replace: " + owner);
         MethodInsnNode newInvokeStmt = new MethodInsnNode(INVOKESTATIC, owner, body.name, body.desc);
@@ -434,7 +437,7 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
     public void setWithInMethodName(String withInMethodName) {
         this.withInMethodName = withInMethodName;
     }
-    
+
     public void setGeneratedClass(boolean value) {
         this.generatedClass = value;
     }

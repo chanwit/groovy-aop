@@ -16,5 +16,8 @@ class HeapSortAspect {
 			j >>   int
 			return int
 		}
+
+        def pc3 = pcall("java.lang.Integer.next") & args(k)
+        typing(pc3) { k >> int }
 	}
 }

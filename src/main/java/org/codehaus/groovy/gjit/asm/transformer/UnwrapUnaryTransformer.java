@@ -76,6 +76,9 @@ public class UnwrapUnaryTransformer implements Transformer, Opcodes {
             Map<AbstractInsnNode, AbstractInsnNode[]> usedMap = pdua.analyse();
             AbstractInsnNode[] array = usedMap.get(m);
             Type type = Utils.getType(array[1]);
+            System.out.println("unary " + array[1]);
+            System.out.println("unary type: " + type);
+            System.out.println("call site index: " + callSiteIndex);
             if(type.getDescriptor().equals("Ljava/lang/Integer;")) {
                 //
                 // unbox(int)
