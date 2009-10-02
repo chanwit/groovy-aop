@@ -97,7 +97,10 @@ public class UnwrapUnaryTransformer implements Transformer, Opcodes {
 
                 s = newS.getNext();
                 continue;
-            } else throw new RuntimeException("NYI");
+            } else {
+            	s = s.getNext();
+            	continue;
+            }
         }
     }
 }

@@ -2003,8 +2003,8 @@ public class AspectAwareCallSite implements CallSite {
                     sco.setTransformers(new Transformer[]{
                         new DeConstantTransformer(),
                         aatf,
-                        new UnwrapBinOpTransformer(),
-                        new UnwrapUnaryTransformer(),                        
+                        //new UnwrapBinOpTransformer(),
+                        //new UnwrapUnaryTransformer(),
                         new NullInitToZeroTransformer(),
                         new AutoBoxEliminatorTransformer(),
                         new UnusedCSARemovalTransformer()
