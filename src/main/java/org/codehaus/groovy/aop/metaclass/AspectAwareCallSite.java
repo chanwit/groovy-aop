@@ -2006,6 +2006,7 @@ public class AspectAwareCallSite implements CallSite {
                     sco.setTransformers(new Transformer[]{
                         new DeConstantTransformer(),
                         aatf,
+                        new NullInitToZeroTransformer(),
                         new AutoBoxEliminatorTransformer(),
                         new UnusedCSARemovalTransformer()
                     });
