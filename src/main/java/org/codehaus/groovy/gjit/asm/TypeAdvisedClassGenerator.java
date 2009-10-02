@@ -267,6 +267,12 @@ public class TypeAdvisedClassGenerator implements Opcodes {
         AbstractInsnNode s = units.getFirst();
         while(s.getOpcode() != INVOKESTATIC) s = s.getNext();
         MethodInsnNode m = (MethodInsnNode)s;
+
+        //
+        // special case, if it gets trasformed completely before relocation
+        //
+        if(m.name.equals("$getCallSiteArray") == false) return;
+
         MethodInsnNode newS = new MethodInsnNode(INVOKESTATIC, newInternalClassName, m.name, m.desc);
         units.set(s, newS);
     }
