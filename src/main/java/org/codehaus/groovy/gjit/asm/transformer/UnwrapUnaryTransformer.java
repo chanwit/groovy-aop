@@ -4,6 +4,7 @@ import java.util.*;
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
 import org.objectweb.asm.util.*;
+import org.codehaus.groovy.gjit.asm.*;
 
 public class UnwrapUnaryTransformer implements Transformer, Opcodes {
 
