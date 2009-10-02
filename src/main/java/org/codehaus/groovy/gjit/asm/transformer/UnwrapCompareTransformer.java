@@ -35,6 +35,7 @@ public class UnwrapCompareTransformer implements Transformer, Opcodes {
 
 
     private enum ComparingMethod {
+        compareEqual,
         compareLessThan,
         compareGreaterThan,
         compareLessThanEqual,
@@ -87,20 +88,31 @@ public class UnwrapCompareTransformer implements Transformer, Opcodes {
                     units.insert(array[1], Utils.getUnboxNodes(t1.getDescriptor()));
 
                     if(t0.getDescriptor().equals("Ljava/lang/Integer;")) {
-                        AbstractInsnNode newS = convertCompareForInt(compare, s);
-                        units.set(s, newS);
-                        AbstractInsnNode oldIf = newS.getNext();
+                        if(compare == compareEqual) {
+                            JumpInsnNode oldIf = (JumpInsnNode)(newS.getNext());
+                            LabelNode trueLabel = (LabelNode)(oldIf.getNext());
+                            AbstractInsnNode newS = new JumpInsnNode(IF_ICMPEQ, trueLabel);
+                            units.set(s, newS);
+                            units.insert(newS, new JumpInsnNode(GOTO, oldIf.label));
+                            units.remove(oldIf);
+                            s = newS.getNext();
+                            continue;
+                        } else {
+                            AbstractInsnNode newS = convertCompareForInt(compare, s);
+                            units.set(s, newS);
+                            AbstractInsnNode oldIf = newS.getNext();
+                            s = oldIf.getNext();
+                            units.remove(oldIf);
+                            continue;
+                        }
+                    } else if(t0.getDescriptor().equals("Ljava/lang/Double;")) {
+                        AbstractInsnNode[] newNodes = convertCompare(DCMPL, compare, s);
+                        units.set(s, newNodes[0]);
+                        units.insert(newNodes[0], newNodes[1]);
+                        AbstractInsnNode oldIf = newNodes[1].getNext();
                         s = oldIf.getNext();
                         units.remove(oldIf);
                         continue;
-                    } else if(t0.getDescriptor().equals("Ljava/lang/Double;")) {
-                    	AbstractInsnNode[] newNodes = convertCompare(DCMPL, compare, s);
-                    	units.set(s, newNodes[0]);
-                    	units.insert(newNodes[0], newNodes[1]);
-                    	AbstractInsnNode oldIf = newNodes[1].getNext();
-                    	s = oldIf.getNext();
-                    	units.remove(oldIf);
-                    	continue;
                     } else
                         throw new RuntimeException("NYI "+ t0 + ", " +t1);
 
