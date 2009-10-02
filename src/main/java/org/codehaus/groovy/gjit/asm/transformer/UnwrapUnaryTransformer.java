@@ -77,6 +77,11 @@ public class UnwrapUnaryTransformer implements Transformer, Opcodes {
             AbstractInsnNode[] array = usedMap.get(m);
             Type type = Utils.getType(array[1]);
             if(type.getDescriptor().equals("Ljava/lang/Integer;")) {
+                //
+                // unbox(int)
+                // ICONST_x
+                // IADD
+                // box(int)
                 units.insert(array[1], Utils.getUnboxNodes(int.class));
                 AbstractInsnNode newS = new InsnNode(IADD);
                 units.set(s, newS);

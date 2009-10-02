@@ -36,13 +36,12 @@ public class TypeAdvisedClassGenerator implements Opcodes {
             new WhileTrueEliminatorTransformer(),
             new UnwrapCompareTransformer(),
             new UnwrapBinOpTransformer(),
+            new UnwrapUnaryTransformer(),
             new GetAtPutAtTransformer(),
             new DupAstorePopEliminatorTransformer(),
             new InferLocalsTransformer(),
             new NullInitToZeroTransformer(),
-            new AutoBoxEliminatorTransformer(),
-//            new UnwrapBinOpTransformer(),
-//            new AutoBoxEliminatorTransformer()
+            new AutoBoxEliminatorTransformer()
         };
     }
 
