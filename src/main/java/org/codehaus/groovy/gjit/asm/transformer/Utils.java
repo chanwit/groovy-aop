@@ -1,5 +1,7 @@
 package org.codehaus.groovy.gjit.asm.transformer;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.*;
 
 import org.objectweb.asm.Opcodes;
@@ -112,7 +114,7 @@ public class Utils implements Opcodes {
         result.add(new MethodInsnNode(INVOKEVIRTUAL, "java/lang/" + name, shortName + "Value", "()" + primitive));
         return result;
     }
-    
+
     public static Type getType(AbstractInsnNode node, Type[] info) {
         if(node.getOpcode() == ALOAD) {
             VarInsnNode aload = (VarInsnNode)node;
@@ -162,7 +164,7 @@ public class Utils implements Opcodes {
     public static void prepareClassInfo(ClassNode classNode) {
         Map<String, Object> options = new HashMap<String, Object>();
         options.put("name", classNode.name);
-        
+
         List<MethodNode> methods = classNode.methods;
         for(MethodNode method: methods) {
             if(method.name.equals("<clinit>")) {
@@ -172,6 +174,18 @@ public class Utils implements Opcodes {
             }
         }
     }
+
+	public static void log(byte[] bytes) {
+		FileOutputStream f;
+		try {
+			f = new FileOutputStream("Log" + System.currentTimeMillis() + ".class");
+			f.write(bytes);
+			f.flush();
+			f.close();
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+	}
 
 
 }
