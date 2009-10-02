@@ -105,7 +105,63 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
             units.remove(aaload.getPrevious());
             units.remove(aaload);
 
+            int var1, var2 = -1;
+            if(array[1].getOpcode() == ALOAD) {
+                VarInsnNode v = (VarInsnNode)array[1];
+                AbstractInsnNode newS = new VarInsnNode(ILOAD, v.var);
+                units.set(array[1], newS);
+                units.insert(newS, getBoxNode(int.class));
+                var1 = v.var;
+            }
+            if(array[2].getOpcode() == ALOAD) {
+                VarInsnNode v = (VarInsnNode)array[2];
+                AbstractInsnNode newS = new VarInsnNode(ILOAD, v.var);
+                units.set(array[2], newS);
+                units.insert(newS, getBoxNode(int.class));
+                var2 = v.var;
+            }
+            if(var1 != -1)
+                replaceLocal(var1, ILOAD, ISTORE, int.class);
+            if(var2 != -1 && var2 != var1)
+                replaceLocal(var2, ILOAD, ISTORE, int.class);
+
         } else throw new RuntimeException("NYI");
+    }
+    
+    //
+    // For example, 
+    // ALOAD i
+    //  to
+    // ILOAD i
+    // box(int)
+    //
+    // and
+    // ASTORE i
+    //  to
+    // unbox(int)
+    // ISTORE i    
+    private void replaceLocal(int index, int load, int store, Class<?> type) {
+        AbstractInsnNode s = units.getFirst();
+        while(s != null) {
+            if(s.getOpcode() == ALOAD) {
+                VarInsnNode v = (VarInsnNode)s;
+                if(v.var == index) {
+                    AbstractInsnNode newS = new VarInsnNode(load, v.var);
+                    units.set(s, newS);
+                    units.insert(newS, Utils.getBoxNode(type));
+                    s = newS;
+                }
+            } else if(s.getOpcode() == ASTORE) {
+                VarInsnNode v = (VarInsnNode)s;
+                if(v.var == index) {
+                    AbstractInsnNode newS = new VarInsnNode(store, v.var);
+                    units.set(s, newS);
+                    units.insertBefore(newS, Utils.getUnboxNodes(type));
+                    s = newS;
+                }
+            }
+            s = s.getNext();
+        }
     }
 
     static class DGMResult {
