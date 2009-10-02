@@ -1996,9 +1996,9 @@ public class AspectAwareCallSite implements CallSite {
                     aatf.setAdvisedReturnType(returnType);
                     aatf.setCallSite(callSite);
                     aatf.setGeneratedClass(true);
-                    System.out.print("re-transform by callsite: ");
-                    System.out.print(callSite.getIndex() + ", ");
-                    System.out.println(callSite.getName());
+//                    System.out.print("re-transform by callsite: ");
+//                    System.out.print(callSite.getIndex() + ", ");
+//                    System.out.println(callSite.getName());
                     aatf.setWithInMethodName(withInMethodName);
                     sco.setTransformers(new Transformer[]{
                         new DeConstantTransformer(),
@@ -2023,9 +2023,9 @@ public class AspectAwareCallSite implements CallSite {
                     Instrumentation i = Agent.getInstrumentation();
                     if(i != null) {
                         i.redefineClasses(new ClassDefinition(sender, bytes));
-                        System.out.println(">>>>>>>> class " + sender.getName() + " redefined");
-                        //TraceClassVisitor tcv = new TraceClassVisitor(new PrintWriter(System.out));
-                        //new ClassReader(bytes).accept(tcv, 0);
+                        //System.out.println(">>>>>>>> class " + sender.getName() + " redefined");
+                        TraceClassVisitor tcv = new TraceClassVisitor(new PrintWriter(System.out));
+                        new ClassReader(bytes).accept(tcv, 0);
                         //CheckClassAdapter.verify(new ClassReader(bytes), true, new PrintWriter(System.out));
                     }
                 } catch (Throwable e) {
