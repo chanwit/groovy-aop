@@ -169,8 +169,8 @@ public class TypeAdvisedClassGenerator implements Opcodes {
         if(advisedReturnType != null) {
             returnType = Type.getType(advisedReturnType);
         }
-        System.out.println("advised return type : " + advisedReturnType);
-        System.out.println("return type : " + returnType);
+        // System.out.println("advised return type : " + advisedReturnType);
+        // System.out.println("return type : " + returnType);
 
         //
         // Prepare required information and
@@ -277,28 +277,27 @@ public class TypeAdvisedClassGenerator implements Opcodes {
         units.set(s, newS);
     }
 
-    private void transformCreateCallSiteArray(MethodNode createCallSiteArray,
+    private void transformCreateCallSiteArray(MethodNode body,
             String newInternalClassName) {
         System.out.println("newInternalClassName: " + newInternalClassName);
-        InsnList units = createCallSiteArray.instructions;
+        InsnList units = body.instructions;
         AbstractInsnNode s = units.getFirst();
         while(s.getOpcode() != GETSTATIC) s = s.getNext();
         LdcInsnNode newS = new LdcInsnNode(Type.getType("L"+ newInternalClassName+ ";"));
         units.set(s, newS);
     }
 
-    private void transformGetCallSiteArray(MethodNode getCallSiteArray,
-            String newInternalClassName) {
-        InsnList units = getCallSiteArray.instructions;
+    private void transformGetCallSiteArray(MethodNode body,
+            String className) {
+        InsnList units = body.instructions;
         AbstractInsnNode s = units.getFirst();
         while(s != null)  {
-            switch(s.getOpcode()) {
+            int op = s.getOpcode();
+            switch(op) {
                 case GETSTATIC:
                 case PUTSTATIC: {
                     FieldInsnNode f = (FieldInsnNode)s;
-                    FieldInsnNode newS = new FieldInsnNode(f.getOpcode(),
-                                newInternalClassName,
-                                f.name, f.desc);
+                    FieldInsnNode newS = new FieldInsnNode(op, className, f.name, f.desc);
                     units.set(s, newS);
                     s = newS.getNext();
                     continue;
@@ -306,8 +305,7 @@ public class TypeAdvisedClassGenerator implements Opcodes {
                 case INVOKESTATIC: {
                     MethodInsnNode m = (MethodInsnNode)s;
                     if(m.name.equals("$createCallSiteArray")) {
-                        MethodInsnNode newS = new MethodInsnNode(m.getOpcode(),
-                                newInternalClassName, m.name, m.desc);
+                        MethodInsnNode newS = new MethodInsnNode(op, className, m.name, m.desc);
                         units.set(s, newS);
                         s = newS.getNext();
                         continue;
