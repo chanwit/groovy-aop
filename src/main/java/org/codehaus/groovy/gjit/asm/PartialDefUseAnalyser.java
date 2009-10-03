@@ -369,13 +369,6 @@ public class PartialDefUseAnalyser implements Opcodes {
                 used.put(insn, new AbstractInsnNode[]{tos.source});
                 }
                 break;
-            case DUP:
-            case DUP2: {
-                DefValue tos = peek();
-                used.put(insn, new AbstractInsnNode[]{tos.source});
-                push(tos);
-                }
-                break;
             case IADD:
             case ISUB:
             case IMUL:
@@ -440,44 +433,50 @@ public class PartialDefUseAnalyser implements Opcodes {
                 used.put(insn, new AbstractInsnNode[] {arg0.source});
                 push(new DefValue(insn, Type.DOUBLE_TYPE));
                 }break;
-            case DUP_X2: {
-                DefValue arg2 = pop();
-                DefValue arg1 = pop();
+            case DUP:
+            case DUP2: {
+                DefValue tos = peek();
+                used.put(insn, new AbstractInsnNode[]{tos.source});
+                push(tos);
+                }
+                break;
+            case DUP_X1: {
                 DefValue arg0 = pop();
-                used.put(insn, new AbstractInsnNode[] {arg0.source, arg1.source, arg2.source});
-                push(new DefValue(insn, Type.VOID_TYPE));
-                push(new DefValue(insn, Type.VOID_TYPE));
-                push(new DefValue(insn, Type.VOID_TYPE));
-                push(new DefValue(insn, Type.VOID_TYPE));
+                DefValue arg1 = pop();
+                used.put(insn, new AbstractInsnNode[] {arg1.source, arg0.source});
+                push(arg0);
+                push(arg1);
+                push(arg0);
+                }break;
+            case DUP_X2: {
+                DefValue arg0 = pop();
+                DefValue arg1 = pop();
+                DefValue arg2 = pop();
+                used.put(insn, new AbstractInsnNode[] {arg2.source, arg1.source, arg0.source});
+                push(arg0);
+                push(arg2);
+                push(arg1);
+                push(arg0);
                 }break;
             case DUP2_X1: {
-                DefValue arg2 = pop();
-                DefValue arg1 = pop();
-                DefValue arg0 = pop();
-                used.put(insn, new AbstractInsnNode[] {arg0.source, arg1.source, arg2.source});
-                push(new DefValue(insn, Type.VOID_TYPE));
-                push(new DefValue(insn, Type.VOID_TYPE));
-                push(new DefValue(insn, Type.VOID_TYPE));
-                push(new DefValue(insn, Type.VOID_TYPE));
-                push(new DefValue(insn, Type.VOID_TYPE));
+                DefValue arg1_2 = pop();
+                DefValue arg3   = pop();
+                used.put(insn, new AbstractInsnNode[] {arg3.source, arg1_2.source});
+                push(arg1_2);
+                push(arg3);
+                push(arg1_2);
                 }break;
             case DUP2_X2: {
-                DefValue arg3 = pop();
-                DefValue arg2 = pop();
-                DefValue arg1 = pop();
-                DefValue arg0 = pop();
-                used.put(insn, new AbstractInsnNode[] {arg0.source, arg1.source, arg2.source, arg3.source});
-                push(new DefValue(insn, Type.VOID_TYPE));
-                push(new DefValue(insn, Type.VOID_TYPE));
-                push(new DefValue(insn, Type.VOID_TYPE));
-                push(new DefValue(insn, Type.VOID_TYPE));
-                push(new DefValue(insn, Type.VOID_TYPE));
-                push(new DefValue(insn, Type.VOID_TYPE));
+                DefValue arg1_2 = pop();
+                DefValue arg3_4 = pop();
+                used.put(insn, new AbstractInsnNode[] {arg3_4.source, arg1_2.source});
+                push(arg1_2);
+                push(arg3_4);
+                push(arg1_2);
                 }break;
             case POP2: {
-                DefValue arg1 = pop();
-                DefValue arg0 = pop();
-                used.put(insn, new AbstractInsnNode[] {arg0.source, arg1.source});
+                DefValue arg1_2 = pop();
+                used.put(insn, new AbstractInsnNode[] {arg1_2.source});
                 }break;
             default:
                 throw new RuntimeException("not implemented yet: " + AbstractVisitor.OPCODES[insn.getOpcode()]);
