@@ -3,6 +3,7 @@ package org.codehaus.groovy.gjit.soot.fft
 import org.codehaus.groovy.gjit.benchmarks.Random
 
 /**
+ * Port to Groovy of Java FFT
  * Computes FFT's of complex, double precision data where n is an integer power
  * of 2. This appears to be slower than the Radix2 method, but the code is
  * smaller and simpler, and it requires no extra storage.
@@ -11,6 +12,7 @@ import org.codehaus.groovy.gjit.benchmarks.Random
  * @author Bruce R. Miller bruce.miller@nist.gov,
  * @author Derived from GSL (Gnu Scientific Library),
  * @author GSL's FFT Code by Brian Gough bjg@vvv.lanl.gov
+ * @author Chanwit Kaewkasi chanwit@gmail.com
  */
 
 /*

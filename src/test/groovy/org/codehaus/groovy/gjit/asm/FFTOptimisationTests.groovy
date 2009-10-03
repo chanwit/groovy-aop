@@ -10,7 +10,8 @@ import org.codehaus.groovy.gjit.asm.transformer.*
 
 public class FFTOptimisationTests extends GroovyTestCase implements Opcodes {
 
-    static FFT_TRANS_X = "org/codehaus/groovy/gjit/soot/fft/FFT_transform_x"
+    static FFT_TRANS_X      = "org/codehaus/groovy/gjit/soot/fft/FFT_transform_x"
+    static FFT_TRANS_INTN_X = "org/codehaus/groovy/gjit/soot/fft/FFT_transformInternal_x"
 
     void testOptimiseOnFFT() {
         InsnListHelper.install()
@@ -34,16 +35,31 @@ public class FFTOptimisationTests extends GroovyTestCase implements Opcodes {
         def cn = new ClassNode()
         cr.accept cn, 0
 
-        def main = cn.methods.find { it.name == "main" }
-        assert main.name == "main"
-        // CheckClassAdapter.verify(cr, false, new PrintWriter(System.out))
-
         def fft_x_body = ClassBodyCache.v().get(FFT_TRANS_X)
         assert fft_x_body != null
+
+        def main = cn.methods.find { it.name == "test" }
+        assert main.name == "test"
+
+        def reop = new TypeAdvisedReOptimizer()
+        aatf = new AspectAwareTransformer(
+            advisedTypes:[double[], int] as Class[],
+            advisedReturnType: null,
+            callSite: new FFT_transform_x$transformInternal(),
+            withInMethodName: "transform"
+        )
+        reop.transformers = [
+            DeConstantTransformer.class,
+            aatf,
+            AutoBoxEliminatorTransformer.class,
+            UnusedCSARemovalTransformer.class
+        ]
+        bytes = reop.optimize(FFT_TRANS_X)
         cr = new ClassReader(fft_x_body)
-        CheckClassAdapter.verify(cr, false, new PrintWriter(System.out))
         def tcv = new TraceClassVisitor(new PrintWriter(System.out))
-        cr.accept tcv, 0
+//        CheckClassAdapter.verify(cr, false, new PrintWriter(System.out))
+//        CheckClassAdapter.verify(cr, false, new PrintWriter(System.out))
+//        cr.accept tcv, 0
     }
 
 }
