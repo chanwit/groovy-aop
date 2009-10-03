@@ -106,10 +106,10 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
             PartialDefUseAnalyser pdua = new PartialDefUseAnalyser(body, start, m);
             Map<AbstractInsnNode, AbstractInsnNode[]> usedMap = pdua.analyse();
             AbstractInsnNode[] array = usedMap.get(m);
-            //System.out.println(array.length);
-            //for (int i = 0; i < array.length; i++) {
-            //    System.out.println(AbstractVisitor.OPCODES[array[i].getOpcode()]);
-            //}
+            System.out.println(array.length);
+            for (int i = 0; i < array.length; i++) {
+                System.out.println(AbstractVisitor.OPCODES[array[i].getOpcode()]);
+            }
             Type t1 = Utils.getType(array[1]);
             Type t2 = Utils.getType(array[2]);
 
