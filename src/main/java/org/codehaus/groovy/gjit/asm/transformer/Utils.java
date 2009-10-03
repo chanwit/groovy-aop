@@ -7,6 +7,7 @@ import java.util.*;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
+import org.objectweb.asm.util.AbstractVisitor;
 
 public class Utils implements Opcodes {
 
@@ -120,7 +121,7 @@ public class Utils implements Opcodes {
             VarInsnNode aload = (VarInsnNode)node;
             return info[aload.var];
         }
-        throw new RuntimeException("NYI: " + node.getOpcode());
+        throw new RuntimeException("NYI: " + AbstractVisitor.OPCODES[node.getOpcode()]);
     }
 
     public static Type getType(AbstractInsnNode node) {
@@ -133,7 +134,7 @@ public class Utils implements Opcodes {
         } else if(node.getOpcode() == BIPUSH || node.getOpcode() == SIPUSH) {
             return Type.getType("I");
         }
-        throw new RuntimeException("NYI: " + node.getOpcode());
+        throw new RuntimeException("NYI: " + AbstractVisitor.OPCODES[node.getOpcode()]);
     }
 
     public static Class<?> defineClass(String className, byte[] bytes) {
