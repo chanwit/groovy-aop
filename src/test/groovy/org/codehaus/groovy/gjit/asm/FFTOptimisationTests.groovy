@@ -10,18 +10,18 @@ import org.codehaus.groovy.gjit.asm.transformer.*
 
 public class FFTOptimisationTests extends GroovyTestCase implements Opcodes {
 
-    static HEAPSORT_X = "org/codehaus/groovy/gjit/soot/heapsort/HeapSort_heapsort_x"
+    static FFT_X = "org/codehaus/groovy/gjit/soot/fft/FFT_transform_x"
 
-    void testOptimiseOnHeapSort() {
+    void testOptimiseOnFFT() {
         InsnListHelper.install()
 
-        def sender = HeapSort.class
+        def sender = FFT.class
         def sco  = new AsmSingleClassOptimizer()
         def aatf = new AspectAwareTransformer(
-            advisedTypes:[int, double[]] as Class[],
+            advisedTypes:[double[]] as Class[],
             advisedReturnType: null,
             callSite: new FFT$transform(),
-            withInMethodName: "main"
+            withInMethodName: "test"
         )
         sco.transformers = [
           DeConstantTransformer.class,
@@ -36,9 +36,9 @@ public class FFTOptimisationTests extends GroovyTestCase implements Opcodes {
         assert main.name == "main"
         // CheckClassAdapter.verify(cr, false, new PrintWriter(System.out))
 
-        def heapsort_x_body = ClassBodyCache.v().get(HEAPSORT_X)
-        assert heapsort_x_body != null
-        cr = new ClassReader(heapsort_x_body)
+        def fft_x_body = ClassBodyCache.v().get(FFT_X)
+        assert fft_x_body != null
+        cr = new ClassReader(fft_x_body)
         CheckClassAdapter.verify(cr, false, new PrintWriter(System.out))
         def tcv = new TraceClassVisitor(new PrintWriter(System.out))
         cr.accept tcv, 0
