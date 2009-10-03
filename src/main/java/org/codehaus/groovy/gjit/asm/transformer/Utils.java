@@ -121,7 +121,9 @@ public class Utils implements Opcodes {
             VarInsnNode aload = (VarInsnNode)node;
             return info[aload.var];
         }
-        throw new RuntimeException("NYI: " + AbstractVisitor.OPCODES[node.getOpcode()]);
+        AbstractInsnNode p = node.getPrevious();
+        while(p instanceof LineNumberNode == false) p = p.getPrevious();
+        throw new RuntimeException("NYI: " + AbstractVisitor.OPCODES[node.getOpcode()] + ", line: " + ((LineNumberNode)p).line);
     }
 
     public static Type getType(AbstractInsnNode node) {
@@ -134,7 +136,9 @@ public class Utils implements Opcodes {
         } else if(node.getOpcode() == BIPUSH || node.getOpcode() == SIPUSH) {
             return Type.getType("I");
         }
-        throw new RuntimeException("NYI: " + AbstractVisitor.OPCODES[node.getOpcode()]);
+        AbstractInsnNode p = node.getPrevious();
+        while(p instanceof LineNumberNode == false) p = p.getPrevious();
+        throw new RuntimeException("NYI: " + AbstractVisitor.OPCODES[node.getOpcode()] + ", line: " + ((LineNumberNode)p).line);
     }
 
     public static Class<?> defineClass(String className, byte[] bytes) {
