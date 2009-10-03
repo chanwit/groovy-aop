@@ -34,6 +34,14 @@ public class DeConstantTransformer implements Transformer, Opcodes {
             if(f.name.startsWith("$const$")) {
                 ConstantPack pack = ConstantHolder.v().get(f.owner);
                 Object cst = pack.get(f.name);
+                String fieldDesc = f.desc;
+                //
+                // We convert BigDecimal to Double
+                //
+                if(f.desc.equals("Ljava/math/BigDecimal;")) {
+                	cst = Double.valueOf((String)cst);
+                	fieldDesc = "Ljava/lang/Double;";
+                }
                 AbstractInsnNode newS = new LdcInsnNode(cst);
                 if (cst instanceof Integer) {
                     int c = (Integer)cst;
@@ -45,7 +53,7 @@ public class DeConstantTransformer implements Transformer, Opcodes {
                         newS = new IntInsnNode(SIPUSH, c);
                     }
                 }
-                MethodInsnNode box = Utils.getBoxNode(f.desc);
+                MethodInsnNode box = Utils.getBoxNode(fieldDesc);
                 units.insert(s,   newS);
                 units.insert(newS, box);
                 units.remove(s);
