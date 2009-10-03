@@ -119,6 +119,7 @@ public class TypeAdvisedClassGenerator implements Opcodes {
         ClassNode targetCN = new ClassNode();
         try {
             String targetInternalName = targetNames[0].replace('.', '/');
+            System.out.println("targetInternalName = " + targetInternalName);            
             if(ClassBodyCache.v().containsKey(targetInternalName)) {
                 byte[] bytes = ClassBodyCache.v().get(targetInternalName);
                 cr = new ClassReader(bytes);
@@ -140,6 +141,8 @@ public class TypeAdvisedClassGenerator implements Opcodes {
         //
         MethodNode targetMN = findMethod(targetCN, targetNames[1]);
         ArrayList<Type> typeList = new ArrayList<Type>();
+        
+        System.out.println("Find target MN: " + targetMN.name);
 
         //
         // targetCN is the target class obtained from targetNames[0]
