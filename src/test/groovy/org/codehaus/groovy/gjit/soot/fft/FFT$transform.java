@@ -6,7 +6,7 @@ import org.codehaus.groovy.runtime.callsite.CallSiteArray;
 class FFT$transform extends AbstractCallSite {
 
     private static final String[] NAMES = new String[] {
-        "plus", "multiply", "minus", "multiply", "log2", "multiply", "plus", "transform_internal", "transform_internal", "length",
+        "plus", "multiply", "minus", "multiply", "log2", "multiply", "plus", "transformInternal", "transformInternal", "length",
         "div", "div", "putAt", "multiply", "getAt", "next", "length", "arraycopy", "transform", "inverse",
         "iterator", "minus", "getAt", "getAt", "plus", "multiply", "sqrt", "div", "multiply", "<$constructor$>",
         "iterator", "putAt", "nextDouble", "length", "println", "test", "makeRandom", "length", "parseInt", "getAt",

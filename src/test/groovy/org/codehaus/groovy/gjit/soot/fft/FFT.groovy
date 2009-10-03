@@ -25,17 +25,17 @@ class FFT {
 
     /** Compute Fast Fourier Transform of (complex) data, in place. */
     static transform(data) {
-        transform_internal(data, -1)
+        transformInternal(data, -1)
     }
 
     /** Compute Inverse Fast Fourier Transform of (complex) data, in place. */
     static inverse(data) {
-        transform_internal(data, +1)
+        transformInternal(data, +1)
         // Normalize
         def nd = data.length
         def n = nd / 2
         def norm = 1 / n
-        for (def i = 0; i < nd; i++)
+        for(i in 0..<nd)
             data[i] *= norm
     }
 
@@ -78,7 +78,7 @@ class FFT {
             println "n=${n} => RMS Error=${test(makeRandom(n))}"
         }
         for (int i = 0; i < args.length; i++) {
-            int n = Integer.parseInt(args[i])
+            int n = args[i].toInteger()
             println "n=${n} => RMS Error=${test(makeRandom(n))}"
         }
     }
@@ -93,7 +93,7 @@ class FFT {
         return log
     }
 
-    static transform_internal(data, direction) {
+    static transformInternal(data, direction) {
         if (data.length == 0)
             return
         def n = data.length / 2

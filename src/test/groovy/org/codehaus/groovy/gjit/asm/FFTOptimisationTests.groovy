@@ -10,7 +10,7 @@ import org.codehaus.groovy.gjit.asm.transformer.*
 
 public class FFTOptimisationTests extends GroovyTestCase implements Opcodes {
 
-    static FFT_X = "org/codehaus/groovy/gjit/soot/fft/FFT_transform_x"
+    static FFT_TRANS_X = "org/codehaus/groovy/gjit/soot/fft/FFT_transform_x"
 
     void testOptimiseOnFFT() {
         InsnListHelper.install()
@@ -23,20 +23,22 @@ public class FFTOptimisationTests extends GroovyTestCase implements Opcodes {
             callSite: new FFT$transform(),
             withInMethodName: "test"
         )
+
         sco.transformers = [
-          DeConstantTransformer.class,
-          aatf,
-          AutoBoxEliminatorTransformer.class
+            DeConstantTransformer.class,
+            aatf,
+            AutoBoxEliminatorTransformer.class
         ]
         byte[] bytes = sco.optimize(sender.name)
         def cr = new ClassReader(bytes)
         def cn = new ClassNode()
         cr.accept cn, 0
+
         def main = cn.methods.find { it.name == "main" }
         assert main.name == "main"
         // CheckClassAdapter.verify(cr, false, new PrintWriter(System.out))
 
-        def fft_x_body = ClassBodyCache.v().get(FFT_X)
+        def fft_x_body = ClassBodyCache.v().get(FFT_TRANS_X)
         assert fft_x_body != null
         cr = new ClassReader(fft_x_body)
         CheckClassAdapter.verify(cr, false, new PrintWriter(System.out))
