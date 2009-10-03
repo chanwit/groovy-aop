@@ -119,7 +119,7 @@ public class TypeAdvisedClassGenerator implements Opcodes {
         ClassNode targetCN = new ClassNode();
         try {
             String targetInternalName = targetNames[0].replace('.', '/');
-            System.out.println("targetInternalName = " + targetInternalName);            
+            System.out.println("targetInternalName = " + targetInternalName);
             if(ClassBodyCache.v().containsKey(targetInternalName)) {
                 byte[] bytes = ClassBodyCache.v().get(targetInternalName);
                 cr = new ClassReader(bytes);
@@ -129,6 +129,20 @@ public class TypeAdvisedClassGenerator implements Opcodes {
             cr.accept(targetCN, 0);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+
+        if(targetCN.superName.equals("sun/reflect/GroovyAOPMagic")) {
+            // re-parse name
+            // re-read
+            String targetInternalName = targetNames[0].replace('.','/').split("_")[0];
+            targetCN = new ClassNode();
+            if(ClassBodyCache.v().containsKey(targetInternalName)) {
+                byte[] bytes = ClassBodyCache.v().get(targetInternalName);
+                cr = new ClassReader(bytes);
+            } else {
+                cr = new ClassReader(targetInternalName.replace('/','.'));
+            }
+            cr.accept(targetCN, 0);            
         }
 
         //
