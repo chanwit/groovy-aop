@@ -437,42 +437,42 @@ public class PartialDefUseAnalyser implements Opcodes {
             case DUP2: {
                 DefValue tos = peek();
                 used.put(insn, new AbstractInsnNode[]{tos.source});
-                push(tos);
+                push(new DefValue(tos.source, tos.getType()));
                 }
                 break;
             case DUP_X1: {
                 DefValue arg0 = pop();
                 DefValue arg1 = pop();
                 used.put(insn, new AbstractInsnNode[] {arg1.source, arg0.source});
-                push(arg0);
-                push(arg1);
-                push(arg0);
+                push(new DefValue(arg0.source, arg0.getType()));
+                push(new DefValue(arg1.source, arg1.getType()));
+                push(new DefValue(arg0.source, arg0.getType()));
                 }break;
             case DUP_X2: {
                 DefValue arg0 = pop();
                 DefValue arg1 = pop();
                 DefValue arg2 = pop();
                 used.put(insn, new AbstractInsnNode[] {arg2.source, arg1.source, arg0.source});
-                push(arg0);
-                push(arg2);
-                push(arg1);
-                push(arg0);
+                push(new DefValue(arg0.source, arg0.getType()));
+                push(new DefValue(arg2.source, arg2.getType()));
+                push(new DefValue(arg1.source, arg1.getType()));
+                push(new DefValue(arg0.source, arg0.getType()));
                 }break;
             case DUP2_X1: {
                 DefValue arg1_2 = pop();
                 DefValue arg3   = pop();
                 used.put(insn, new AbstractInsnNode[] {arg3.source, arg1_2.source});
-                push(arg1_2);
-                push(arg3);
-                push(arg1_2);
+                push(new DefValue(arg1_2.source, arg1_2.getType()));
+                push(new DefValue(arg3.source,   arg3.getType()));
+                push(new DefValue(arg1_2.source, arg1_2.getType()));
                 }break;
             case DUP2_X2: {
                 DefValue arg1_2 = pop();
                 DefValue arg3_4 = pop();
                 used.put(insn, new AbstractInsnNode[] {arg3_4.source, arg1_2.source});
-                push(arg1_2);
-                push(arg3_4);
-                push(arg1_2);
+                push(new DefValue(arg1_2.source, arg1_2.getType()));
+                push(new DefValue(arg3_4.source, arg3_4.getType()));
+                push(new DefValue(arg1_2.source, arg1_2.getType()));
                 }break;
             case POP2: {
                 DefValue arg1_2 = pop();
