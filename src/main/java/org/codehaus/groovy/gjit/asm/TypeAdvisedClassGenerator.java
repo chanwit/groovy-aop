@@ -136,13 +136,17 @@ public class TypeAdvisedClassGenerator implements Opcodes {
             // re-read
             String targetInternalName = targetNames[0].replace('.','/').split("_")[0];
             targetCN = new ClassNode();
-            if(ClassBodyCache.v().containsKey(targetInternalName)) {
-                byte[] bytes = ClassBodyCache.v().get(targetInternalName);
-                cr = new ClassReader(bytes);
-            } else {
-                cr = new ClassReader(targetInternalName.replace('/','.'));
+            try {
+                if(ClassBodyCache.v().containsKey(targetInternalName)) {
+                    byte[] bytes = ClassBodyCache.v().get(targetInternalName);
+                    cr = new ClassReader(bytes);
+                } else {
+                    cr = new ClassReader(targetInternalName.replace('/','.'));
+                }
+                cr.accept(targetCN, 0);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-            cr.accept(targetCN, 0);            
         }
 
         //
