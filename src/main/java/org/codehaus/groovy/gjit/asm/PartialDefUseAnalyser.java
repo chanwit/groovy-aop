@@ -461,6 +461,19 @@ public class PartialDefUseAnalyser implements Opcodes {
                 push(new DefValue(insn, Type.VOID_TYPE));
                 push(new DefValue(insn, Type.VOID_TYPE));
                 }break;
+            case DUP2_X2: {
+                DefValue arg3 = pop();
+                DefValue arg2 = pop();
+                DefValue arg1 = pop();
+                DefValue arg0 = pop();
+                used.put(insn, new AbstractInsnNode[] {arg0.source, arg1.source, arg2.source, arg3.source});
+                push(new DefValue(insn, Type.VOID_TYPE));
+                push(new DefValue(insn, Type.VOID_TYPE));
+                push(new DefValue(insn, Type.VOID_TYPE));
+                push(new DefValue(insn, Type.VOID_TYPE));
+                push(new DefValue(insn, Type.VOID_TYPE));
+                push(new DefValue(insn, Type.VOID_TYPE));
+                }break;
             case POP2: {
                 DefValue arg1 = pop();
                 DefValue arg0 = pop();
