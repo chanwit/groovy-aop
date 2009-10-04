@@ -30,8 +30,8 @@ dependencies {
                [group: 'org.antlr',   name: 'antlr-runtime',  version: '3.1.3'],
                [group: 'org.antlr',   name: 'stringtemplate', version: '3.2'],
                [group: 'asm',         name: 'asm-all',        version: '3.1'],
-               [group: 'org.slf4j',   name: 'slf4j-api',      version: '1.5.9-RC0'],
-               [group: 'org.slf4j',   name: 'slf4j-nop',      version: '1.5.9-RC0']
+               [group: 'org.slf4j',   name: 'slf4j-api',      version: '1.5.9-RC0']
+//             [group: 'org.slf4j',   name: 'slf4j-nop',      version: '1.5.9-RC0']
     )
 }
 
