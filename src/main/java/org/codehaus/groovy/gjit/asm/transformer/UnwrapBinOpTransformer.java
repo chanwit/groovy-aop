@@ -110,8 +110,10 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
             for (int i = 0; i < array.length; i++) {
                 System.out.println(AbstractVisitor.OPCODES[array[i].getOpcode()]);
                 AbstractInsnNode[] x = usedMap.get(array[i]);
-                for(int j = 0;j < x.length; j++) {
-                    System.out.println("  >>" + AbstractVisitor.OPCODES[x[j].getOpcode()]);
+                if(x != null) {
+                    for(int j = 0;j < x.length; j++) {
+                        System.out.println("  >>" + AbstractVisitor.OPCODES[x[j].getOpcode()]);
+                    }
                 }
             }
             Type t1 = Utils.getType(array[1]);
