@@ -256,7 +256,7 @@ public class ReverseStackDistance implements Opcodes {
         while(true) {
             if(p.getPrevious()==null) return p;
             p = p.getPrevious();
-            log.info("Current insn {}", AbstractVisitor.OPCODES[p.getOpcode()]);
+            if(p.getOpcode() != -1) log.info("{}", AbstractVisitor.OPCODES[p.getOpcode()]);
             switch(p.getOpcode()) {
                 case LDC:
                     Object cst = ((LdcInsnNode)p).cst;
