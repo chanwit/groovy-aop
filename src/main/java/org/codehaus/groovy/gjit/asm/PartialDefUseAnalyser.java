@@ -477,19 +477,19 @@ public class PartialDefUseAnalyser implements Opcodes {
                 }                
                 if(i == 2) {
                     used.put(insn, new AbstractInsnNode[] {arg[1].source, arg[0].source});
-                    push(new DefValue(arg[0].source, arg[0].getType()));
-                    push(new DefValue(arg[1].source, arg[1].getType()));
-                    push(new DefValue(arg[0].source, arg[0].getType()));
+                    push(new DefValue(insn, arg[0].getType()));
+                    push(new DefValue(insn, arg[1].getType()));
+                    push(new DefValue(insn, arg[0].getType()));
                 } if (i == 3) {
                     throw new RuntimeException("NYI");
                 } if (i == 4) {
                     used.put(insn, new AbstractInsnNode[] {arg[3].source, arg[2].source, arg[1].source, arg[0].source});
-                    push(new DefValue(arg[0].source, arg[0].getType()));
-                    push(new DefValue(arg[1].source, arg[1].getType()));
-                    push(new DefValue(arg[2].source, arg[2].getType()));
-                    push(new DefValue(arg[3].source, arg[3].getType()));                    
-                    push(new DefValue(arg[0].source, arg[0].getType()));
-                    push(new DefValue(arg[1].source, arg[1].getType()));
+                    push(new DefValue(insn, arg[0].getType()));
+                    push(new DefValue(insn, arg[1].getType()));
+                    push(new DefValue(insn, arg[2].getType()));
+                    push(new DefValue(insn, arg[3].getType()));                    
+                    push(new DefValue(insn, arg[0].getType()));
+                    push(new DefValue(insn, arg[1].getType()));
                 }
                 }break;
             case POP2: {
