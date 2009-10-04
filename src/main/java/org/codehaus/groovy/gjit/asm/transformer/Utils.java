@@ -123,10 +123,11 @@ public class Utils implements Opcodes {
                 return info[aload.var];
             else
                 return getType(node);
-        }
-        AbstractInsnNode p = node.getPrevious();
-        while(p instanceof LineNumberNode == false) p = p.getPrevious();
-        throw new RuntimeException("NYI: " + AbstractVisitor.OPCODES[node.getOpcode()] + ", line: " + ((LineNumberNode)p).line);
+        } else 
+            return getType(node;)
+//        AbstractInsnNode p = node.getPrevious();
+//        while(p instanceof LineNumberNode == false) p = p.getPrevious();
+//        throw new RuntimeException("NYI: " + AbstractVisitor.OPCODES[node.getOpcode()] + ", line: " + ((LineNumberNode)p).line);
     }
 
     public static Type getType(AbstractInsnNode node) {
