@@ -2,7 +2,7 @@ package org.codehaus.groovy.gjit.soot.sieve;
 
 public class Sieve {
 
-	static sieve(def m,def n) {
+	static sieve(m,n) {
 		def i,k,ci
 		def count,size
 		def prime=0
@@ -36,5 +36,9 @@ public class Sieve {
 
 		N_Prime = j / n
 		L_Prime = prime
+	}
+
+	static void main(args) {
+		sieve(100, 100)
 	}
 }
