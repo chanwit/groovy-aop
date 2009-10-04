@@ -124,7 +124,7 @@ public class Utils implements Opcodes {
             else
                 return getType(node);
         } else 
-            return getType(node;)
+            return getType(node);
 //        AbstractInsnNode p = node.getPrevious();
 //        while(p instanceof LineNumberNode == false) p = p.getPrevious();
 //        throw new RuntimeException("NYI: " + AbstractVisitor.OPCODES[node.getOpcode()] + ", line: " + ((LineNumberNode)p).line);
