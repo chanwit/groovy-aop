@@ -242,7 +242,7 @@ public class ReverseStackDistance implements Opcodes {
     }
 
     public AbstractInsnNode findStartingNode() {
-    	System.out.println("Start ====");
+    	// System.out.println("Start ====");
         int growth = argStackSize(start.desc);
         if(start.getOpcode() == INVOKESTATIC) {
             stacks = growth;
@@ -253,7 +253,7 @@ public class ReverseStackDistance implements Opcodes {
         while(true) {
             if(p.getPrevious()==null) return p;
             p = p.getPrevious();
-            System.out.println(AbstractVisitor.OPCODES[p.getOpcode()]);
+            // System.out.println(AbstractVisitor.OPCODES[p.getOpcode()]);
             switch(p.getOpcode()) {
                 case LDC:
                     Object cst = ((LdcInsnNode)p).cst;
