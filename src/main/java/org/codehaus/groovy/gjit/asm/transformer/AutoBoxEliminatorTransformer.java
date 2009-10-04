@@ -56,6 +56,8 @@ public class AutoBoxEliminatorTransformer implements Transformer, Opcodes {
                 units.remove(ti0);
                 units.remove(mi1);
             }
+
+           s = s.getNext();
         }
     }
 
