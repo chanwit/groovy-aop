@@ -57,6 +57,7 @@ public class FFTOptimisationTests extends GroovyTestCase implements Opcodes {
         bytes = reop.optimize(FFT_TRANS_X)
         cr = new ClassReader(fft_x_body)
         def tcv = new TraceClassVisitor(new PrintWriter(System.out))
+        cr.accept tcv, 0
 //        CheckClassAdapter.verify(cr, false, new PrintWriter(System.out))
 //        CheckClassAdapter.verify(cr, false, new PrintWriter(System.out))
 //        cr.accept tcv, 0
