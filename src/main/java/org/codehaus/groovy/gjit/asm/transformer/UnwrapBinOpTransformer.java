@@ -56,7 +56,7 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
         //
         // finding call site array
         //
-        log.debug("Finding CallSiteArray");
+        log.info("Finding CallSiteArray");
         while(s != null) {
             if(s.getOpcode() != INVOKESTATIC) { s = s.getNext(); continue; }
 
@@ -67,7 +67,7 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
                 AbstractInsnNode s0 = m.getNext();
                 assert s0.getOpcode() == ASTORE;
                 callSiteArray = ((VarInsnNode)s0).var;
-                log.debug("CallSiteArray is found {}", callSiteArray);
+                log.info("CallSiteArray is found {}", callSiteArray);
                 break;
             } else {
                 s = s.getNext();
@@ -75,10 +75,10 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
         }
 
         //CallSite
-        log.debug("Obtaining call site name array of {}", owner);
+        log.info("Obtaining call site name array of {}", owner);
         if(CallSiteNameHolder.v().containsKey(owner)) {
             names = CallSiteNameHolder.v().get(owner);
-            log.debug("... Obtained {}", names);
+            log.info("... Obtained {}", names);
         } else {
             throw new RuntimeException("No call site name array of class: " + owner);
         }
@@ -86,7 +86,7 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
         //
         // locate bin op
         //
-        log.debug("Locating binary op");
+        log.info("Locating binary op");
         s = units.getFirst();
         while(s != null) {
             if(s.getOpcode() != INVOKEINTERFACE) { s = s.getNext(); continue; }
@@ -103,9 +103,9 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
             if(callSiteIndexHolder.getOpcode() != LDC) { s = s.getNext(); continue; }
 
             int callSiteIndex = (Integer)((LdcInsnNode)callSiteIndexHolder).cst;
-            log.debug("Current callSiteIndex {}", callSiteIndex);
+            log.info("Current callSiteIndex {}", callSiteIndex);
             String callSiteName = names[callSiteIndex];
-            log.debug("Current callSiteName {}", callSiteName);
+            log.info("Current callSiteName {}", callSiteName);
             BinaryOperator op = null;
             try {
                 op = BinaryOperator.valueOf(callSiteName);
@@ -114,12 +114,12 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
             }
             if (op == null) {s = s.getNext(); continue; }
 
-            log.debug("Opcode of starting node got from RSD {}", AbstractVisitor.OPCODES[start.getOpcode()]);
+            log.info("Opcode of starting node got from RSD {}", AbstractVisitor.OPCODES[start.getOpcode()]);
             
             PartialDefUseAnalyser pdua = new PartialDefUseAnalyser(body, start, m);
             Map<AbstractInsnNode, AbstractInsnNode[]> usedMap = pdua.analyse();
             AbstractInsnNode[] array = usedMap.get(m);
-            log.debug("Used Map size {}", array.length);
+            log.info("Used Map size {}", array.length);
 //            for (int i = 0; i < array.length; i++) {
 //                System.out.println(AbstractVisitor.OPCODES[array[i].getOpcode()]);
 //                AbstractInsnNode[] x = usedMap.get(array[i]);
