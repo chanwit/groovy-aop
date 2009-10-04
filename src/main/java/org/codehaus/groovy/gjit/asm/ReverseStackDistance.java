@@ -6,6 +6,7 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.util.AbstractVisitor;
 
 public class ReverseStackDistance implements Opcodes {
 
@@ -111,7 +112,8 @@ public class ReverseStackDistance implements Opcodes {
             1, // dup_x2, 91
             2, // dup2, 92
             2, // dup2_x1, 93
-            2, // dup2_x2, 94
+            // 2, // dup2_x2, 94
+            0, // TODO a quick hack for DUP2_X2 - real value should be 2
             0, // swap, 95
             -1, // iadd, 96
             -2, // ladd, 97
@@ -240,6 +242,7 @@ public class ReverseStackDistance implements Opcodes {
     }
 
     public AbstractInsnNode findStartingNode() {
+    	System.out.println("Start ====");
         int growth = argStackSize(start.desc);
         if(start.getOpcode() == INVOKESTATIC) {
             stacks = growth;
@@ -247,9 +250,10 @@ public class ReverseStackDistance implements Opcodes {
             stacks = growth + 1; // include obj ref
         }
         AbstractInsnNode p = start;
-        while(stacks != 0) {
+        while(true) {
             if(p.getPrevious()==null) return p;
             p = p.getPrevious();
+            System.out.println(AbstractVisitor.OPCODES[p.getOpcode()]);
             switch(p.getOpcode()) {
                 case LDC:
                     Object cst = ((LdcInsnNode)p).cst;
@@ -284,8 +288,14 @@ public class ReverseStackDistance implements Opcodes {
                     }
                     break;
             }
+            if(stacks == 0) return p;
+//            if(stacks <= 0) {
+//            	if(p.getOpcode() == ALOAD && p.getNext().getOpcode() == LDC) {
+//            		System.out.println("found " + p + " with stack = " + stacks);
+//            		//return p;
+//            	}
+//            }
         }
-        return p;
     }
 
 }
