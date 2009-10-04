@@ -8,7 +8,11 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.util.AbstractVisitor;
 
+import org.slf4j.*; 
+
 public class ReverseStackDistance implements Opcodes {
+
+    private final Logger log = LoggerFactory.getLogger(ReverseStackDistance.class);
 
     private MethodInsnNode start;
     private int stacks = 0;
@@ -225,7 +229,6 @@ public class ReverseStackDistance implements Opcodes {
 
 
     private int argStackSize(String d) {
-        // DebugUtils.println("arg stack size" + d);
         Type[] argTypes = Type.getArgumentTypes(d);
         //sysout
         int growth=0;
@@ -242,7 +245,7 @@ public class ReverseStackDistance implements Opcodes {
     }
 
     public AbstractInsnNode findStartingNode() {
-    	// System.out.println("Start ====");
+    	log.debug("Start");
         int growth = argStackSize(start.desc);
         if(start.getOpcode() == INVOKESTATIC) {
             stacks = growth;
@@ -253,7 +256,7 @@ public class ReverseStackDistance implements Opcodes {
         while(true) {
             if(p.getPrevious()==null) return p;
             p = p.getPrevious();
-            // System.out.println(AbstractVisitor.OPCODES[p.getOpcode()]);
+            log.debug("Current insn {}", AbstractVisitor.OPCODES[p.getOpcode()]);
             switch(p.getOpcode()) {
                 case LDC:
                     Object cst = ((LdcInsnNode)p).cst;
@@ -276,8 +279,6 @@ public class ReverseStackDistance implements Opcodes {
                     stacks -= growth;
                     break;
                 case INVOKESTATIC:
-                    //DebugUtils.print(((MethodInsnNode)p).name);
-                    //DebugUtils.println(((MethodInsnNode)p).desc);
                     growth = retStackSize(((MethodInsnNode)p).desc) - argStackSize(((MethodInsnNode)p).desc);
                     stacks -= growth;
                     break;
@@ -289,12 +290,6 @@ public class ReverseStackDistance implements Opcodes {
                     break;
             }
             if(stacks == 0) return p;
-//            if(stacks <= 0) {
-//            	if(p.getOpcode() == ALOAD && p.getNext().getOpcode() == LDC) {
-//            		System.out.println("found " + p + " with stack = " + stacks);
-//            		//return p;
-//            	}
-//            }
         }
     }
 
