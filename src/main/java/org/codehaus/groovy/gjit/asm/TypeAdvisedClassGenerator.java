@@ -35,17 +35,17 @@ public class TypeAdvisedClassGenerator implements Opcodes {
             new DeConstantTransformer(),
             new WhileTrueEliminatorTransformer(),
 
-//            new UnwrapCompareTransformer(),
-//            new UnwrapBinOpTransformer(),
-//            new UnwrapUnaryTransformer(),
-//            new GetAtPutAtTransformer(),
-//            new DupAstorePopEliminatorTransformer(),
-//            new InferLocalsTransformer(),
-//            new NullInitToZeroTransformer(),
+            new UnwrapCompareTransformer(),
+            new UnwrapBinOpTransformer(),
+            new UnwrapUnaryTransformer(),
+            new GetAtPutAtTransformer(),
+            new DupAstorePopEliminatorTransformer(),
+            new InferLocalsTransformer(),
+            new NullInitToZeroTransformer(),
             new AutoBoxEliminatorTransformer(),
-//            new IincTransformer(),
-//            new XLoadBoxPopEliminatorTransformer(),
-//            new UnusedCSARemovalTransformer(),
+            new IincTransformer(),
+            new XLoadBoxPopEliminatorTransformer(),
+            new UnusedCSARemovalTransformer(),
         };
     }
 
