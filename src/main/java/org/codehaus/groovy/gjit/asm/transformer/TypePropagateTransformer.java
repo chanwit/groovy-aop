@@ -6,15 +6,10 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 public class TypePropagateTransformer implements Transformer, Opcodes {
-
-    public TypePropagateTransformer() {
-    }
 
     @Override
     public void internalTransform(MethodNode body, Map<String, Object> options) {
@@ -50,7 +45,7 @@ public class TypePropagateTransformer implements Transformer, Opcodes {
                     units.insert(newS, Utils.getBoxNode(type));
                     s = newS.getNext().getNext();
                     continue;
-                } else if(type != null && type.isArray()) {                    
+                } else if(type != null && type.isArray()) {
                     // leave it normally
                     // an array is managed as an object
                 } else if(type != null) {

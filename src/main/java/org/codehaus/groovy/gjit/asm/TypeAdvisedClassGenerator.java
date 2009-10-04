@@ -35,17 +35,17 @@ public class TypeAdvisedClassGenerator implements Opcodes {
             new DeConstantTransformer(),
             new WhileTrueEliminatorTransformer(),
 
-            new UnwrapCompareTransformer(),
-            new UnwrapBinOpTransformer(),
-            new UnwrapUnaryTransformer(),
-            new GetAtPutAtTransformer(),
-            new DupAstorePopEliminatorTransformer(),
-            new InferLocalsTransformer(),
-            new NullInitToZeroTransformer(),
+//            new UnwrapCompareTransformer(),
+//            new UnwrapBinOpTransformer(),
+//            new UnwrapUnaryTransformer(),
+//            new GetAtPutAtTransformer(),
+//            new DupAstorePopEliminatorTransformer(),
+//            new InferLocalsTransformer(),
+//            new NullInitToZeroTransformer(),
             new AutoBoxEliminatorTransformer(),
-            new IincTransformer(),
-            new XLoadBoxPopEliminatorTransformer(),
-            new UnusedCSARemovalTransformer(),
+//            new IincTransformer(),
+//            new XLoadBoxPopEliminatorTransformer(),
+//            new UnusedCSARemovalTransformer(),
         };
     }
 
@@ -159,7 +159,7 @@ public class TypeAdvisedClassGenerator implements Opcodes {
         //
         MethodNode targetMN = findMethod(targetCN, targetNames[1]);
         ArrayList<Type> typeList = new ArrayList<Type>();
-        
+
         System.out.println("Find target MN: " + targetMN.name);
 
         //
@@ -258,6 +258,8 @@ public class TypeAdvisedClassGenerator implements Opcodes {
         }
         relocateGetCallSiteArray(targetMN, newInternalClassName);
 
+        debug(targetMN);
+
         //
         // Generate a new method based on "targetMN"
         //
@@ -283,7 +285,16 @@ public class TypeAdvisedClassGenerator implements Opcodes {
         return new Result(newInternalClassName, targetMN.name, methodDescriptor, bytes, firstTime);
     }
 
-    private void relocateGetCallSiteArray(MethodNode targetMN, String newInternalClassName) {
+    private void debug(MethodNode targetMN) {
+		InsnList units = targetMN.instructions;
+		AbstractInsnNode s = units.getFirst();
+		while(s != null) {
+			DebugUtils.dump(s);
+			s = s.getNext();
+		}
+	}
+
+	private void relocateGetCallSiteArray(MethodNode targetMN, String newInternalClassName) {
         InsnList units = targetMN.instructions;
         AbstractInsnNode s = units.getFirst();
         while(s.getOpcode() != INVOKESTATIC) s = s.getNext();
