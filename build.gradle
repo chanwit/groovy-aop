@@ -62,7 +62,7 @@ task install(dependsOn: libs) << {
     ant.copy( file:"$libsDir/${jar.archiveName}", todir:"C:/groovy/groovy-1.6.4/lib" )
 }
 
-task "test-op"(dependsOn: compileTests) << {
+task "test-op"(dependsOn: [processResources, compileTests]) << {
     ant.mkdir(dir: testResultsDir)
     ant.junit(fork: true, forkmode: "once", clonevm: true) {
         jvmarg(value: "-server")
