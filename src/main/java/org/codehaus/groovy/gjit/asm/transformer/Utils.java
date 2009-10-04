@@ -16,7 +16,7 @@ public class Utils implements Opcodes {
         Type t = Type.getType(desc);
         t.getInternalName();
         if(desc.equals("Ljava/lang/Integer;"))   { primitive = "I"; } else
-        if(desc.equals("Ljava/lang/Long;"))      { primitive = "L"; } else
+        if(desc.equals("Ljava/lang/Long;"))      { primitive = "J"; } else
         if(desc.equals("Ljava/lang/Byte;"))      { primitive = "B"; } else
         if(desc.equals("Ljava/lang/Boolean;"))   { primitive = "Z"; } else
         if(desc.equals("Ljava/lang/Short;"))     { primitive = "S"; } else
@@ -63,7 +63,7 @@ public class Utils implements Opcodes {
         char primitive=0;
         String name = null;
         if(type == Type.INT_TYPE)   	{ primitive = 'I'; name = "Integer";   } else
-        if(type == Type.LONG_TYPE)      { primitive = 'L'; name = "Long";      } else
+        if(type == Type.LONG_TYPE)      { primitive = 'J'; name = "Long";      } else
         if(type == Type.BYTE_TYPE)      { primitive = 'B'; name = "Byte";      } else
         if(type == Type.BOOLEAN_TYPE)   { primitive = 'Z'; name = "Boolean";   } else
         if(type == Type.SHORT_TYPE)     { primitive = 'S'; name = "Short";     } else
@@ -83,7 +83,7 @@ public class Utils implements Opcodes {
         String shortName = null;
         Type t = Type.getType(desc);
         if(desc.equals("Ljava/lang/Integer;"))   { primitive = "I"; shortName = "int";     } else
-        if(desc.equals("Ljava/lang/Long;"))      { primitive = "L"; shortName = "long";    } else
+        if(desc.equals("Ljava/lang/Long;"))      { primitive = "J"; shortName = "long";    } else
         if(desc.equals("Ljava/lang/Byte;"))      { primitive = "B"; shortName = "byte";    } else
         if(desc.equals("Ljava/lang/Boolean;"))   { primitive = "Z"; shortName = "boolean"; } else
         if(desc.equals("Ljava/lang/Short;"))     { primitive = "S"; shortName = "short";   } else
