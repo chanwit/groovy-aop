@@ -119,7 +119,10 @@ public class Utils implements Opcodes {
     public static Type getType(AbstractInsnNode node, Type[] info) {
         if(node.getOpcode() == ALOAD) {
             VarInsnNode aload = (VarInsnNode)node;
-            return info[aload.var];
+            if(aload.var < info.length)
+                return info[aload.var];
+            else
+                return getType(node);
         }
         AbstractInsnNode p = node.getPrevious();
         while(p instanceof LineNumberNode == false) p = p.getPrevious();
