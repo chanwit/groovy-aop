@@ -467,11 +467,11 @@ public class PartialDefUseAnalyser implements Opcodes {
                 push(new DefValue(arg1_2.source, arg1_2.getType()));
                 }break;
             case DUP2_X2: {
-                DefValue[] args = new DefValue[4];
+                DefValue[] arg = new DefValue[4];
                 int size=4;
                 int i=0;
                 while(size > 0) {
-                    DefValue arg[i] = pop();
+                    arg[i] = pop();
                     size = size - arg[i].size();
                     i++;
                 }                
