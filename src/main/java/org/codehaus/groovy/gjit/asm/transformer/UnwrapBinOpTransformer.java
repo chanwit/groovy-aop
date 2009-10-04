@@ -16,6 +16,8 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import org.objectweb.asm.util.AbstractVisitor;
 
+import org.slf4j.*; 
+
 /**
  * This class unwraps binary operators for a generated type advised class.
  *
@@ -23,6 +25,8 @@ import org.objectweb.asm.util.AbstractVisitor;
  *
  */
 public class UnwrapBinOpTransformer implements Transformer, Opcodes {
+
+    private final Logger log = LoggerFactory.getLogger(UnwrapBinOpTransformer.class);
 
     private enum BinaryOperator {
         minus, plus, multiply, div, leftShift, rightShift
@@ -52,6 +56,7 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
         //
         // finding call site array
         //
+        log.debug("Finding CallSiteArray");
         while(s != null) {
             if(s.getOpcode() != INVOKESTATIC) { s = s.getNext(); continue; }
 
@@ -62,6 +67,7 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
                 AbstractInsnNode s0 = m.getNext();
                 assert s0.getOpcode() == ASTORE;
                 callSiteArray = ((VarInsnNode)s0).var;
+                log.debug("CallSiteArray is found {}", callSiteArray);
                 break;
             } else {
                 s = s.getNext();
@@ -69,8 +75,10 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
         }
 
         //CallSite
+        log.debug("Obtaining call site name array of {}", owner);
         if(CallSiteNameHolder.v().containsKey(owner)) {
             names = CallSiteNameHolder.v().get(owner);
+            log.debug("... Obtained {}", names);
         } else {
             throw new RuntimeException("No call site name array of class: " + owner);
         }
@@ -78,6 +86,7 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
         //
         // locate bin op
         //
+        log.debug("Locating binary op");
         s = units.getFirst();
         while(s != null) {
             if(s.getOpcode() != INVOKEINTERFACE) { s = s.getNext(); continue; }
@@ -94,7 +103,9 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
             if(callSiteIndexHolder.getOpcode() != LDC) { s = s.getNext(); continue; }
 
             int callSiteIndex = (Integer)((LdcInsnNode)callSiteIndexHolder).cst;
+            log.debug("Current callSiteIndex {}", callSiteIndex);
             String callSiteName = names[callSiteIndex];
+            log.debug("Current callSiteName {}", callSiteName);
             BinaryOperator op = null;
             try {
                 op = BinaryOperator.valueOf(callSiteName);
@@ -102,23 +113,23 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
                 op = null;
             }
             if (op == null) {s = s.getNext(); continue; }
-            //System.out.println(op.toString() + ": " + callSiteIndex);
-            System.out.println("Start: " + AbstractVisitor.OPCODES[start.getOpcode()]);
+
+            log.debug("Opcode of starting node got from RSD {}", AbstractVisitor.OPCODES[start.getOpcode()]);
             
             PartialDefUseAnalyser pdua = new PartialDefUseAnalyser(body, start, m);
             Map<AbstractInsnNode, AbstractInsnNode[]> usedMap = pdua.analyse();
             AbstractInsnNode[] array = usedMap.get(m);
-            System.out.println(array.length);
-            for (int i = 0; i < array.length; i++) {
-                System.out.println(AbstractVisitor.OPCODES[array[i].getOpcode()]);
-                AbstractInsnNode[] x = usedMap.get(array[i]);
-                if(x != null) {
-                    for(int j = 0;j < x.length; j++) {
-                        System.out.println("  >>" + x[j]);                        
-                        // System.out.println("  >>" + AbstractVisitor.OPCODES[x[j].getOpcode()]);
-                    }
-                }
-            }
+            log.debug("Used Map size {}", array.length);
+//            for (int i = 0; i < array.length; i++) {
+//                System.out.println(AbstractVisitor.OPCODES[array[i].getOpcode()]);
+//                AbstractInsnNode[] x = usedMap.get(array[i]);
+//                if(x != null) {
+//                    for(int j = 0;j < x.length; j++) {
+//                        System.out.println("  >>" + x[j]);                        
+//                        // System.out.println("  >>" + AbstractVisitor.OPCODES[x[j].getOpcode()]);
+//                    }
+//                }
+//            }
             Type t1 = Utils.getType(array[1]);
             Type t2 = Utils.getType(array[2]);
 
