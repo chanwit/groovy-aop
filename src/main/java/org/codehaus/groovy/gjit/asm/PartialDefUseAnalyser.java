@@ -472,7 +472,7 @@ public class PartialDefUseAnalyser implements Opcodes {
                 int i=0;
                 while(size > 0) {
                     arg[i] = pop();
-                    size = size - arg[i].size();
+                    size = size - arg[i].getSize();
                     i++;
                 }                
                 if(i == 2) {
