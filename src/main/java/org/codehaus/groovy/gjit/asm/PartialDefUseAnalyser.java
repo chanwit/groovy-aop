@@ -467,16 +467,40 @@ public class PartialDefUseAnalyser implements Opcodes {
                 push(new DefValue(arg1_2.source, arg1_2.getType()));
                 }break;
             case DUP2_X2: {
-                DefValue arg1_2 = pop();
-                DefValue arg3_4 = pop();
-                used.put(insn, new AbstractInsnNode[] {arg3_4.source, arg1_2.source});
-                push(new DefValue(arg1_2.source, arg1_2.getType()));
-                push(new DefValue(arg3_4.source, arg3_4.getType()));
-                push(new DefValue(arg1_2.source, arg1_2.getType()));
+                DefValue[] args = new DefValue[4];
+                int size=4;
+                int i=0;
+                while(size > 0) {
+                    DefValue arg[i] = pop();
+                    size = size - arg[i].size();
+                    i++;
+                }                
+                if(i == 2) {
+                    used.put(insn, new AbstractInsnNode[] {arg[1].source, arg[0].source});
+                    push(new DefValue(arg[0].source, arg[0].getType()));
+                    push(new DefValue(arg[1].source, arg[1].getType()));
+                    push(new DefValue(arg[0].source, arg[0].getType()));
+                } if (i == 3) {
+                    throw new RuntimeException("NYI");
+                } if (i == 4) {
+                    used.put(insn, new AbstractInsnNode[] {arg[3].source, arg[2].source, arg[1].source, arg[0].source});
+                    push(new DefValue(arg[0].source, arg[0].getType()));
+                    push(new DefValue(arg[1].source, arg[1].getType()));
+                    push(new DefValue(arg[2].source, arg[2].getType()));
+                    push(new DefValue(arg[3].source, arg[3].getType()));                    
+                    push(new DefValue(arg[0].source, arg[0].getType()));
+                    push(new DefValue(arg[1].source, arg[1].getType()));
+                }
                 }break;
             case POP2: {
                 DefValue arg1_2 = pop();
-                used.put(insn, new AbstractInsnNode[] {arg1_2.source});
+                if(arg1_2.getSize() == 2) {
+                    used.put(insn, new AbstractInsnNode[] {arg1_2.source});
+                } else {
+                    DefValue arg2 = arg1_2;
+                    DefValue arg1 = pop();   
+                    used.put(insn, new AbstractInsnNode[] {arg1.source, arg2.source});
+                }                
                 }break;
             default:
                 throw new RuntimeException("not implemented yet: " + AbstractVisitor.OPCODES[insn.getOpcode()]);
