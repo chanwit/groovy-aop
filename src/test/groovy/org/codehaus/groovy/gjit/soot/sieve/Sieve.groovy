@@ -16,7 +16,7 @@ public class Sieve {
 		N_Prime = 0L
 		L_Prime = 0L
 
-		j = 0
+		j = 0L
 		for (iter=1; iter<=n; iter++) {
 			count = 0
 			for(i=0 ; i<=size ; i++) flags[ptr+i] = true
