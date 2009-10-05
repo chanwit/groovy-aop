@@ -47,11 +47,14 @@ public class GetAtPutAtTransformer implements Transformer, Opcodes {
             throw new RuntimeException("No call site name array of class: " + owner);
         }
 
+        Type[] localTypes = new Type[body.maxLocals];
         //
         // locate getAt, putAt
         //
         s = units.getFirst();
         while(s != null) {
+            collectLocalTypes(localTypes, s);
+            
             if(s.getOpcode() != INVOKEINTERFACE) { s = s.getNext(); continue; }
             MethodInsnNode m = (MethodInsnNode)s;
             if(m.name.equals("call")==false) { s = s.getNext(); continue; }
@@ -81,7 +84,7 @@ public class GetAtPutAtTransformer implements Transformer, Opcodes {
 
             // special call of getType to also obtain type information from argTypes
             // for example, if it's [D then
-            Type t0 = Utils.getType(array[1], argTypes);
+            Type t0 = resolveType(array[1], argTypes, localTypes);            
             if(t0.getSort() == Type.ARRAY) {
                 // [D -> elemType is D
                 Type elemType = t0.getElementType();
@@ -149,7 +152,35 @@ public class GetAtPutAtTransformer implements Transformer, Opcodes {
             }
             s = s.getNext();
         }
-
     }
 
+    private Type resolveType(AbstractInsnNode a, Type[] argTypes, Type[] localTypes) {
+        Type t = Utils.getType(a, argTypes);
+        if(t.getDescriptor().equals("Ljava/lang/Object;")) {
+            if(a.getOpcode() == ALOAD) {
+                VarInsnNode v = (VarInsnNode)a;
+                t = localTypes[v.var];
+            }
+        }
+        return t;
+    }
+
+    private collectLocalTypes(Type[] localTypes, AbstractInsnNode s) {
+        if(s.getOpcode() >= ISTORE && s.getOpcode() <= ASTORE) {
+            VarInsnNode v = (VarInsnNode)s;
+            if(v.getOpcode() == ISTORE)) localTypes[v.var] = Type.INT_TYPE;
+            else if(v.getOpcode() == LSTORE)) localTypes[v.var] = Type.LONG_TYPE;
+            else if(v.getOpcode() == FSTORE)) localTypes[v.var] = Type.FLOAT_TYPE;
+            else if(v.getOpcode() == DSTORE)) localTypes[v.var] = Type.DOUBLE_TYPE;
+            else if(v.getOpcode() == ASTORE)) {
+                AbstractInsnNode p = v.getPrevious();
+                if(p.getOpcode == MULTIANEWARRAY) {
+                    MultiANewArrayInsnNode mna = (MultiANewArrayInsnNode)p;
+                    localTypes[v.var] = Type.getType(mna.desc);
+                } else {
+                    localTypes[v.var] = Type.getType("Ljava/lang/Object;");
+                }
+            }
+        }
+    }
 }
