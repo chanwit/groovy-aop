@@ -65,7 +65,7 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
                     case 'I': newS = new VarInsnNode(ISTORE, v.var);
                               localTypes[v.var]  = Type.INT;
                               break;
-                    case 'L': newS = new VarInsnNode(LSTORE, v.var);
+                    case 'J': newS = new VarInsnNode(LSTORE, v.var);
                               localMarker[v.var] = 2;
                               localTypes[v.var]  = Type.LONG;
                               break;
