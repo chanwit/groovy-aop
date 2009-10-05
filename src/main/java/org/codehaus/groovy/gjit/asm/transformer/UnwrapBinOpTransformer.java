@@ -137,55 +137,103 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
             if(t1.getDescriptor().equals("Ljava/lang/Object;")) {s = s.getNext(); continue; }
             if(t2.getDescriptor().equals("Ljava/lang/Object;")) {s = s.getNext(); continue; }
 
-            if(t1.equals(t2)){
-                int offset = 0;
+            int offset = 0;
+            AbstractInsnNode newS = null;
+            AbstractInsnNode conv1 = null;
+            AbstractInsnNode conv2 = null;
+            Type resultType;
+
+            if(t1.equals(t2)) {
                 if(t1.getDescriptor().equals("Ljava/lang/Long;"))   offset = 1;
                 if(t1.getDescriptor().equals("Ljava/lang/Float;"))  offset = 2;
                 if(t1.getDescriptor().equals("Ljava/lang/Double;")) offset = 3;
-                AbstractInsnNode newS = null;
-                switch(op) {
-                    case plus:       newS = new InsnNode(IADD + offset); break;
-                    case minus:      newS = new InsnNode(ISUB + offset); break;
-                    case multiply:   newS = new InsnNode(IMUL + offset); break;
-                    case div:        newS = new InsnNode(IDIV + offset); break;
-                    case leftShift:  newS = new InsnNode(ISHL + offset); break;
-                    case rightShift: newS = new InsnNode(ISHR + offset); break;
+                resultType = t1;
+            } else {
+                String bin = getPrimitiveSignatures(t1, t2);
+                if(bin.equals("IJ")) {
+                    offset = 1; // use Long operation
+                    conv1  = new InsnNode(I2L);
+                    conv2  = null;
+                    resultType = Type.getType("Ljava/lang/Long;");
+                } else if (bin.equals("JI")) {
+                    offset = 1; // use Long operation
+                    conv1  = null;                    
+                    conv2  = new InsnNode(I2L);
+                    resultType = Type.getType("Ljava/lang/Long;");
+                } else {
+                    s = s.getNext();
+                    continue;
+                    // throw new RuntimeException("NYI for signature: " + bin);
                 }
-
-                //
-                // we always assume that inputs are object,
-                // so that unboxing them before proceed.
-                //
-                AbstractInsnNode mayBeDup;
-                mayBeDup = array[1].getNext();
-                if(mayBeDup.getOpcode() == DUP) {
-                    units.insert(mayBeDup, Utils.getBoxNode(t1.getDescriptor()));
-                }
-                mayBeDup = array[2].getNext();
-                if(mayBeDup.getOpcode() == DUP) {
-                    units.insert(mayBeDup, Utils.getBoxNode(t2.getDescriptor()));
-                }
-                units.insert(array[1], Utils.getUnboxNodes(t1.getDescriptor()));
-                units.insert(array[2], Utils.getUnboxNodes(t2.getDescriptor()));
-
-                //
-                // replace with native op, and box it back to an object
-                //
-                units.set(s, newS);
-                units.insert(newS, Utils.getBoxNode(t1.getDescriptor()));
-
-                //
-                // clean unused ALOAD, LDC, AALOAD
-                //
-                units.remove(start.getNext().getNext());
-                units.remove(start.getNext());
-                units.remove(start);
-
-                s = newS.getNext();
-                continue;
             }
-            s = s.getNext();
+
+            switch(op) {
+                case plus:       newS = new InsnNode(IADD + offset); break;
+                case minus:      newS = new InsnNode(ISUB + offset); break;
+                case multiply:   newS = new InsnNode(IMUL + offset); break;
+                case div:        newS = new InsnNode(IDIV + offset); break;
+                case leftShift:  newS = new InsnNode(ISHL + offset); break;
+                case rightShift: newS = new InsnNode(ISHR + offset); break;
+            }
+
+            //
+            // we always assume that inputs are object,
+            // so that unboxing them before proceed.
+            //
+            AbstractInsnNode mayBeDup;
+            mayBeDup = array[1].getNext();
+            if(mayBeDup.getOpcode() == DUP) {
+                units.insert(mayBeDup, Utils.getBoxNode(t1.getDescriptor()));
+            }
+            mayBeDup = array[2].getNext();
+            if(mayBeDup.getOpcode() == DUP) {
+                units.insert(mayBeDup, Utils.getBoxNode(t2.getDescriptor()));
+            }
+
+            if(conv1 != null) {
+                units.insert(array[1], conv1);
+            }
+            units.insert(array[1], Utils.getUnboxNodes(t1.getDescriptor()));            
+            if(conv2 != null) {
+                units.insert(array[2], conv2);
+            }            
+            units.insert(array[2], Utils.getUnboxNodes(t2.getDescriptor()));
+
+            //
+            // replace with native op, and box it back to an object
+            //
+            units.set(s, newS);
+            units.insert(newS, Utils.getBoxNode(resultType));
+
+            //
+            // clean unused ALOAD, LDC, AALOAD
+            //
+            units.remove(start.getNext().getNext());
+            units.remove(start.getNext());
+            units.remove(start);
+
+            s = newS.getNext();
+            continue;
         }
     }
 
+    private String getPrimitiveSignatures(Type t1, Type t2) {
+        //Ljava/lang/Integer;
+        //Ljava/lang/Long;
+        //Ljava/lang/Byte;
+        //Ljava/lang/Boolean;
+        //Ljava/lang/Short;
+        //Ljava/lang/Double;
+        //Ljava/lang/Character;
+        //Ljava/lang/Float;
+        char p1 = t1.getDescriptor().charAt(11);
+        if(p1 == 'L') p1 = 'J';
+        else if(p1 == 'B' && t1.getDescriptor().charAt(12)=='o') p1 = 'Z';
+
+        char p2 = t2.getDescriptor().charAt(11);
+        if(p2 == 'L') p2 = 'J';
+        else if(p2 == 'B' && t2.getDescriptor().charAt(12)=='o') p2 = 'Z';
+        
+        return p1 + p2;
+    }
 }
