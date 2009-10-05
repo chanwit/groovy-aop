@@ -37,7 +37,7 @@ public class XLoadBoxPopEliminatorTransformer implements Transformer, Opcodes {
             int opcode = p1.getOpcode();
 
             if(type == 'I' && opcode == ILOAD ||
-               type == 'L' && opcode == LLOAD ||
+               type == 'J' && opcode == LLOAD ||
                type == 'F' && opcode == FLOAD ||
                type == 'D' && opcode == DLOAD) {
                 s = s.getNext();
