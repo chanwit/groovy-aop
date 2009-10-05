@@ -87,67 +87,79 @@ public class GetAtPutAtTransformer implements Transformer, Opcodes {
             Type t0 = resolveType(array[1], argTypes, localTypes);            
             if(t0.getSort() == Type.ARRAY) {
                 // [D -> elemType is D
+                boolean convert = false;
+                int load, store;
                 Type elemType = t0.getElementType();
                 switch(elemType.getSort()) {
-                    case Type.DOUBLE: {
-                        if(callSiteName.equals("getAt")) {
-                            // array[2] must be unboxed to "int" for indexing
-                            // if it's an object, do boxing
-                            if(Utils.getType(array[2]).getSort() == Type.OBJECT) {
-                                AbstractInsnNode dup = array[2].getNext();
-                                // TODO special case, when it also makes itself into TOS
-                                // need checking for anther opcode
-                                if(dup.getOpcode() == DUP) {
-                                    units.insert(dup, Utils.getBoxNode(int.class));
-                                }
-                                units.insert(array[2], Utils.getUnboxNodes(int.class));
-                            } else {
-                                throw new RuntimeException("NYI");
-                            }
-                            InsnNode newS = new InsnNode(DALOAD);
-                            units.set(m, newS);
-                            units.insert(newS, Utils.getBoxNode(elemType));
-
-                            // clean up
-                            units.remove(start.getNext().getNext());
-                            units.remove(start.getNext());
-                            units.remove(start);
-
-                            s = newS.getNext();
-                            continue;
-                        } else if (callSiteName.equals("putAt")) {
-                            // array[2] must be the "int" index
-                            // array[3] must be a value of elemType, if it's [D, then D
-                            if(Utils.getType(array[2]).getSort() == Type.OBJECT) {
-                                units.insert(array[2], Utils.getUnboxNodes(int.class));
-                            } else {
-                                throw new RuntimeException("NYI");
-                            }
-                            InsnNode newS = new InsnNode(DASTORE);
-                            units.set(m, newS);
-                            units.insert(array[3], Utils.getUnboxNodes(elemType));
-
-                            // clean up
-                            units.remove(start.getNext().getNext());
-                            units.remove(start.getNext());
-                            units.remove(start);
-
-                            // simulate return value of putAt
-                            // units.insert(newS, new InsnNode(ACONST_NULL));
-
-                            s = newS.getNext();
-                            // this POP is the result from calling "putAt"
-                            // as the "putAt"'s signature returns Ljava/lang/Object;
-                            // it's always discarded,
-                            // but xDSTORE does not need it.
-                            if(s.getOpcode() == POP) { // unused POP
-                                AbstractInsnNode oldS = s;
-                                s = s.getNext();
-                                units.remove(oldS);
-                            }
-                            continue;
+                    case Type.BOOLEAN:
+                        load  = BALOAD;
+                        store = BASTORE;
+                        convert = true;
+                        break;
+                    case Type.DOUBLE: 
+                        load  = DALOAD;
+                        store = DASTORE;
+                        convert = true;
+                        break;
+                }
+                if(convert == false) { s = s.getNext(); continue; }
+                                    
+                if(callSiteName.equals("getAt")) {
+                    // array[2] must be unboxed to "int" for indexing
+                    // if it's an object, do boxing
+                    if(Utils.getType(array[2]).getSort() == Type.OBJECT) {
+                        AbstractInsnNode dup = array[2].getNext();
+                        // TODO special case, when it also makes itself into TOS
+                        // need checking for anther opcode
+                        if(dup.getOpcode() == DUP) {
+                            units.insert(dup, Utils.getBoxNode(int.class));
                         }
+                        units.insert(array[2], Utils.getUnboxNodes(int.class));
+                    } else {
+                        throw new RuntimeException("NYI");
                     }
+                    InsnNode newS = new InsnNode(load);
+                    units.set(m, newS);
+                    units.insert(newS, Utils.getBoxNode(elemType));
+
+                    // clean up
+                    units.remove(start.getNext().getNext());
+                    units.remove(start.getNext());
+                    units.remove(start);
+
+                    s = newS.getNext();
+                    continue;
+                } else if (callSiteName.equals("putAt")) {
+                    // array[2] must be the "int" index
+                    // array[3] must be a value of elemType, if it's [D, then D
+                    if(Utils.getType(array[2]).getSort() == Type.OBJECT) {
+                        units.insert(array[2], Utils.getUnboxNodes(int.class));
+                    } else {
+                        throw new RuntimeException("NYI");
+                    }
+                    InsnNode newS = new InsnNode(store);
+                    units.set(m, newS);
+                    units.insert(array[3], Utils.getUnboxNodes(elemType));
+
+                    // clean up
+                    units.remove(start.getNext().getNext());
+                    units.remove(start.getNext());
+                    units.remove(start);
+
+                    // simulate return value of putAt
+                    // units.insert(newS, new InsnNode(ACONST_NULL));
+
+                    s = newS.getNext();
+                    // this POP is the result from calling "putAt"
+                    // as the "putAt"'s signature returns Ljava/lang/Object;
+                    // it's always discarded,
+                    // but xDSTORE does not need it.
+                    if(s.getOpcode() == POP) { // unused POP
+                        AbstractInsnNode oldS = s;
+                        s = s.getNext();
+                        units.remove(oldS);
+                    }
+                    continue;
                 }
             }
             s = s.getNext();
