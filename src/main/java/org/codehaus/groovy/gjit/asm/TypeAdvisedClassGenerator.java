@@ -260,7 +260,7 @@ public class TypeAdvisedClassGenerator implements Opcodes {
         }
         relocateGetCallSiteArray(targetMN, newInternalClassName);
 
-        debug(targetMN);
+        // debug(targetMN);
 
         //
         // Generate a new method based on "targetMN"
