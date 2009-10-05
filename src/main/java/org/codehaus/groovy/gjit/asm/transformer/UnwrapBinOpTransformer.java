@@ -144,22 +144,23 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
             Type resultType;
 
             if(t1.equals(t2)) {
+            	String bin = getPrimitiveSignatures(t1, t2);
                 if(t1.getDescriptor().equals("Ljava/lang/Long;"))   offset = 1;
                 if(t1.getDescriptor().equals("Ljava/lang/Float;"))  offset = 2;
                 if(t1.getDescriptor().equals("Ljava/lang/Double;")) offset = 3;
-                resultType = t1;
+                resultType = Type.getType(bin.substring(1));
             } else {
                 String bin = getPrimitiveSignatures(t1, t2);
                 if(bin.equals("IJ")) {
                     offset = 1; // use Long operation
                     conv1  = new InsnNode(I2L);
                     conv2  = null;
-                    resultType = Type.getType("Ljava/lang/Long;");
+                    resultType = Type.getType("J");
                 } else if (bin.equals("JI")) {
                     offset = 1; // use Long operation
                     conv1  = null;
                     conv2  = new InsnNode(I2L);
-                    resultType = Type.getType("Ljava/lang/Long;");
+                    resultType = Type.getType("J");
                 } else {
                     s = s.getNext();
                     continue;
