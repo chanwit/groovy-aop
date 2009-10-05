@@ -45,6 +45,7 @@ public class TypeAdvisedClassGenerator implements Opcodes {
             new AutoBoxEliminatorTransformer(),
             new IincTransformer(),
             new XLoadBoxPopEliminatorTransformer(),
+            new BooleanBoxEliminatorTransformer(),
             new UnusedCSARemovalTransformer(),
         };
     }
