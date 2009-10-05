@@ -16,7 +16,7 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import org.objectweb.asm.util.AbstractVisitor;
 
-import org.slf4j.*; 
+import org.slf4j.*;
 
 /**
  * This class unwraps binary operators for a generated type advised class.
@@ -115,7 +115,7 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
             if (op == null) {s = s.getNext(); continue; }
 
             log.info("Opcode of starting node got from RSD {}", AbstractVisitor.OPCODES[start.getOpcode()]);
-            
+
             PartialDefUseAnalyser pdua = new PartialDefUseAnalyser(body, start, m);
             Map<AbstractInsnNode, AbstractInsnNode[]> usedMap = pdua.analyse();
             AbstractInsnNode[] array = usedMap.get(m);
@@ -125,7 +125,7 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
 //                AbstractInsnNode[] x = usedMap.get(array[i]);
 //                if(x != null) {
 //                    for(int j = 0;j < x.length; j++) {
-//                        System.out.println("  >>" + x[j]);                        
+//                        System.out.println("  >>" + x[j]);
 //                        // System.out.println("  >>" + AbstractVisitor.OPCODES[x[j].getOpcode()]);
 //                    }
 //                }
@@ -157,7 +157,7 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
                     resultType = Type.getType("Ljava/lang/Long;");
                 } else if (bin.equals("JI")) {
                     offset = 1; // use Long operation
-                    conv1  = null;                    
+                    conv1  = null;
                     conv2  = new InsnNode(I2L);
                     resultType = Type.getType("Ljava/lang/Long;");
                 } else {
@@ -193,10 +193,10 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
             if(conv1 != null) {
                 units.insert(array[1], conv1);
             }
-            units.insert(array[1], Utils.getUnboxNodes(t1.getDescriptor()));            
+            units.insert(array[1], Utils.getUnboxNodes(t1.getDescriptor()));
             if(conv2 != null) {
                 units.insert(array[2], conv2);
-            }            
+            }
             units.insert(array[2], Utils.getUnboxNodes(t2.getDescriptor()));
 
             //
@@ -233,7 +233,7 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
         char p2 = t2.getDescriptor().charAt(11);
         if(p2 == 'L') p2 = 'J';
         else if(p2 == 'B' && t2.getDescriptor().charAt(12)=='o') p2 = 'Z';
-        
-        return p1 + p2;
+
+        return "" + p1 + p2;
     }
 }
