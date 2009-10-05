@@ -36,6 +36,7 @@ public class UnwrapCompareTransformer implements Transformer, Opcodes {
 
 
     private enum ComparingMethod {
+    	compareNotEqual,
         compareEqual,
         compareLessThan,
         compareGreaterThan,
@@ -90,14 +91,50 @@ public class UnwrapCompareTransformer implements Transformer, Opcodes {
 
                     if(t0.getDescriptor().equals("Ljava/lang/Integer;")) {
                         if(compare == ComparingMethod.compareEqual) {
-                            JumpInsnNode oldIf = (JumpInsnNode)(s.getNext());
-                            LabelNode trueLabel = (LabelNode)(oldIf.getNext());
-                            AbstractInsnNode newS = new JumpInsnNode(IF_ICMPEQ, trueLabel);
-                            units.set(s, newS);
-                            units.insert(newS, new JumpInsnNode(GOTO, oldIf.label));
-                            units.remove(oldIf);
-                            s = newS.getNext();
-                            continue;
+                        	try {
+	                            JumpInsnNode oldIf = (JumpInsnNode)(s.getNext());
+
+	                            AbstractInsnNode trueLabel = oldIf.getNext();
+	                            while(trueLabel instanceof LabelNode == false) {
+	                            	trueLabel = trueLabel.getNext();
+	                            }
+
+	                            int cmp = -1;
+	                            if(oldIf.getOpcode() == IFEQ) cmp = IF_ICMPEQ;
+	                            else if(oldIf.getOpcode() == IFNE) cmp = IF_ICMPNE;
+
+	                            if(cmp == -1) throw new RuntimeException("NYI");
+	                            AbstractInsnNode newS;
+	                            if(oldIf.getOpcode() == IFEQ) {
+		                            newS = new JumpInsnNode(cmp, (LabelNode)trueLabel);
+		                            units.set(s, newS);
+		                            units.insert(newS, new JumpInsnNode(GOTO, oldIf.label));
+		                            units.remove(oldIf);
+	                            } else {
+	                            	newS = new JumpInsnNode(cmp, oldIf.label);
+	                            	units.set(s, newS);
+	                            	units.remove(oldIf);
+	                            }
+	                            s = newS.getNext();
+	                            continue;
+                        	} catch(ClassCastException e) {
+                        		s = s.getNext();
+                        		continue;
+                        	}
+                        } else if(compare == ComparingMethod.compareNotEqual) {
+                        	try {
+	                            JumpInsnNode oldIf = (JumpInsnNode)(s.getNext());
+	                            LabelNode falseLabel = (LabelNode)(oldIf.getNext());
+	                            AbstractInsnNode newS = new JumpInsnNode(IF_ICMPNE, falseLabel);
+	                            units.set(s, newS);
+	                            units.insert(newS, new JumpInsnNode(GOTO, oldIf.label));
+	                            units.remove(oldIf);
+	                            s = newS.getNext();
+	                            continue;
+                        	} catch(ClassCastException e) {
+                        		s = s.getNext();
+                        		continue;
+                        	}
                         } else {
                             AbstractInsnNode newS = convertCompareForInt(compare, s);
                             units.set(s, newS);

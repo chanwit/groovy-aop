@@ -92,10 +92,21 @@ public class GetAtPutAtTransformer implements Transformer, Opcodes {
                 Type elemType = t0.getElementType();
                 switch(elemType.getSort()) {
                     case Type.BOOLEAN:
+                    case Type.BYTE:
                         load  = BALOAD;
                         store = BASTORE;
                         convert = true;
                         break;
+                    case Type.INT:
+                    	load  = IALOAD;
+                    	store = IASTORE;
+                    	convert = true;
+                    	break;
+                    case Type.LONG:
+                    	load  = LALOAD;
+                    	store = LASTORE;
+                    	convert = true;
+                    	break;
                     case Type.DOUBLE:
                         load  = DALOAD;
                         store = DASTORE;
@@ -118,6 +129,14 @@ public class GetAtPutAtTransformer implements Transformer, Opcodes {
                     } else {
                         throw new RuntimeException("NYI");
                     }
+
+                    // sometime the result of call get dupped.
+                    // need to box it back to a wrapper object
+                    AbstractInsnNode mayBeDup = m.getNext();
+                    if(mayBeDup.getOpcode() == DUP) {
+                    	units.insert(mayBeDup, Utils.getBoxNode(elemType));
+                    }
+
                     InsnNode newS = new InsnNode(load);
                     units.set(m, newS);
                     units.insert(newS, Utils.getBoxNode(elemType));

@@ -20,7 +20,8 @@ class Fannkuch {
 		def maxFlipsCount = 0
 		def m = n - 1
 
-		for(i in 0..<n) perm1[i] = i
+		for(def i=0; i<n; i++)
+			perm1[i] = i
 
 		def r = n
 
@@ -32,7 +33,7 @@ class Fannkuch {
 			}
 
 			if (!(perm1[0] == 0 || perm1[m] == m)) {
-				for(i in 0..<n)
+				for(def i=0; i<n; i++)
 					perm[i] = perm1[i]
 
 				def flipsCount = 0
@@ -40,7 +41,7 @@ class Fannkuch {
 
 				while (!((k = perm[0]) == 0)) {
 					def k2 = (k + 1) >> 1
-					for(i in 0..<k2) {
+					for(def i=0; i<k2; i++) {
 						def temp    = perm[i]
 						perm[i]     = perm[k - i]
 						perm[k - i] = temp
@@ -50,7 +51,7 @@ class Fannkuch {
 
 				if (flipsCount > maxFlipsCount) {
 					maxFlipsCount = flipsCount
-					for(i in 0..<n)
+					for(def i=0; i<n; i++)
 						maxPerm[i] = perm1[i]
 				}
 			}

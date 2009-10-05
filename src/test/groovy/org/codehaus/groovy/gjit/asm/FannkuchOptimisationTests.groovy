@@ -15,11 +15,11 @@ public class FannkuchOptimisationTests extends GroovyTestCase implements Opcodes
     void testOptimiseOnFannkuch() {
         InsnListHelper.install()
 
-        def sender = Sieve.class
+        def sender = Fannkuch.class
         def sco  = new AsmSingleClassOptimizer()
         def aatf = new AspectAwareTransformer(
-            advisedTypes:[int, int] as Class[],
-            advisedReturnType: null,
+            advisedTypes:[int] as Class[],
+            advisedReturnType: int,
             callSite: new Fannkuch$fannkuch(),
             withInMethodName: "main"
         )

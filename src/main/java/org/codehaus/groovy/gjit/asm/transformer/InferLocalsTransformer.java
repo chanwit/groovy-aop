@@ -133,7 +133,6 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
             new UnwrapUnaryTransformer().internalTransform(body, options);
             new NullInitToZeroTransformer().internalTransform(body, options);
             new AutoBoxEliminatorTransformer().internalTransform(body, options);
-
         }
 
         System.out.print("before = ");
@@ -162,7 +161,7 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
             System.out.print(localMarker[i] + " ");
         }
         System.out.println();
-        // TODO set new value to body.maxLocals = 
+        // TODO set new value to body.maxLocals =
         body.maxLocals = maxLocals;
 
         s = units.getFirst();

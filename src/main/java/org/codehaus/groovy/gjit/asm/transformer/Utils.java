@@ -123,7 +123,7 @@ public class Utils implements Opcodes {
                 return info[aload.var];
             else
                 return getType(node);
-        } else 
+        } else
             return getType(node);
 //        AbstractInsnNode p = node.getPrevious();
 //        while(p instanceof LineNumberNode == false) p = p.getPrevious();
@@ -139,6 +139,10 @@ public class Utils implements Opcodes {
             return Type.getType("I");
         } else if(node.getOpcode() == BIPUSH || node.getOpcode() == SIPUSH) {
             return Type.getType("I");
+        } else if(node.getOpcode() == IALOAD) {
+        	return Type.getType("Ljava/lang/Integer;");
+        } else if(node.getOpcode() == ILOAD) {
+        	return Type.getType("Ljava/lang/Integer;");
         }
         AbstractInsnNode p = node.getPrevious();
         while(p instanceof LineNumberNode == false) p = p.getPrevious();
