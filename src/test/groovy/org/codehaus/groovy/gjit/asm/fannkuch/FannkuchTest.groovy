@@ -19,6 +19,6 @@ class FannkuchTest extends GroovyTestCase {
             Caller.realTest(12)
         }
         unweave(FannkuchAspect)
-    }    
+    }
     
 }
