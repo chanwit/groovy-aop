@@ -22,7 +22,8 @@ dependencies {
     testCompile(
                 [group: 'junit',      name: 'junit',          version: '3.8.2'],
                 [group: 'org.slf4j',  name: 'slf4j-api',      version: '1.5.9-RC0'],
-                [group: 'org.slf4j',  name: 'slf4j-simple',   version: '1.5.9-RC0']
+                [group: 'org.slf4j',   name: 'slf4j-nop',      version: '1.5.9-RC0']
+//                [group: 'org.slf4j',  name: 'slf4j-simple',   version: '1.5.9-RC0']
 //                [group: 'org.slf4j',  name: 'slf4j-log4j12',  version: '1.5.9-RC0'],
 //                [group: 'log4j',      name: 'log4j',          version: '1.2.15']
     )
