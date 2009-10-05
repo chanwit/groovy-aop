@@ -97,7 +97,6 @@ public class BooleanBoxEliminatorTransformer implements Transformer, Opcodes {
 			} else {
 				s = s.getNext(); continue;
 			}
-			s = s.getNext();
 		}
 	}
 
