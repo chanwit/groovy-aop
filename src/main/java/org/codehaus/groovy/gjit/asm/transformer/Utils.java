@@ -143,6 +143,10 @@ public class Utils implements Opcodes {
         	return Type.getType("Ljava/lang/Integer;");
         } else if(node.getOpcode() == ILOAD) {
         	return Type.getType("Ljava/lang/Integer;");
+        } else if(node.getOpcode() == ACONST_NULL) {
+        	return Type.getType("Ljava/lang/Object;");
+        } else if(node instanceof FieldInsnNode) {
+        	return Type.getType(((FieldInsnNode)node).desc);
         }
         AbstractInsnNode p = node.getPrevious();
         while(p instanceof LineNumberNode == false) p = p.getPrevious();

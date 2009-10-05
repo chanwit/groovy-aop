@@ -2,6 +2,7 @@ package org.codehaus.groovy.gjit.asm.transformer;
 
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
+
 import java.util.*;
 
 // This class transforms
@@ -114,9 +115,27 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
                     s = s .getNext(); continue;
                 }
                 if(vOpcode == ASTORE) {
+                	AbstractInsnNode mayBeDup = s.getPrevious();
                     newS = new VarInsnNode(ISTORE + offset, v.var);
                     units.set(s, newS);
                     units.insertBefore(newS, Utils.getUnboxNodes(clazz));
+
+                    // perform type conversion between different xSTOREs
+                    AbstractInsnNode p;
+					if(mayBeDup.getOpcode() == DUP) {
+                    	p = mayBeDup.getPrevious();
+                    } else
+                    	p = mayBeDup;
+					Type t = Utils.getType(p);
+					if(offset == 1)
+						System.out.println(">>>> "  + t);
+					// Integer -> LSTORE
+					if(offset == 1 && t.getDescriptor().equals("Ljava/lang/Integer;")) {
+						// inserted in reverse order
+						units.insert(p, Utils.getBoxNode(clazz));
+						units.insert(p, new InsnNode(I2L));
+						units.insert(p, Utils.getUnboxNodes(int.class));
+					}
                 } else if(vOpcode == ALOAD) {
                     newS = new VarInsnNode(ILOAD + offset, v.var);
                     units.set(s, newS);
