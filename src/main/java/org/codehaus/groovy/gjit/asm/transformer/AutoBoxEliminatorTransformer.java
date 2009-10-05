@@ -3,6 +3,7 @@ package org.codehaus.groovy.gjit.asm.transformer;
 import java.util.Map;
 
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.LabelNode;
@@ -22,6 +23,10 @@ public class AutoBoxEliminatorTransformer implements Transformer, Opcodes {
 //  ILOAD 0
 //  IRETURN
 
+//  INVOKESTATIC java/lang/Integer.valueOf(I)Ljava/lang/Integer;
+//  INVOKESTATIC org/codehaus/groovy/runtime/typehandling/DefaultTypeTransformation.intUnbox (Ljava/lang/Object;)I
+	private static final String DTT = "org/codehaus/groovy/runtime/typehandling/DefaultTypeTransformation";
+
     @Override
     public void internalTransform(MethodNode body, Map<String, Object> options) {
         InsnList units = body.instructions;
@@ -34,27 +39,40 @@ public class AutoBoxEliminatorTransformer implements Transformer, Opcodes {
             while(s0.getOpcode() == -1) { s0 = s0.getNext(); if(s0 == null) break;}
             if(s0 == null) break;
 
-            if(s0.getOpcode() != CHECKCAST)      { s = s.getNext(); continue; }
-            AbstractInsnNode s1 = s0.getNext();
+            if(s0.getOpcode() == CHECKCAST) {
+	            //if(s0.getOpcode() != CHECKCAST)      { s = s.getNext(); continue; }
+	            AbstractInsnNode s1 = s0.getNext();
 
-            if(s1 == null) break;
-            while(s1.getOpcode() == -1) { s1 = s1.getNext(); if(s1 == null) break;}
-            if(s1 == null) break;
+	            if(s1 == null) break;
+	            while(s1.getOpcode() == -1) { s1 = s1.getNext(); if(s1 == null) break;}
+	            if(s1 == null) break;
 
-            if(s1.getOpcode() != INVOKEVIRTUAL)  { s = s.getNext(); continue; }
+	            if(s1.getOpcode() != INVOKEVIRTUAL)  { s = s.getNext(); continue; }
 
-            MethodInsnNode mi  = (MethodInsnNode)s;
-            TypeInsnNode   ti0 = (TypeInsnNode)s0;
-            MethodInsnNode mi1 = (MethodInsnNode)s1;
-            if(mi.name.equals("valueOf")  &&
-               mi.owner.equals(ti0.desc)  &&
-               mi1.owner.equals(mi.owner) &&
-               mi1.name.endsWith("Value")
-            ) {
-                s = s1.getNext();
-                units.remove(mi);
-                units.remove(ti0);
-                units.remove(mi1);
+	            MethodInsnNode m  = (MethodInsnNode)s;
+	            TypeInsnNode   t0 = (TypeInsnNode)s0;
+	            MethodInsnNode m1 = (MethodInsnNode)s1;
+	            if(m.name.equals("valueOf")  &&
+	               m.owner.equals(t0.desc)  &&
+	               m1.owner.equals(m.owner) &&
+	               m1.name.endsWith("Value")
+	            ) {
+	                s = s1.getNext();
+	                units.remove(m);
+	                units.remove(t0);
+	                units.remove(m1);
+	            }
+            } else if(s0.getOpcode() == INVOKESTATIC) {
+            	MethodInsnNode m = (MethodInsnNode) s;
+            	MethodInsnNode m0 = (MethodInsnNode)s0;
+            	if( m0.owner.equals(DTT) &&
+            		m0.name.endsWith("Unbox") &&
+            		Type.getReturnType(m0.desc) == Type.getArgumentTypes(m.desc)[0]
+            	) {
+            		s = s0.getNext();
+            		units.remove(m);
+            		units.remove(m0);
+            	}
             }
 
            s = s.getNext();
