@@ -8,7 +8,7 @@ import org.objectweb.asm.tree.*
 
 public class HeapSortTest extends GroovyTestCase {
 
-	void testRun_Advised() {
+    void testRun_Advised() {
         ExpandoMetaClass.enableGlobally()
         def aspect = weave(HeapSortAspect)
         assert aspect != null
@@ -23,6 +23,6 @@ public class HeapSortTest extends GroovyTestCase {
             Caller.realTest(5000000)
         }
         unweave(HeapSortAspect)
-	}
+    }
 
 }
