@@ -147,12 +147,14 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
         // index:      0 1 2 3 4 5 6
         // old values: 1 1 1 1 2 1 1
         // new values: 0 1 2 3 4 6 7
-        int old = localMarker[0];
+        int size = localMarker[0];
+        int maxLocals = size;
         localMarker[0] = 0;
         for(int i = 1; i < localMarker.length; i++) {
             int temp = localMarker[i];
-            localMarker[i] = localMarker[i-1] + old;
-            old = temp;
+            localMarker[i] = localMarker[i-1] + size;
+            size = temp;
+            maxLocals += size;
         }
 
         System.out.print("after  = ");
@@ -160,6 +162,8 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
             System.out.print(localMarker[i] + " ");
         }
         System.out.println();
+        // TODO set new value to body.maxLocals = 
+        body.maxLocals = maxLocals;
 
         s = units.getFirst();
         while(s != null) {
