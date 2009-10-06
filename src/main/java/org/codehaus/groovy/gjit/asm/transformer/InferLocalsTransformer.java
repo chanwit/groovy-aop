@@ -126,8 +126,6 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
                 }
                 if(vOpcode == ASTORE) {
                     AbstractInsnNode mayBeDup = s.getPrevious();
-                    AbstractInsnNode mayBePop = s.getNext();
-
                     // if(offset == 1 || offset == 3) {
                     //     if(mayBePop.getOpcode() == POP) {
                     //         units.set(mayBePop, new InsnNode(POP2));
@@ -141,7 +139,9 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
 
                      //perform type conversion between different xSTOREs
                      AbstractInsnNode p;
+                     boolean dup = false;
                      if(mayBeDup.getOpcode() == DUP) {
+                    	 dup = true;
                          p = mayBeDup.getPrevious();
                      } else
                          p = mayBeDup;
@@ -149,8 +149,10 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
                      // Integer -> LSTORE
                      if(offset == 1 && t.getDescriptor().equals("Ljava/lang/Integer;")) {
                          // inserted in reverse order
-                    	 units.insert(p, Utils.getUnboxNodes(clazz));
-                         units.insert(p, Utils.getBoxNode(clazz));
+                    	 if(dup) {
+                    		 units.set(mayBeDup, new InsnNode(DUP2));
+                    		 units.insert(newS, Utils.getBoxNode(clazz));
+                    	 }
                          units.insert(p, new InsnNode(I2L));
                          units.insert(p, Utils.getUnboxNodes(int.class));
                      }
