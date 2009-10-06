@@ -94,8 +94,8 @@ public class UnwrapCompareTransformer implements Transformer, Opcodes {
                         	try {
 	                            JumpInsnNode oldIf = (JumpInsnNode)(s.getNext());
 	                            int cmp = -1;
-	                            if(oldIf.getOpcode() == IFEQ) cmp = IF_ICMPEQ;
-	                            else if(oldIf.getOpcode() == IFNE) cmp = IF_ICMPNE;
+	                            if(oldIf.getOpcode() == IFEQ) cmp = IF_ICMPNE;
+	                            else if(oldIf.getOpcode() == IFNE) cmp = IF_ICMPEQ;
 
 	                            if(cmp == -1) throw new RuntimeException("NYI");
 	                            AbstractInsnNode newS;
@@ -135,7 +135,7 @@ public class UnwrapCompareTransformer implements Transformer, Opcodes {
                             continue;
                         }
                     } else if(t0.getDescriptor().equals("Ljava/lang/Double;")) {
-                        AbstractInsnNode[] newNodes = convertCompare(DCMPL, compare, s);
+                        AbstractInsnNode[] newNodes = convertCompare(DCMPG, compare, s);
                         units.set(s, newNodes[0]);
                         units.insert(newNodes[0], newNodes[1]);
                         AbstractInsnNode oldIf = newNodes[1].getNext();

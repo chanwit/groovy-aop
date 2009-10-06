@@ -1962,7 +1962,8 @@ public class AspectAwareCallSite implements CallSite {
             Object result = null;
             try {
                 result = typing[i].call(_tic);
-                if(result != null && result instanceof Class) { returnTypeTemp = (Class<?>)result; }
+                returnTypeTemp = (Class<?>) result;
+                //if(result != null && result instanceof Class) { returnTypeTemp = (Class<?>)result; }
                 ticTemp = _tic;
             }catch(Throwable e) {
                 throw e;
@@ -2026,8 +2027,8 @@ public class AspectAwareCallSite implements CallSite {
                     if(i != null) {
                         i.redefineClasses(new ClassDefinition(sender, bytes));
                         //System.out.println(">>>>>>>> class " + sender.getName() + " redefined");
-                        //TraceClassVisitor tcv = new TraceClassVisitor(new PrintWriter(System.out));
-                        //new ClassReader(bytes).accept(tcv, 0);
+//                        TraceClassVisitor tcv = new TraceClassVisitor(new PrintWriter(System.out));
+//                        new ClassReader(bytes).accept(tcv, 0);
                         //CheckClassAdapter.verify(new ClassReader(bytes), true, new PrintWriter(System.out));
                     }
                 } catch (Throwable e) {

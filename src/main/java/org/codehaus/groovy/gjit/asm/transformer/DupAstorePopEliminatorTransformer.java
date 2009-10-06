@@ -5,7 +5,7 @@ import org.objectweb.asm.tree.*;
 import java.util.*;
 
 public class DupAstorePopEliminatorTransformer implements Transformer, Opcodes {
-    
+
     //
     // removal of DUP, ASTORE var, POP pattern
     // to be ASTORE var
@@ -21,10 +21,10 @@ public class DupAstorePopEliminatorTransformer implements Transformer, Opcodes {
             if(s0.getOpcode() != ASTORE) { s = s.getNext(); continue; }
             AbstractInsnNode s1 = s0.getNext();
             if(s1.getOpcode() != POP)    { s = s.getNext(); continue; }
-            
+
             units.remove(s);
             units.remove(s1);
-            
+
             s = s0.getNext();
         }
     }

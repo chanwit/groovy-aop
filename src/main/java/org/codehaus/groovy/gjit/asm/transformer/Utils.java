@@ -2,12 +2,15 @@ package org.codehaus.groovy.gjit.asm.transformer;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.util.*;
 
+import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
 import org.objectweb.asm.util.AbstractVisitor;
+import org.objectweb.asm.util.TraceClassVisitor;
 
 public class Utils implements Opcodes {
 
@@ -174,6 +177,10 @@ public class Utils implements Opcodes {
             //throw new RuntimeException(e);
             e.printStackTrace();
         }
+
+        TraceClassVisitor tcv = new TraceClassVisitor(new PrintWriter(System.out));
+        new ClassReader(bytes).accept(tcv, 0);
+
         return clazz;
     }
 
