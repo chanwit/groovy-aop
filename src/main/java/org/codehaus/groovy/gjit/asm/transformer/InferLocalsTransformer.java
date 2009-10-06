@@ -139,20 +139,21 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
                     if(newS.getPrevious().getOpcode() != DUP)
                     	units.insertBefore(newS, Utils.getUnboxNodes(clazz));
 
-                    // perform type conversion between different xSTOREs
-                    // AbstractInsnNode p;
-                    // if(mayBeDup.getOpcode() == DUP) {
-                    //     p = mayBeDup.getPrevious();
-                    // } else
-                    //     p = mayBeDup;
-                    // Type t = Utils.getType(p);
-                    // // Integer -> LSTORE
-                    // if(offset == 1 && t.getDescriptor().equals("Ljava/lang/Integer;")) {
-                    //     // inserted in reverse order
-                    //     units.insert(p, Utils.getBoxNode(clazz));
-                    //     units.insert(p, new InsnNode(I2L));
-                    //     units.insert(p, Utils.getUnboxNodes(int.class));
-                    // }
+                     //perform type conversion between different xSTOREs
+                     AbstractInsnNode p;
+                     if(mayBeDup.getOpcode() == DUP) {
+                         p = mayBeDup.getPrevious();
+                     } else
+                         p = mayBeDup;
+                     Type t = Utils.getType(p);
+                     // Integer -> LSTORE
+                     if(offset == 1 && t.getDescriptor().equals("Ljava/lang/Integer;")) {
+                         // inserted in reverse order
+                    	 units.insert(p, Utils.getUnboxNodes(clazz));
+                         units.insert(p, Utils.getBoxNode(clazz));
+                         units.insert(p, new InsnNode(I2L));
+                         units.insert(p, Utils.getUnboxNodes(int.class));
+                     }
                 } else if(vOpcode == ALOAD) {
                     newS = new VarInsnNode(ILOAD + offset, v.var);
                     units.set(s, newS);

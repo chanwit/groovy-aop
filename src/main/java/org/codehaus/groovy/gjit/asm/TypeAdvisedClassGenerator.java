@@ -303,7 +303,10 @@ public class TypeAdvisedClassGenerator implements Opcodes {
 	private void relocateGetCallSiteArray(MethodNode targetMN, String newInternalClassName) {
         InsnList units = targetMN.instructions;
         AbstractInsnNode s = units.getFirst();
-        while(s.getOpcode() != INVOKESTATIC) s = s.getNext();
+        while(s.getOpcode() != INVOKESTATIC) {
+        	s = s.getNext();
+        	if(s==null) return;
+        }
         MethodInsnNode m = (MethodInsnNode)s;
 
         //
