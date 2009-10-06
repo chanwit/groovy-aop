@@ -33,7 +33,7 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
     public void internalTransform(MethodNode body, Map<String, Object> options) {
         //
         // This algorithm works only for unoptimised codes
-        // where every local is object, i.e., ASTORE/ALOAD are used.
+        // where every local is object, i.e., ASTORE/ALOAD.
         // Because it assumes that size of each local is 1 from the beginning.
         //
         // This algorithm will not work for partial optimised codes
@@ -46,6 +46,10 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
 
         InsnList units = body.instructions;
         AbstractInsnNode s = null;
+
+        // FIRST PASS
+        // collect information
+        // change only ASTORE to xSTORE
 
         for(int i=0; i < OPTIMISE_TIMES; i++) {
             s = units.getFirst();
@@ -79,18 +83,20 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
                               break;
                 }
                 if(newS == null) {
-                    // throw new RuntimeException("NYI");
                     s = s.getNext();
                     continue;
                 }
-            	AbstractInsnNode mayBePop = s.getNext();
+                AbstractInsnNode mayBePop = s.getNext();
                 if(type == 'J' || type == 'D') {
-                	if(mayBePop.getOpcode() == POP) {
-                		units.set(mayBePop, new InsnNode(POP2));
-                	}
+                    if(mayBePop.getOpcode() == POP) {
+                        units.set(mayBePop, new InsnNode(POP2));
+                    }
                 }
                 units.set(s, newS);
+                // Unbox before
                 units.insertBefore(newS, Utils.getUnboxNodes("L" + m0.owner + ";"));
+                // and Box after
+                units.insert(newS, Utils.getBoxNode("L" + m0.owner + ";"));
                 s = newS.getNext();
             }
 
@@ -121,39 +127,39 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
                     s = s .getNext(); continue;
                 }
                 if(vOpcode == ASTORE) {
-                	AbstractInsnNode mayBeDup = s.getPrevious();
-                	AbstractInsnNode mayBePop = s.getNext();
+                    AbstractInsnNode mayBeDup = s.getPrevious();
+                    AbstractInsnNode mayBePop = s.getNext();
 
-                    if(offset == 1 || offset == 3) {
-                    	if(mayBePop.getOpcode() == POP) {
-                    		units.set(mayBePop, new InsnNode(POP2));
-                    	}
-                    }
+                    // if(offset == 1 || offset == 3) {
+                    //     if(mayBePop.getOpcode() == POP) {
+                    //         units.set(mayBePop, new InsnNode(POP2));
+                    //     }
+                    // }
 
                     newS = new VarInsnNode(ISTORE + offset, v.var);
                     units.set(s, newS);
                     units.insertBefore(newS, Utils.getUnboxNodes(clazz));
+                    units.insert(newS, Utils.getBoxNode(clazz));
 
                     // perform type conversion between different xSTOREs
-                    AbstractInsnNode p;
-					if(mayBeDup.getOpcode() == DUP) {
-                    	p = mayBeDup.getPrevious();
-                    } else
-                    	p = mayBeDup;
-					Type t = Utils.getType(p);
-					if(offset == 1)
-						System.out.println(">>>> "  + t);
-					// Integer -> LSTORE
-					if(offset == 1 && t.getDescriptor().equals("Ljava/lang/Integer;")) {
-						// inserted in reverse order
-						units.insert(p, Utils.getBoxNode(clazz));
-						units.insert(p, new InsnNode(I2L));
-						units.insert(p, Utils.getUnboxNodes(int.class));
-					}
+                    // AbstractInsnNode p;
+                    // if(mayBeDup.getOpcode() == DUP) {
+                    //     p = mayBeDup.getPrevious();
+                    // } else
+                    //     p = mayBeDup;
+                    // Type t = Utils.getType(p);
+                    // // Integer -> LSTORE
+                    // if(offset == 1 && t.getDescriptor().equals("Ljava/lang/Integer;")) {
+                    //     // inserted in reverse order
+                    //     units.insert(p, Utils.getBoxNode(clazz));
+                    //     units.insert(p, new InsnNode(I2L));
+                    //     units.insert(p, Utils.getUnboxNodes(int.class));
+                    // }
                 } else if(vOpcode == ALOAD) {
                     newS = new VarInsnNode(ILOAD + offset, v.var);
                     units.set(s, newS);
                     units.insert(newS, Utils.getBoxNode(clazz));
+                    units.insert(newS, Utils.getUnboxNodes(clazz));
                 } else if((vOpcode >= ISTORE && vOpcode <= DSTORE) || (vOpcode >= ILOAD && vOpcode <= DLOAD)) {
                     newS = new VarInsnNode(vOpcode, v.var);
                     units.set(s, newS);
@@ -165,7 +171,6 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
             new UnwrapBinOpTransformer().internalTransform(body, options);
             new UnwrapUnaryTransformer().internalTransform(body, options);
             new NullInitToZeroTransformer().internalTransform(body, options);
-            // new AutoBoxEliminatorTransformer().internalTransform(body, options);
         }
 
         System.out.print("before = ");
