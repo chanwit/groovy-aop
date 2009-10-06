@@ -58,7 +58,6 @@ public class GetAtPutAtTransformer implements Transformer, Opcodes {
             if(s.getOpcode() != INVOKEINTERFACE) { s = s.getNext(); continue; }
             MethodInsnNode m = (MethodInsnNode)s;
             if(m.name.equals("call")==false) { s = s.getNext(); continue; }
-            // if(m.desc.equals("(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;")==false) { s = s.getNext(); continue; }
             if(m.owner.equals("org/codehaus/groovy/runtime/callsite/CallSite")==false) { s = s.getNext(); continue; }
 
             ReverseStackDistance rsd = new ReverseStackDistance(m);
@@ -132,20 +131,9 @@ public class GetAtPutAtTransformer implements Transformer, Opcodes {
                     }
 
                     //
-                    // sometime the result of call get dupped.
-                    // need to box it back to a wrapper object
+                    // sometime the result of of the call gets dupped.
+                    // BUT it should be OK as we ALWAYS box the result
                     //
-                    AbstractInsnNode mayBeDup = m.getNext();
-                    //boolean dupped = false;
-                    if(mayBeDup.getOpcode() == DUP) {
-                    	// dupped = true;
-//                    	if(elemType.getSize() == 2) {
-//                    		InsnNode dup2 = new InsnNode(DUP2);
-//                    		units.set(mayBeDup, dup2);
-//                    		mayBeDup = dup2;
-//                    	}
-                    	//units.insert(mayBeDup, Utils.getBoxNode(elemType));
-                    }
 
                     InsnNode newS = new InsnNode(load);
                     units.set(m, newS);
@@ -174,9 +162,6 @@ public class GetAtPutAtTransformer implements Transformer, Opcodes {
                     units.remove(start.getNext().getNext());
                     units.remove(start.getNext());
                     units.remove(start);
-
-                    // simulate return value of putAt
-                    // units.insert(newS, new InsnNode(ACONST_NULL));
 
                     s = newS.getNext();
                     // this POP is the result from calling "putAt"
