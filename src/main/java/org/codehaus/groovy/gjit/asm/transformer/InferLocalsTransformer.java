@@ -83,6 +83,12 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
                     s = s.getNext();
                     continue;
                 }
+            	AbstractInsnNode mayBePop = s.getNext();
+                if(type == 'J' || type == 'D') {
+                	if(mayBePop.getOpcode() == POP) {
+                		units.set(mayBePop, new InsnNode(POP2));
+                	}
+                }
                 units.set(s, newS);
                 units.insertBefore(newS, Utils.getUnboxNodes("L" + m0.owner + ";"));
                 s = newS.getNext();
@@ -116,6 +122,14 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
                 }
                 if(vOpcode == ASTORE) {
                 	AbstractInsnNode mayBeDup = s.getPrevious();
+                	AbstractInsnNode mayBePop = s.getNext();
+
+                    if(offset == 1 || offset == 3) {
+                    	if(mayBePop.getOpcode() == POP) {
+                    		units.set(mayBePop, new InsnNode(POP2));
+                    	}
+                    }
+
                     newS = new VarInsnNode(ISTORE + offset, v.var);
                     units.set(s, newS);
                     units.insertBefore(newS, Utils.getUnboxNodes(clazz));

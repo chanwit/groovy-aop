@@ -48,7 +48,6 @@ public class TypeAdvisedClassGenerator implements Opcodes {
             new XLoadBoxPopEliminatorTransformer(),
             new BooleanBoxEliminatorTransformer(),
             new UnusedCSARemovalTransformer(),
-            new InvertBooleanIf()
         };
     }
 
@@ -272,6 +271,8 @@ public class TypeAdvisedClassGenerator implements Opcodes {
                 targetMN.name, methodDescriptor,
                 null, new String[]{"java/lang/Throwable"});
             targetMN.accept(mv); // copy targetMN to mv
+            // mv.visitMaxs(targetMN.maxStack*2, targetMN.maxLocals);
+            // mv.visitEnd();
         }
 
         cw.visitEnd();

@@ -133,13 +133,20 @@ public class GetAtPutAtTransformer implements Transformer, Opcodes {
                     // sometime the result of call get dupped.
                     // need to box it back to a wrapper object
                     AbstractInsnNode mayBeDup = m.getNext();
+                    boolean dupped = false;
                     if(mayBeDup.getOpcode() == DUP) {
+                    	dupped = true;
+                    	if(elemType.getSize() == 2) {
+                    		InsnNode dup2 = new InsnNode(DUP2);
+                    		units.set(mayBeDup, dup2);
+                    		mayBeDup = dup2;
+                    	}
                     	units.insert(mayBeDup, Utils.getBoxNode(elemType));
                     }
 
                     InsnNode newS = new InsnNode(load);
                     units.set(m, newS);
-                    if(mayBeDup.getOpcode() != DUP) {
+                    if(!dupped) {
                     	// if already inserted at dup, no need to box again
                     	units.insert(newS, Utils.getBoxNode(elemType));
                     }
