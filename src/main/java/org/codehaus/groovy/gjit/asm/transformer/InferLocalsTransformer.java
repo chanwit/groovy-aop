@@ -174,11 +174,11 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
             new NullInitToZeroTransformer().internalTransform(body, options);
         }
 
-        System.out.print("before = ");
-        for(int i=0; i<localMarker.length; i++) {
-            System.out.print(localMarker[i] + " ");
-        }
-        System.out.println();
+//        System.out.print("before = ");
+//        for(int i=0; i<localMarker.length; i++) {
+//            System.out.print(localMarker[i] + " ");
+//        }
+//        System.out.println();
 
         // Index Relocation Algorithm
         // relocate L and D
@@ -195,11 +195,11 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
             maxLocals += size;
         }
 
-        System.out.print("after  = ");
-        for(int i=0; i<localMarker.length; i++) {
-            System.out.print(localMarker[i] + " ");
-        }
-        System.out.println();
+//        System.out.print("after  = ");
+//        for(int i=0; i<localMarker.length; i++) {
+//            System.out.print(localMarker[i] + " ");
+//        }
+//        System.out.println();
         // TODO set new value to body.maxLocals =
         body.maxLocals = maxLocals;
 

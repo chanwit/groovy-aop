@@ -181,8 +181,8 @@ public class Utils implements Opcodes {
             e.printStackTrace();
         }
 
-        TraceClassVisitor tcv = new TraceClassVisitor(new PrintWriter(System.out));
-        new ClassReader(bytes).accept(tcv, 0);
+//        TraceClassVisitor tcv = new TraceClassVisitor(new PrintWriter(System.out));
+//        new ClassReader(bytes).accept(tcv, 0);
         //CheckClassAdapter.verify(new ClassReader(bytes), true, new PrintWriter(System.out));
 
         return clazz;

@@ -69,7 +69,7 @@ public class UnwrapCompareTransformer implements Transformer, Opcodes {
                 try {
                     compare = ComparingMethod.valueOf(m.name);
                 } catch (IllegalArgumentException e) {
-                    System.out.println("get compare method failed: " + m.name );
+                    // System.out.println("get compare method failed: " + m.name );
                     s = s.getNext();
                     continue;
                 }

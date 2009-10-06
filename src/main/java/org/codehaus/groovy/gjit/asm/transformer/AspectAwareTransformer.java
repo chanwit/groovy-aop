@@ -193,9 +193,9 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
         // NumberNumberPlus$IntegerInteger
         // System.out.println("DGM detected");
         String name = callSite.getClass().getName();
-        System.out.println("checking DGM: " + name);
-        System.out.println("call site index: " + callSite.getIndex());
-        System.out.println("call site name : " + callSite.getName());
+//        System.out.println("checking DGM: " + name);
+//        System.out.println("call site index: " + callSite.getIndex());
+//        System.out.println("call site name : " + callSite.getName());
         String[] names = name.split("\\.|\\$");
         int len = names.length;
         String operator = names[len-2];
@@ -254,10 +254,10 @@ public class AspectAwareTransformer implements Transformer, Opcodes {
             String classFromFirstArg = convertFromGetClassToInternalName(((MethodInsnNode)array[1]).name);
             return names[0].equals(classFromFirstArg);
         } else if(typeOfCall.equals("call")) {
-            System.out.println("call : not check for recursion");
+            //System.out.println("call : not check for recursion");
             return false;
         } else if(typeOfCall.equals("callCurrent")) {
-            System.out.println("callCurrent : not check for recursion");
+            //System.out.println("callCurrent : not check for recursion");
             return false;
         }
 
