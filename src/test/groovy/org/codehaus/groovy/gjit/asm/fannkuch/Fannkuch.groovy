@@ -47,8 +47,9 @@ class Fannkuch {
 			}
 
 			while (true) {
-				if (r == n)
+				if (r == n) {
 					return maxFlipsCount
+				}
 				def perm0 = perm1[0]
 				def i = 0
 				while (i < r) {

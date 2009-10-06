@@ -2026,8 +2026,8 @@ public class AspectAwareCallSite implements CallSite {
                     if(i != null) {
                         i.redefineClasses(new ClassDefinition(sender, bytes));
                         //System.out.println(">>>>>>>> class " + sender.getName() + " redefined");
-                        // TraceClassVisitor tcv = new TraceClassVisitor(new PrintWriter(System.out));
-                        // new ClassReader(bytes).accept(tcv, 0);
+                        TraceClassVisitor tcv = new TraceClassVisitor(new PrintWriter(System.out));
+                        new ClassReader(bytes).accept(tcv, 0);
                         //CheckClassAdapter.verify(new ClassReader(bytes), true, new PrintWriter(System.out));
                     }
                 } catch (Throwable e) {

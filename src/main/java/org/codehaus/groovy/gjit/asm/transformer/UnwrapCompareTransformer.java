@@ -100,8 +100,8 @@ public class UnwrapCompareTransformer implements Transformer, Opcodes {
 	                            }
 
 	                            int cmp = -1;
-	                            if(oldIf.getOpcode() == IFEQ) cmp = IF_ICMPEQ;
-	                            else if(oldIf.getOpcode() == IFNE) cmp = IF_ICMPNE;
+	                            if(oldIf.getOpcode() == IFEQ) cmp = IF_ICMPNE;
+	                            else if(oldIf.getOpcode() == IFNE) cmp = IF_ICMPEQ;
 
 	                            if(cmp == -1) throw new RuntimeException("NYI");
 	                            AbstractInsnNode newS;
