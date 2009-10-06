@@ -177,19 +177,19 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
                 case rightShift: newS = new InsnNode(ISHR + offset); break;
             }
 
-            //
+            // TODO DUP
             // we always assume that inputs are object,
             // so that unboxing them before proceed.
             //
-            AbstractInsnNode mayBeDup;
-            mayBeDup = array[1].getNext();
-            if(mayBeDup.getOpcode() == DUP) {
-                units.insert(mayBeDup, Utils.getBoxNode(t1.getDescriptor()));
-            }
-            mayBeDup = array[2].getNext();
-            if(mayBeDup.getOpcode() == DUP) {
-                units.insert(mayBeDup, Utils.getBoxNode(t2.getDescriptor()));
-            }
+//            AbstractInsnNode mayBeDup;
+//            mayBeDup = array[1].getNext();
+//            if(mayBeDup.getOpcode() == DUP) {
+//                units.insert(mayBeDup, Utils.getBoxNode(t1.getDescriptor()));
+//            }
+//            mayBeDup = array[2].getNext();
+//            if(mayBeDup.getOpcode() == DUP) {
+//                units.insert(mayBeDup, Utils.getBoxNode(t2.getDescriptor()));
+//            }
 
             if(conv1 != null) {
                 units.insert(array[1], conv1);
@@ -227,13 +227,23 @@ public class UnwrapBinOpTransformer implements Transformer, Opcodes {
         //Ljava/lang/Double;
         //Ljava/lang/Character;
         //Ljava/lang/Float;
-        char p1 = t1.getDescriptor().charAt(11);
-        if(p1 == 'L') p1 = 'J';
-        else if(p1 == 'B' && t1.getDescriptor().charAt(12)=='o') p1 = 'Z';
+    	char p1;
+    	if(t1.getSort() == Type.OBJECT) {
+    		p1 = t1.getDescriptor().charAt(11);
+            if(p1 == 'L') p1 = 'J';
+            else if(p1 == 'B' && t1.getDescriptor().charAt(12)=='o') p1 = 'Z';
+    	}
+    	else
+    		p1 = t1.getDescriptor().charAt(0);
 
-        char p2 = t2.getDescriptor().charAt(11);
-        if(p2 == 'L') p2 = 'J';
-        else if(p2 == 'B' && t2.getDescriptor().charAt(12)=='o') p2 = 'Z';
+    	char p2;
+    	if(t1.getSort() == Type.OBJECT) {
+    		p2 = t2.getDescriptor().charAt(11);
+            if(p2 == 'L') p2 = 'J';
+            else if(p2 == 'B' && t2.getDescriptor().charAt(12)=='o') p2 = 'Z';
+    	}
+    	else
+    		p2 = t2.getDescriptor().charAt(0);
 
         return "" + p1 + p2;
     }

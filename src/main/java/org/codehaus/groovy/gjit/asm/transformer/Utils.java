@@ -143,10 +143,12 @@ public class Utils implements Opcodes {
             return Type.getType("I");
         } else if(node.getOpcode() == BIPUSH || node.getOpcode() == SIPUSH) {
             return Type.getType("I");
-        } else if(node.getOpcode() == IALOAD) {
+        } else if(node.getOpcode() == IALOAD ||
+        		  node.getOpcode() == ILOAD) {
         	return Type.getType("Ljava/lang/Integer;");
-        } else if(node.getOpcode() == ILOAD) {
-        	return Type.getType("Ljava/lang/Integer;");
+        } else if(node.getOpcode() == DALOAD  ||
+        	      node.getOpcode() == DLOAD) {
+        	return Type.getType("Ljava/lang/Double;");
         } else if(node.getOpcode() == ACONST_NULL) {
         	return Type.getType("Ljava/lang/Object;");
         } else if(node instanceof FieldInsnNode) {

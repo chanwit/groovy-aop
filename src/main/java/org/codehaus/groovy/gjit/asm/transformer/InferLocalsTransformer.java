@@ -93,10 +93,8 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
                     }
                 }
                 units.set(s, newS);
-                // Unbox before
-                units.insertBefore(newS, Utils.getUnboxNodes("L" + m0.owner + ";"));
-                // and Box after
-                units.insert(newS, Utils.getBoxNode("L" + m0.owner + ";"));
+                if(newS.getPrevious().getOpcode() != DUP)
+                	units.insertBefore(newS, Utils.getUnboxNodes("L" + m0.owner + ";"));
                 s = newS.getNext();
             }
 
@@ -138,8 +136,8 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
 
                     newS = new VarInsnNode(ISTORE + offset, v.var);
                     units.set(s, newS);
-                    units.insertBefore(newS, Utils.getUnboxNodes(clazz));
-                    units.insert(newS, Utils.getBoxNode(clazz));
+                    if(newS.getPrevious().getOpcode() != DUP)
+                    	units.insertBefore(newS, Utils.getUnboxNodes(clazz));
 
                     // perform type conversion between different xSTOREs
                     // AbstractInsnNode p;
@@ -159,7 +157,7 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
                     newS = new VarInsnNode(ILOAD + offset, v.var);
                     units.set(s, newS);
                     units.insert(newS, Utils.getBoxNode(clazz));
-                    units.insert(newS, Utils.getUnboxNodes(clazz));
+                    //units.insertBefore(newS, Utils.getUnboxNodes(clazz));
                 } else if((vOpcode >= ISTORE && vOpcode <= DSTORE) || (vOpcode >= ILOAD && vOpcode <= DLOAD)) {
                     newS = new VarInsnNode(vOpcode, v.var);
                     units.set(s, newS);
