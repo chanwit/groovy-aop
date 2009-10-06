@@ -40,7 +40,7 @@ public class UnwrapCompareTxTests extends GroovyTestCase implements Opcodes {
         def oldSize = units.size()
         new UnwrapCompareTransformer().internalTransform(mn, null)
         assert units.size() == oldSize + 2 + 2 - 1
-        assert {
+        assert asm {
             iload 0
             invokestatic  Integer,"valueOf", [int],Integer
             checkcast Integer
