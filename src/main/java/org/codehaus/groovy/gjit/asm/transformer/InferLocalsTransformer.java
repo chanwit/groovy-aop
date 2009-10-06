@@ -165,7 +165,7 @@ public class InferLocalsTransformer implements Transformer, Opcodes {
             new UnwrapBinOpTransformer().internalTransform(body, options);
             new UnwrapUnaryTransformer().internalTransform(body, options);
             new NullInitToZeroTransformer().internalTransform(body, options);
-            new AutoBoxEliminatorTransformer().internalTransform(body, options);
+            // new AutoBoxEliminatorTransformer().internalTransform(body, options);
         }
 
         System.out.print("before = ");

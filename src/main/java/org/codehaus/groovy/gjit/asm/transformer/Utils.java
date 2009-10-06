@@ -10,6 +10,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
 import org.objectweb.asm.util.AbstractVisitor;
+import org.objectweb.asm.util.CheckClassAdapter;
 import org.objectweb.asm.util.TraceClassVisitor;
 
 public class Utils implements Opcodes {
@@ -180,6 +181,7 @@ public class Utils implements Opcodes {
 
         TraceClassVisitor tcv = new TraceClassVisitor(new PrintWriter(System.out));
         new ClassReader(bytes).accept(tcv, 0);
+        //CheckClassAdapter.verify(new ClassReader(bytes), true, new PrintWriter(System.out));
 
         return clazz;
     }

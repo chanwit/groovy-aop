@@ -116,6 +116,7 @@ public class GetAtPutAtTransformer implements Transformer, Opcodes {
                 if(convert == false) { s = s.getNext(); continue; }
 
                 if(callSiteName.equals("getAt")) {
+                	// INDEXING
                     // array[2] must be unboxed to "int" for indexing
                     // if it's an object, do boxing
                     if(Utils.getType(array[2]).getSort() == Type.OBJECT) {
@@ -130,26 +131,25 @@ public class GetAtPutAtTransformer implements Transformer, Opcodes {
                         throw new RuntimeException("NYI");
                     }
 
+                    //
                     // sometime the result of call get dupped.
                     // need to box it back to a wrapper object
+                    //
                     AbstractInsnNode mayBeDup = m.getNext();
-                    boolean dupped = false;
+                    //boolean dupped = false;
                     if(mayBeDup.getOpcode() == DUP) {
-                    	dupped = true;
-                    	if(elemType.getSize() == 2) {
-                    		InsnNode dup2 = new InsnNode(DUP2);
-                    		units.set(mayBeDup, dup2);
-                    		mayBeDup = dup2;
-                    	}
-                    	units.insert(mayBeDup, Utils.getBoxNode(elemType));
+                    	// dupped = true;
+//                    	if(elemType.getSize() == 2) {
+//                    		InsnNode dup2 = new InsnNode(DUP2);
+//                    		units.set(mayBeDup, dup2);
+//                    		mayBeDup = dup2;
+//                    	}
+                    	//units.insert(mayBeDup, Utils.getBoxNode(elemType));
                     }
 
                     InsnNode newS = new InsnNode(load);
                     units.set(m, newS);
-                    if(!dupped) {
-                    	// if already inserted at dup, no need to box again
-                    	units.insert(newS, Utils.getBoxNode(elemType));
-                    }
+                    units.insert(newS, Utils.getBoxNode(elemType));
 
                     // clean up
                     units.remove(start.getNext().getNext());
