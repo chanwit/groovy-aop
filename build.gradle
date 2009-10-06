@@ -22,10 +22,7 @@ dependencies {
     testCompile(
                 [group: 'junit',      name: 'junit',          version: '3.8.2'],
                 [group: 'org.slf4j',  name: 'slf4j-api',      version: '1.5.9-RC0'],
-                [group: 'org.slf4j',   name: 'slf4j-nop',      version: '1.5.9-RC0']
-//                [group: 'org.slf4j',  name: 'slf4j-simple',   version: '1.5.9-RC0']
-//                [group: 'org.slf4j',  name: 'slf4j-log4j12',  version: '1.5.9-RC0'],
-//                [group: 'log4j',      name: 'log4j',          version: '1.2.15']
+                [group: 'org.slf4j',  name: 'slf4j-nop',      version: '1.5.9-RC0']
     )
     textile     group: 'net.java',    name: 'textile-j',      version: '2.2'
     compile(
@@ -34,7 +31,6 @@ dependencies {
                [group: 'org.antlr',   name: 'stringtemplate', version: '3.2'],
                [group: 'asm',         name: 'asm-debug-all',  version: '3.2'],
                [group: 'org.slf4j',   name: 'slf4j-api',      version: '1.5.9-RC0']
-//             [group: 'org.slf4j',   name: 'slf4j-nop',      version: '1.5.9-RC0']
     )
 }
 
@@ -78,6 +74,25 @@ task "test-op"(dependsOn: [processResources, compileTests]) << {
         batchtest(todir: testResultsDir) {
             fileset(dir: testClassesDir) {
                 include(name:'**/*OptimisationTests.class')
+            }
+        }
+    }
+}
+
+task "test-u"(dependsOn: [processResources, compileTests]) << {
+    ant.mkdir(dir: testResultsDir)
+    ant.junit(fork: true, forkmode: "once", clonevm: true) {
+        jvmarg(value: "-server")
+        jvmarg(value: "-XX:MaxPermSize=256m")
+        classpath(path: configurations.groovy.asPath)
+        classpath(path: configurations.compile.asPath)
+        classpath(path: configurations.testCompile.asPath)
+        classpath(location: classesDir)
+        classpath(location: testClassesDir)
+        formatter(type: "plain")
+        batchtest(todir: testResultsDir) {
+            fileset(dir: testClassesDir) {
+                include(name:'**/*TxTests.class')
             }
         }
     }
