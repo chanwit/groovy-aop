@@ -21,4 +21,17 @@ class FannkuchTest extends GroovyTestCase {
         unweave(FannkuchAspect)
     }
     
+    static void main(args) {
+        ExpandoMetaClass.enableGlobally()
+        def aspect = weave(FannkuchAspect)
+        assert aspect != null
+        for(i in 1..5) {
+            Caller.realTest(9)
+            Caller.realTest(10)
+            Caller.realTest(11)
+            Caller.realTest(12)
+        }
+        unweave(FannkuchAspect)        
+    }
+    
 }
