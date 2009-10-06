@@ -31,10 +31,10 @@ public class AutoBoxEliminatorTxTests extends GroovyTestCase implements Opcodes 
         }
         new AutoBoxEliminatorTransformer().internalTransform(mn, null);
         assert units.size() == 2
-        assertEquals asm {
+        assert asm {
             iload 0
             ireturn
-        }, units
+        } == units
     }
 
 }
