@@ -1,4 +1,6 @@
 export JAVA_HOME="c:\jdk"
+cd dist
+
 # Groovy GT
 $JAVA_HOME/bin/java -javaagent:./groovy-aop-0.6.1.jar -cp "groovy-aop-0.6.1.jar;*" org.codehaus.groovy.gjit.asm.heapsort.HeapSortTest  > gt_c_w_he.log
 $JAVA_HOME/bin/java -javaagent:./groovy-aop-0.6.1.jar -cp "groovy-aop-0.6.1.jar;*" org.codehaus.groovy.gjit.asm.fibbonacci.FibTest     > gt_c_w_fi.log
